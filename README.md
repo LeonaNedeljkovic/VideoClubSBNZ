@@ -1,1 +1,1 @@
-# SBNZ-Video-Club-
+# VideoClubSBNZ
