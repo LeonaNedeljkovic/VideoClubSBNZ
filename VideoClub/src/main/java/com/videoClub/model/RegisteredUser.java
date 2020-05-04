@@ -1,0 +1,177 @@
+package com.videoClub.model;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+
+import com.videoClub.model.enumeration.Rank;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+@Entity
+public class RegisteredUser extends User{
+
+	@Column(name = "registry_date")
+	private LocalDateTime registryDate;
+	
+	@Column(name = "immunity_points")
+	private int immunityPoints;
+	
+	@Column(name = "available_minutes")
+	private int availableMinutes;
+	
+	@Enumerated(EnumType.STRING)
+	@Column(name = "title")
+	private Rank title;
+	
+	@Enumerated(EnumType.STRING)
+	@Column(name = "immunity")
+	private Rank immunity;
+	
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name = "action_id")
+	private Action action;
+	
+	@JsonIgnore
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private List<Badge> badges = new ArrayList<Badge>();
+	
+	@JsonIgnore
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private List<Review> reviews = new ArrayList<Review>();
+	
+	@JsonIgnore
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private List<Rate> rates = new ArrayList<Rate>();
+	
+	@JsonIgnore
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private List<Purchase> purchases = new ArrayList<Purchase>();
+
+	public RegisteredUser() {
+		super();
+	}
+
+	public RegisteredUser(Long id, String username, String password, String email, LocalDateTime registryDate,
+			int immunityPoints, int availableMinutes, Rank title, Rank immunity, Action action, List<Badge> badges,
+			List<Review> reviews, List<Rate> rates, List<Purchase> purchases) {
+		super(id, username, password, email);
+		this.registryDate = registryDate;
+		this.immunityPoints = immunityPoints;
+		this.availableMinutes = availableMinutes;
+		this.title = title;
+		this.immunity = immunity;
+		this.action = action;
+		this.badges = badges;
+		this.reviews = reviews;
+		this.rates = rates;
+		this.purchases = purchases;
+	}
+
+	public RegisteredUser(LocalDateTime registryDate, int immunityPoints, int availableMinutes, Rank title,
+			Rank immunity, Action action, List<Badge> badges, List<Review> reviews, List<Rate> rates,
+			List<Purchase> purchases) {
+		super();
+		this.registryDate = registryDate;
+		this.immunityPoints = immunityPoints;
+		this.availableMinutes = availableMinutes;
+		this.title = title;
+		this.immunity = immunity;
+		this.action = action;
+		this.badges = badges;
+		this.reviews = reviews;
+		this.rates = rates;
+		this.purchases = purchases;
+	}
+
+	public LocalDateTime getRegistryDate() {
+		return registryDate;
+	}
+
+	public void setRegistryDate(LocalDateTime registryDate) {
+		this.registryDate = registryDate;
+	}
+
+	public int getImmunityPoints() {
+		return immunityPoints;
+	}
+
+	public void setImmunityPoints(int immunityPoints) {
+		this.immunityPoints = immunityPoints;
+	}
+
+	public int getAvailableMinutes() {
+		return availableMinutes;
+	}
+
+	public void setAvailableMinutes(int availableMinutes) {
+		this.availableMinutes = availableMinutes;
+	}
+
+	public Rank getTitle() {
+		return title;
+	}
+
+	public void setTitle(Rank title) {
+		this.title = title;
+	}
+
+	public Rank getImmunity() {
+		return immunity;
+	}
+
+	public void setImmunity(Rank immunity) {
+		this.immunity = immunity;
+	}
+
+	public Action getAction() {
+		return action;
+	}
+
+	public void setAction(Action action) {
+		this.action = action;
+	}
+
+	public List<Badge> getBadges() {
+		return badges;
+	}
+
+	public void setBadges(List<Badge> badges) {
+		this.badges = badges;
+	}
+
+	public List<Review> getReviews() {
+		return reviews;
+	}
+
+	public void setReviews(List<Review> reviews) {
+		this.reviews = reviews;
+	}
+
+	public List<Rate> getRates() {
+		return rates;
+	}
+
+	public void setRates(List<Rate> rates) {
+		this.rates = rates;
+	}
+
+	public List<Purchase> getPurchases() {
+		return purchases;
+	}
+
+	public void setPurchases(List<Purchase> purchases) {
+		this.purchases = purchases;
+	}
+	
+}
