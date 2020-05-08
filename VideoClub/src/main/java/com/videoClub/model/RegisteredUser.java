@@ -21,6 +21,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 public class RegisteredUser extends User{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@Column(name = "registry_date")
 	private LocalDateTime registryDate;
 	
