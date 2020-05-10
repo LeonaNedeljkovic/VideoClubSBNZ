@@ -13,7 +13,7 @@ import com.videoClub.model.enumeration.DefinerType;
 import com.videoClub.model.enumeration.Rank;
 
 @Entity
-@Table(name = "entity_definer")
+@Table(name = "edefiner")
 public class EntityDefiner {
 	@Id
 	@Column(name = "id")
@@ -25,10 +25,10 @@ public class EntityDefiner {
 	private DefinerType type;
 	
 	@Enumerated(EnumType.STRING)
-	@Column(name = "rank")
+	@Column(name = "erank")
 	private Rank rank;
 	
-	@Column(name = "value")
+	@Column(name = "evalue")
 	private int value;
 
 	public EntityDefiner() {
