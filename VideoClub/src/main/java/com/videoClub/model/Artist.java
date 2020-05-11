@@ -14,6 +14,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "artist")
 public class Artist {
@@ -28,9 +30,11 @@ public class Artist {
 	@Column(name = "surname")
 	private String surname;
 	
+	@JsonIgnore
 	@ManyToMany
 	private List<VideoContent> roles = new ArrayList<VideoContent>();
 	
+	@JsonIgnore
 	@OneToMany(mappedBy = "director", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<VideoContent> directed = new ArrayList<VideoContent>();
 
