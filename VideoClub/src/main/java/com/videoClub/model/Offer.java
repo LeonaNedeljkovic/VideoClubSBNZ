@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "offer")
 public class Offer {
@@ -25,6 +27,7 @@ public class Offer {
 	@Column(name = "price")
 	private double price;
 	
+	@JsonIgnore
 	@ManyToMany
 	private List<Discount> discounts = new ArrayList<Discount>();
 
@@ -61,5 +64,13 @@ public class Offer {
 
 	public void setPrice(double price) {
 		this.price = price;
+	}
+
+	public List<Discount> getDiscounts() {
+		return discounts;
+	}
+
+	public void setDiscounts(List<Discount> discounts) {
+		this.discounts = discounts;
 	}
 }

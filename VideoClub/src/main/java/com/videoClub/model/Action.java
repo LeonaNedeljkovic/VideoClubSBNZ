@@ -15,6 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.videoClub.model.enumeration.ActionType;
 import com.videoClub.model.enumeration.Rank;
 
@@ -30,6 +31,7 @@ public abstract class Action {
 	@Column(name = "description")
 	private String description;
 	
+	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "action_event_id")
 	private ActionEvent actionEvent;
