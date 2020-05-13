@@ -1,6 +1,6 @@
 package com.videoClub.model;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,10 +24,10 @@ public class ActionEvent {
 	private Long id;
 	
 	@Column(name = "start_date")
-	private LocalDateTime startDate;
+	private LocalDate startDate;
 	
 	@Column(name = "end_date")
-	private LocalDateTime endDate;
+	private LocalDate endDate;
 	
 	@Column(name = "name")
 	private String name;
@@ -39,7 +39,7 @@ public class ActionEvent {
 		super();
 	}
 
-	public ActionEvent(Long id, LocalDateTime startDate, LocalDateTime endDate, String name, List<Action> actions) {
+	public ActionEvent(Long id, LocalDate startDate, LocalDate endDate, String name, List<Action> actions) {
 		super();
 		this.id = id;
 		this.startDate = startDate;
@@ -56,19 +56,19 @@ public class ActionEvent {
 		this.id = id;
 	}
 
-	public LocalDateTime getStartDate() {
+	public LocalDate getStartDate() {
 		return startDate;
 	}
 
-	public void setStartDate(LocalDateTime startDate) {
+	public void setStartDate(LocalDate startDate) {
 		this.startDate = startDate;
 	}
 
-	public LocalDateTime getEndDate() {
+	public LocalDate getEndDate() {
 		return endDate;
 	}
 
-	public void setEndDate(LocalDateTime endDate) {
+	public void setEndDate(LocalDate endDate) {
 		this.endDate = endDate;
 	}
 

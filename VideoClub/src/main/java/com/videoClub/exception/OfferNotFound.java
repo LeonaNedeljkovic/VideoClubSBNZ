@@ -1,13 +1,13 @@
 package com.videoClub.exception;
 
 @SuppressWarnings("serial")
-public class ArtistNotFound extends RuntimeException  {
+public class OfferNotFound extends RuntimeException {
 
-private String message;
+	private String message;
 	
-	public ArtistNotFound(Long id){
+	public OfferNotFound(Long id){
 		super();
-		this.message = "Artist with ID " + id +
+		this.message = "Offer with ID " + id +
 				" does not exist in system.";
 	}
 
