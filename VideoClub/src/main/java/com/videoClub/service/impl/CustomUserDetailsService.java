@@ -108,10 +108,10 @@ public class CustomUserDetailsService implements UserDetailsService {
 		if (this.usernameTaken(user.getUsername())) {
 			return false;
 		}
-		if (role.equals(UserRole.REGISTERED_USER)){
+		if (role.equals(UserRole.ROLE_REGISTERED_USER)){
 			RegisteredUser newUser = new RegisteredUser();
 			Authority a = new Authority();
-			a.setName(UserRole.REGISTERED_USER);
+			a.setName(UserRole.ROLE_REGISTERED_USER);
 			newUser.setBadges(new ArrayList<Badge>());
 			newUser.setReviews(new ArrayList<Review>());
 			newUser.setRates(new ArrayList<Rate>());
@@ -133,7 +133,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 		}else {
 			Administrator newUser = new Administrator();
 			Authority a = new Authority();
-			a.setName(UserRole.ADMIN);
+			a.setName(UserRole.ROLE_ADMIN);
 			List<Authority> authorities = new ArrayList<>();
 			authorities.add(a);
 			newUser.setAuthorities(authorities);

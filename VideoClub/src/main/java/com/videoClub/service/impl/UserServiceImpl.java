@@ -1,10 +1,12 @@
 package com.videoClub.service.impl;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.videoClub.exception.ArtistNotFound;
 import com.videoClub.model.User;
 import com.videoClub.repository.UserRepository;
 import com.videoClub.service.UserService;
@@ -42,7 +44,13 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User findById(Long id) {
-		return userRepository.getOne(id);
+		Optional<User> user = userRepository.findById(id);
+		if(user.isPresent()){
+			return user.get();
+		}
+		else{
+			throw new ArtistNotFound(id);
+		}
 	}
 
 	@Override

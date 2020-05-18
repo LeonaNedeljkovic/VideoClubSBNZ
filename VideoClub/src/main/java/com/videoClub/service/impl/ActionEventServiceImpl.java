@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +23,8 @@ import com.videoClub.model.ActionEvent;
 import com.videoClub.model.Discount;
 import com.videoClub.model.FreeContent;
 import com.videoClub.model.FreeMinutes;
+import com.videoClub.model.RegisteredUser;
+import com.videoClub.model.User;
 import com.videoClub.model.enumeration.ActionType;
 import com.videoClub.model.enumeration.Genre;
 import com.videoClub.model.enumeration.Rank;
@@ -28,6 +32,7 @@ import com.videoClub.repository.ActionEventRepository;
 import com.videoClub.service.ActionEventService;
 import com.videoClub.service.ActionService;
 import com.videoClub.service.OfferService;
+import com.videoClub.service.UserService;
 
 @Service
 public class ActionEventServiceImpl implements ActionEventService{
@@ -41,11 +46,18 @@ public class ActionEventServiceImpl implements ActionEventService{
 	@Autowired
 	private OfferService offerService;
 	
+	@Autowired
+	private UserService userService;
+	
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	private DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	
+	@Autowired
+	private KieContainer kieContainer;
 
 	@Override
 	public ActionEvent save(ActionEventDTO actionEventDTO) {
+		KieSession kieSession = kieContainer.newKieSession("rulesSession");
 		checkDates(actionEventDTO.getStartDate(), actionEventDTO.getEndDate());
 		ActionEvent actionEvent = new ActionEvent();
 		actionEvent.setStartDate(LocalDate.parse(sdf.format(actionEventDTO.getStartDate()),df));
@@ -68,6 +80,7 @@ public class ActionEventServiceImpl implements ActionEventService{
 					discount.getDiscountOffers().add(offerService.getOne(id));
 				}
 				actionEvent.getActions().add(discount);
+				kieSession.insert(discount);
 			}
 			else if(type.equals(ActionType.FREE_CONTENT)){
 				if(action.getGenres().isEmpty()){
@@ -82,6 +95,7 @@ public class ActionEventServiceImpl implements ActionEventService{
 					freeContent.getFreeGenres().add(Genre.valueOf(genre));
 				}
 				actionEvent.getActions().add(freeContent);
+				kieSession.insert(freeContent);
 			}
 			else if(type.equals(ActionType.FREE_MINUTES)){
 				FreeMinutes freeMinutes = new FreeMinutes();
@@ -91,8 +105,16 @@ public class ActionEventServiceImpl implements ActionEventService{
 				freeMinutes.setAmount(action.getAmount());
 				freeMinutes.setActionEvent(actionEvent);
 				actionEvent.getActions().add(freeMinutes);
+				kieSession.insert(freeMinutes);
 			}
 		}
+		for(User user : userService.findAll()){
+			if(user instanceof RegisteredUser){
+				kieSession.insert(user);
+			}
+		}
+		kieSession.fireAllRules();
+		kieSession.dispose();
 		return actionEventRepository.save(actionEvent);
 	}
 	

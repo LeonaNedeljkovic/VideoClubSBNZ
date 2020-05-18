@@ -119,7 +119,7 @@ public class RuleController {
 	}
 	
 	@PutMapping(value = "/bronze_immunity_points", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	//@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<PointsDTO> setBronzeImmunity(@RequestBody PointsDTO points) {
 		ruleService.setImmunityPoints(Rank.BRONZE, points.getValue());
 		bronzeImmunity.setAcquirePoints(points.getValue());
@@ -128,7 +128,7 @@ public class RuleController {
 	}
 	
 	@PutMapping(value = "/silver_immunity_points", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	//@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<PointsDTO> setSilverImmunity(@RequestBody PointsDTO points) {
 		ruleService.setImmunityPoints(Rank.SILVER, points.getValue());
 		silverImmunity.setAcquirePoints(points.getValue());
@@ -137,7 +137,7 @@ public class RuleController {
 	}
 	
 	@PutMapping(value = "/gold_immunity_points", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	//@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<PointsDTO> setGoldImmunity(@RequestBody PointsDTO points) {
 		ruleService.setImmunityPoints(Rank.GOLD, points.getValue());
 		goldImmunity.setAcquirePoints(points.getValue());
@@ -146,7 +146,7 @@ public class RuleController {
 	}
 	
 	@PutMapping(value = "/bronze_title/acquire_points", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	//@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<PointsDTO> setBronzeTitleAcquire(@RequestBody PointsDTO points) {
 		ruleService.setTitleAcquirePoints(Rank.BRONZE, points.getValue());
 		bronzeTitle.setAcquirePoints(points.getValue());
@@ -155,7 +155,7 @@ public class RuleController {
 	}
 	
 	@PutMapping(value = "/bronze_title/save_points", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	//@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<PointsDTO> setBronzeTitleSave(@RequestBody PointsDTO points) {
 		ruleService.setTitleSavePoints(Rank.BRONZE, points.getValue());
 		bronzeTitle.setSavePoints(points.getValue());
@@ -164,7 +164,7 @@ public class RuleController {
 	}
 	
 	@PutMapping(value = "/bronze_title/reward_points", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	//@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<PointsDTO> setBronzeTitleReward(@RequestBody PointsDTO points) {
 		ruleService.setTitleRewardPoints(Rank.BRONZE, points.getValue());
 		bronzeTitle.setRewardPoints(points.getValue());
@@ -173,7 +173,7 @@ public class RuleController {
 	}
 	
 	@PutMapping(value = "/silver_title/acquire_points", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	//@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<PointsDTO> setSilverTitleAcquire(@RequestBody PointsDTO points) {
 		ruleService.setTitleAcquirePoints(Rank.SILVER, points.getValue());
 		silverTitle.setAcquirePoints(points.getValue());
@@ -182,7 +182,7 @@ public class RuleController {
 	}
 	
 	@PutMapping(value = "/silver_title/save_points", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	//@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<PointsDTO> setSilverTitleSave(@RequestBody PointsDTO points) {
 		ruleService.setTitleSavePoints(Rank.SILVER, points.getValue());
 		silverTitle.setSavePoints(points.getValue());
@@ -191,7 +191,7 @@ public class RuleController {
 	}
 	
 	@PutMapping(value = "/silver_title/reward_points", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	//@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<PointsDTO> setSilverTitleReward(@RequestBody PointsDTO points) {
 		ruleService.setTitleRewardPoints(Rank.SILVER, points.getValue());
 		silverTitle.setRewardPoints(points.getValue());
@@ -200,7 +200,7 @@ public class RuleController {
 	}
 	
 	@PutMapping(value = "/gold_title/acquire_points", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	//@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<PointsDTO> setGoldTitleAcquire(@RequestBody PointsDTO points) {
 		ruleService.setTitleAcquirePoints(Rank.GOLD, points.getValue());
 		goldTitle.setAcquirePoints(points.getValue());
@@ -209,7 +209,7 @@ public class RuleController {
 	}
 	
 	@PutMapping(value = "/gold_title/save_points", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	//@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<PointsDTO> setGoldTitleSave(@RequestBody PointsDTO points) {
 		ruleService.setTitleSavePoints(Rank.GOLD, points.getValue());
 		goldTitle.setSavePoints(points.getValue());
@@ -218,7 +218,7 @@ public class RuleController {
 	}
 	
 	@PutMapping(value = "/gold_title/reward_points", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	//@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<PointsDTO> setGoldTitleReward(@RequestBody PointsDTO points) {
 		ruleService.setTitleRewardPoints(Rank.GOLD, points.getValue());
 		goldTitle.setRewardPoints(points.getValue());

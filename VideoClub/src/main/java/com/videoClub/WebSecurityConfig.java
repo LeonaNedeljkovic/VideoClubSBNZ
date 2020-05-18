@@ -79,23 +79,45 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
+		.cors().and()
 		// communication between client and server is stateless
 		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+		// za neautorizovane zahteve posalji 401 gresku
+		.exceptionHandling().authenticationEntryPoint(restAuthenticationEntryPoint).and()
 		.authorizeRequests()
 		.antMatchers("/auth/login").permitAll()
-			//.antMatchers("/bookRent/**").permitAll()
-
-			//antMatchers("/auth/registerLibrarian").permitAll()
-		.antMatchers("/api/**").permitAll()
-		//.antMatchers("/bookCopies/**").permitAll()
-		//.antMatchers("/users/**").permitAll()
-		//.antMatchers("/bookRent/**").permitAll()
+		.antMatchers(HttpMethod.GET,"/api/action/{id}").permitAll()
+		.antMatchers(HttpMethod.GET,"/api/actions").permitAll()
+		.antMatchers(HttpMethod.GET,"/api/actions/{id}").permitAll()
+		.antMatchers(HttpMethod.GET,"/api/action_event/{id}").permitAll()
+		.antMatchers(HttpMethod.GET,"/api/action_event/action/{id}").permitAll()
+		.antMatchers(HttpMethod.GET,"/api/action_events").permitAll()
+		.antMatchers(HttpMethod.GET,"/api/artist/{id}").permitAll()
+		.antMatchers(HttpMethod.GET,"/api/artists").permitAll()
+		.antMatchers(HttpMethod.GET,"/api/artists/actors/{videoId}").permitAll()
+		.antMatchers(HttpMethod.GET,"/api/artists/director/{videoId}").permitAll()
+		.antMatchers(HttpMethod.GET,"/api/offer/{id}").permitAll()
+		.antMatchers(HttpMethod.GET,"/api/offers").permitAll()
+		.antMatchers(HttpMethod.GET,"/api/bronze_immunity_points").permitAll()
+		.antMatchers(HttpMethod.GET,"/api/silver_immunity_points").permitAll()
+		.antMatchers(HttpMethod.GET,"/api/gold_immunity_points").permitAll()
+		.antMatchers(HttpMethod.GET,"/api/bronze_title/acquire_points").permitAll()
+		.antMatchers(HttpMethod.GET,"/api/bronze_title/save_points").permitAll()
+		.antMatchers(HttpMethod.GET,"/api/bronze_title/reward_points").permitAll()
+		.antMatchers(HttpMethod.GET,"/api/silver_title/acquire_points").permitAll()
+		.antMatchers(HttpMethod.GET,"/api/silver_title/save_points").permitAll()
+		.antMatchers(HttpMethod.GET,"/api/silver_title/reward_points").permitAll()
+		.antMatchers(HttpMethod.GET,"/api/gold_title/acquire_points").permitAll()
+		.antMatchers(HttpMethod.GET,"/api/gold_title/save_points").permitAll()
+		.antMatchers(HttpMethod.GET,"/api/gold_title/reward_points").permitAll()
+		.antMatchers(HttpMethod.GET,"/api/video_content/{id}").permitAll()
+		.antMatchers(HttpMethod.GET,"/api/video_contents").permitAll()
+		
 		// every request needs to be authorized
 		.anyRequest().authenticated().and()
-		// add filter before every request
-		.addFilterBefore(new TokenAuthenticationFilter(tokenUtils, jwtUserDetailsService),
-			BasicAuthenticationFilter.class);
-	http.csrf().disable();
+		// presretni svaki zahtev filterom
+		.addFilterBefore(new TokenAuthenticationFilter(tokenUtils, jwtUserDetailsService), BasicAuthenticationFilter.class);
+		http.csrf().disable();
 	}
 
 	// Generalna bezbednost aplikacije

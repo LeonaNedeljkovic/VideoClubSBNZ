@@ -14,9 +14,14 @@ import com.videoClub.exception.ArtistNotDeletable;
 import com.videoClub.exception.ArtistNotFound;
 import com.videoClub.exception.EmptyGenreList;
 import com.videoClub.exception.EmptyOfferList;
+import com.videoClub.exception.EntityForbidden;
 import com.videoClub.exception.InvalidDate;
+import com.videoClub.exception.InvalidReview;
+import com.videoClub.exception.NotEnoughMinutes;
+import com.videoClub.exception.NotLoggedIn;
 import com.videoClub.exception.OfferNotDeletable;
 import com.videoClub.exception.OfferNotFound;
+import com.videoClub.exception.ReviewNotFound;
 
 @ControllerAdvice
 public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
@@ -63,16 +68,41 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 	
 	@ExceptionHandler(value = ActionEventNotFound.class)
     protected ResponseEntity<MessageDto> handleActionEventNotFound(ActionEventNotFound e) {
-		return new ResponseEntity<>(new MessageDto("Action Event Not Found", e.getMessage()), HttpStatus.OK);
+		return new ResponseEntity<>(new MessageDto("Action Event Not Found", e.getMessage()), HttpStatus.NOT_FOUND);
     }
 	
 	@ExceptionHandler(value = ActionNotFound.class)
     protected ResponseEntity<MessageDto> handleActionNotFound(ActionNotFound e) {
-		return new ResponseEntity<>(new MessageDto("Action Not Found", e.getMessage()), HttpStatus.OK);
+		return new ResponseEntity<>(new MessageDto("Action Not Found", e.getMessage()), HttpStatus.NOT_FOUND);
     }
 	
 	@ExceptionHandler(value = ActionNotDeletable.class)
     protected ResponseEntity<MessageDto> handleActionNotDeletable(ActionNotDeletable e) {
 		return new ResponseEntity<>(new MessageDto("Action Not Deletable", e.getMessage()), HttpStatus.OK);
+    }
+	
+	@ExceptionHandler(value = NotLoggedIn.class)
+    protected ResponseEntity<MessageDto> handleNotLoggedIn(NotLoggedIn e) {
+		return new ResponseEntity<>(new MessageDto("Not Logged In", e.getMessage()), HttpStatus.FORBIDDEN);
+    }
+	
+	@ExceptionHandler(value = ReviewNotFound.class)
+    protected ResponseEntity<MessageDto> handleReviewNotFound(ReviewNotFound e) {
+		return new ResponseEntity<>(new MessageDto("Review No Found", e.getMessage()), HttpStatus.NOT_FOUND);
+    }
+	
+	@ExceptionHandler(value = EntityForbidden.class)
+    protected ResponseEntity<MessageDto> handleEntityForbidden(EntityForbidden e) {
+		return new ResponseEntity<>(new MessageDto("Entity Forbidden", e.getMessage()), HttpStatus.FORBIDDEN);
+    }
+	
+	@ExceptionHandler(value = NotEnoughMinutes.class)
+    protected ResponseEntity<MessageDto> handleNotEnoughMinutes(NotEnoughMinutes e) {
+		return new ResponseEntity<>(new MessageDto("Not Enough Minutes", e.getMessage()), HttpStatus.OK);
+    }
+	
+	@ExceptionHandler(value = InvalidReview.class)
+    protected ResponseEntity<MessageDto> handleInvalidReview(InvalidReview e) {
+		return new ResponseEntity<>(new MessageDto("Invalid Review", e.getMessage()), HttpStatus.OK);
     }
 }

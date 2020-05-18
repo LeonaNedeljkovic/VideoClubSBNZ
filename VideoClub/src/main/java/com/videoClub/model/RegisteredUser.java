@@ -10,8 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
 import com.videoClub.model.enumeration.Rank;
@@ -43,9 +42,8 @@ public class RegisteredUser extends User{
 	@Column(name = "immunity")
 	private Rank immunity;
 	
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinColumn(name = "action_id")
-	private Action action;
+	@ManyToMany
+	private List<Action> action = new ArrayList<Action>();
 	
 	@JsonIgnore
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -67,10 +65,10 @@ public class RegisteredUser extends User{
 		super();
 	}
 
-	public RegisteredUser(Long id, String username, String password, String email, LocalDateTime registryDate,
-			int immunityPoints, int availableMinutes, Rank title, Rank immunity, Action action, List<Badge> badges,
-			List<Review> reviews, List<Rate> rates, List<Purchase> purchases) {
-		super(id, username, password, email);
+	public RegisteredUser(LocalDateTime registryDate, int immunityPoints, int availableMinutes, Rank title,
+			Rank immunity, List<Action> action, List<Badge> badges, List<Review> reviews, List<Rate> rates,
+			List<Purchase> purchases) {
+		super();
 		this.registryDate = registryDate;
 		this.immunityPoints = immunityPoints;
 		this.availableMinutes = availableMinutes;
@@ -83,10 +81,10 @@ public class RegisteredUser extends User{
 		this.purchases = purchases;
 	}
 
-	public RegisteredUser(LocalDateTime registryDate, int immunityPoints, int availableMinutes, Rank title,
-			Rank immunity, Action action, List<Badge> badges, List<Review> reviews, List<Rate> rates,
-			List<Purchase> purchases) {
-		super();
+	public RegisteredUser(Long id, String username, String password, String email, LocalDateTime registryDate,
+			int immunityPoints, int availableMinutes, Rank title, Rank immunity, List<Action> action,
+			List<Badge> badges, List<Review> reviews, List<Rate> rates, List<Purchase> purchases) {
+		super(id, username, password, email);
 		this.registryDate = registryDate;
 		this.immunityPoints = immunityPoints;
 		this.availableMinutes = availableMinutes;
@@ -139,11 +137,11 @@ public class RegisteredUser extends User{
 		this.immunity = immunity;
 	}
 
-	public Action getAction() {
+	public List<Action> getAction() {
 		return action;
 	}
 
-	public void setAction(Action action) {
+	public void setAction(List<Action> action) {
 		this.action = action;
 	}
 
@@ -177,6 +175,10 @@ public class RegisteredUser extends User{
 
 	public void setPurchases(List<Purchase> purchases) {
 		this.purchases = purchases;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 	
 }

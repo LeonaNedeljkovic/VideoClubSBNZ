@@ -1,5 +1,7 @@
 package com.videoClub.config;
 
+import org.kie.api.KieServices;
+import org.kie.api.runtime.KieContainer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -62,5 +64,10 @@ public class Config {
 		int savePoints = ruleService.getTitleSavePoints(Rank.GOLD);
 		int rewardPoints = ruleService.getTitleRewardPoints(Rank.GOLD);
 		return new GoldTitle(acquirePoints, savePoints, rewardPoints);
+	}
+	
+	@Bean
+	public KieContainer kieContainer() {
+		return KieServices.Factory.get().getKieClasspathContainer();
 	}
 }
