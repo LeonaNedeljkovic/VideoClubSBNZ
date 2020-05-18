@@ -27,8 +27,9 @@ public class FreeContent extends Action {
 		super();
 	}
 
-	public FreeContent(Long id, String description, ActionEvent actionEvent, Rank titleRank, List<Genre> freeGenres) {
-		super(id, description, actionEvent, titleRank, ActionType.FREE_CONTENT);
+	public FreeContent(Long id, String description, ActionEvent actionEvent, Rank titleRank, ActionType actionType,
+			List<RegisteredUser> users, List<Genre> freeGenres) {
+		super(id, description, actionEvent, titleRank, actionType, users);
 		this.freeGenres = freeGenres;
 	}
 

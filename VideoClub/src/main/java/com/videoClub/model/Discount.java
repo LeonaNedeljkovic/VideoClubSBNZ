@@ -22,15 +22,14 @@ public class Discount extends Action {
 	public Discount() {
 		super();
 	}
-
-	public Discount(Long id, String description,
-			ActionEvent actionEvent, Rank titleRank, int amount,
-			List<Offer> discountOffers) {
-		super(id, description, actionEvent, titleRank, ActionType.DISCOUNT);
+	
+	public Discount(Long id, String description, ActionEvent actionEvent, Rank titleRank, ActionType actionType,
+			List<RegisteredUser> users, int amount, List<Offer> discountOffers) {
+		super(id, description, actionEvent, titleRank, actionType, users);
 		this.amount = amount;
 		this.discountOffers = discountOffers;
 	}
-	
+
 	public Discount(int amount, List<Offer> discountOffers) {
 		super();
 		this.amount = amount;

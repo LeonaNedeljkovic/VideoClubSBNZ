@@ -94,4 +94,11 @@ public class Review {
 		this.watched = watched;
 	}
 
+	public int getFullDuration(){
+		int duration = 0;
+		for(TimeInterval ti : this.timeIntervals){
+			duration += ti.getEndMinute() - ti.getStartMinute();
+		}
+		return duration;
+	}
 }

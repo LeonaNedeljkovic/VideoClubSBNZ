@@ -1,5 +1,5 @@
 //created on: May 18, 2020
-package com.videoClub.rules
+package com.videoClub.rules.action
 
 import com.videoClub.model.*;
 
@@ -7,7 +7,7 @@ import com.videoClub.model.*;
 rule "New Discount action"
     when
         d : Discount( $rank : titleRank );
-        $user : RegisteredUser( title == $rank );
+        $user : RegisteredUser( title == $rank, containsDiscount() == false );
     then
     	modify($user) {getAction().add(d)};
 end
@@ -15,7 +15,7 @@ end
 rule "New FreeMinutes action"
     when
         fm : FreeMinutes( $rank : titleRank );
-        $user : RegisteredUser( title == $rank );
+        $user : RegisteredUser( title == $rank, containsFreeMinutes() == false );
     then
     	$user.getAction().add(fm);
     	$user.setAvailableMinutes($user.getAvailableMinutes() + fm.getAmount());
@@ -25,7 +25,7 @@ end
 rule "New FreeContent action"
     when
         fc : FreeContent( $rank : titleRank );
-        $user : RegisteredUser( title == $rank );
+        $user : RegisteredUser( title == $rank, containsFreeContent() == false );
     then
     	modify($user) {getAction().add(fc)};
 end

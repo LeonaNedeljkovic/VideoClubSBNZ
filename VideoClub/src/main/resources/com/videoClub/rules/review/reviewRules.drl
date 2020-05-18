@@ -1,0 +1,51 @@
+//created on: May 18, 2020
+package com.videoClub.rules.review
+
+import com.videoClub.model.*;
+import com.videoClub.model.enumeration.*;
+import com.videoClub.exception.*;
+
+rule "Review with FreeContent action that matches content genre"
+	no-loop
+    when
+        TimeInterval( $review : review ) and
+        FreeContent( freeGenres contains $review.getVideoContent().getGenre() );
+    then
+		System.out.println("Review with FreeContent action that matches content genre FIRED");
+		insert($review);
+end
+
+rule "Review without FreeContent when user do not have enough minutes"
+	no-loop
+    when
+        TimeInterval( $review : review, 
+        	review.getUser().getAvailableMinutes() < (endMinute - startMinute) ) and not
+        FreeContent( freeGenres contains $review.getVideoContent().getGenre() );
+    then
+		throw new NotEnoughMinutes();
+end
+
+rule "Review without FreeContent when user have enough minutes"
+	no-loop
+    when
+        TimeInterval( $review : review, $end:endMinute, $start:startMinute,
+        	 review.getUser().getAvailableMinutes() >= (endMinute - startMinute) ) and not
+        FreeContent( freeGenres contains $review.getVideoContent().getGenre() );
+        $user : RegisteredUser( this == $review.getUser() );
+    then
+		System.out.println("Review without FreeContent when user have enough minutes FIRED");
+		$user.setAvailableMinutes($user.getAvailableMinutes() - ($end-$start));
+		insert($review);
+		update($user);
+end
+
+rule "Review watched"
+	no-loop
+    when
+        Review( $review : this, $percentage : 100*(getFullDuration() /getVideoContent().getDuration()),
+        		$percentage >= 90, watched == false );
+    then
+		System.out.println("Review watched FIRED");
+		$review.setWatched(true);
+		update($review);
+end

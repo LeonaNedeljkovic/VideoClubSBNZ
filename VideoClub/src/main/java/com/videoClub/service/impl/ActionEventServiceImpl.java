@@ -57,7 +57,7 @@ public class ActionEventServiceImpl implements ActionEventService{
 
 	@Override
 	public ActionEvent save(ActionEventDTO actionEventDTO) {
-		KieSession kieSession = kieContainer.newKieSession("rulesSession");
+		KieSession kieSession = kieContainer.newKieSession("actionRulesSession");
 		checkDates(actionEventDTO.getStartDate(), actionEventDTO.getEndDate());
 		ActionEvent actionEvent = new ActionEvent();
 		actionEvent.setStartDate(LocalDate.parse(sdf.format(actionEventDTO.getStartDate()),df));

@@ -181,4 +181,31 @@ public class RegisteredUser extends User{
 		return serialVersionUID;
 	}
 	
+	public boolean containsDiscount(){
+		for(Action a : action){
+			if(a instanceof Discount){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean containsFreeContent(){
+		for(Action a : action){
+			if(a instanceof FreeContent){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean containsFreeMinutes(){
+		for(Action a : action){
+			if(a instanceof FreeMinutes){
+				return true;
+			}
+		}
+		return false;
+	}
+	
 }
