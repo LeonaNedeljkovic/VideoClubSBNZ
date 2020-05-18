@@ -1,6 +1,6 @@
 package com.videoClub.model;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +44,7 @@ public class VideoContent {
 	private double duration;
 	
 	@Column(name = "publishDate")
-	private LocalDateTime publishDate;
+	private LocalDate publishDate;
 	
 	@Column(name = "year")
 	private int year;
@@ -68,7 +68,7 @@ public class VideoContent {
 	}
 
 	public VideoContent(Long id, String name, String description, Genre genre, double duration,
-			LocalDateTime publishDate, int year, double rating, List<Rate> rates, List<Artist> actors,
+			LocalDate publishDate, int year, double rating, List<Rate> rates, List<Artist> actors,
 			Artist director) {
 		super();
 		this.id = id;
@@ -124,11 +124,11 @@ public class VideoContent {
 		this.duration = duration;
 	}
 
-	public LocalDateTime getPublishDate() {
+	public LocalDate getPublishDate() {
 		return publishDate;
 	}
 
-	public void setPublishDate(LocalDateTime publishDate) {
+	public void setPublishDate(LocalDate publishDate) {
 		this.publishDate = publishDate;
 	}
 

@@ -45,7 +45,7 @@ public class AuthenticationController {
 
 	@PostMapping(value = "/registerUser")
 	public ResponseEntity<Boolean> registerUser(@RequestBody UserDto user) {
-		Boolean result = this.userDetailsService.registerUser(user, UserRole.REGISTERED_USER);
+		Boolean result = this.userDetailsService.registerUser(user, UserRole.ROLE_REGISTERED_USER);
 		if (result == true) {
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		}else {
@@ -55,9 +55,9 @@ public class AuthenticationController {
 	}
 
 	@PostMapping(value = "/registerAdmin")
-	//@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<Boolean> registerAdmin(@RequestBody UserDto user) {
-		Boolean result = this.userDetailsService.registerUser(user, UserRole.ADMIN);
+		Boolean result = this.userDetailsService.registerUser(user, UserRole.ROLE_ADMIN);
 		if (result == true) {
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		}else {
@@ -78,7 +78,6 @@ public class AuthenticationController {
 		} catch (BadCredentialsException e) {
 			return new ResponseEntity<>(new MessageDto("Wrong username or password.", "Error"), HttpStatus.NOT_FOUND);
 		} catch (DisabledException e) {
-			
 			return new ResponseEntity<>(new MessageDto("Account is not verified. Check your email.", "Error"),
 					HttpStatus.FORBIDDEN);
 		}
@@ -95,9 +94,9 @@ public class AuthenticationController {
 		UserRole userType = null;
 
 		if (user instanceof Administrator) {
-			userType = UserRole.ADMIN;
+			userType = UserRole.ROLE_ADMIN;
 		} else {
-			userType = UserRole.REGISTERED_USER;
+			userType = UserRole.ROLE_REGISTERED_USER;
 		}
 
 		// Vrati token kao odgovor na uspesno autentifikaciju

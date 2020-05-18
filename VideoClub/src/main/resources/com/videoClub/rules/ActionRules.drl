@@ -1,0 +1,31 @@
+//created on: May 18, 2020
+package com.videoClub.rules
+
+import com.videoClub.model.*;
+
+
+rule "New Discount action"
+    when
+        d : Discount( $rank : titleRank );
+        $user : RegisteredUser( title == $rank );
+    then
+    	modify($user) {getAction().add(d)};
+end
+
+rule "New FreeMinutes action"
+    when
+        fm : FreeMinutes( $rank : titleRank );
+        $user : RegisteredUser( title == $rank );
+    then
+    	$user.getAction().add(fm);
+    	$user.setAvailableMinutes($user.getAvailableMinutes() + fm.getAmount());
+    	update($user);
+end
+
+rule "New FreeContent action"
+    when
+        fc : FreeContent( $rank : titleRank );
+        $user : RegisteredUser( title == $rank );
+    then
+    	modify($user) {getAction().add(fc)};
+end

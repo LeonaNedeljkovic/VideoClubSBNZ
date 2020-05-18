@@ -35,7 +35,7 @@ public class ActionEventController {
 	}
 	
 	@PutMapping(value = "/action_event", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	//@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<ActionEvent> updateActionEvent(@RequestBody ActionEventDTO actionEventDTO) {
 		return new ResponseEntity<>(actionEventService.update(actionEventDTO), HttpStatus.OK);
 	}
@@ -56,7 +56,7 @@ public class ActionEventController {
 	}
 	
 	@DeleteMapping(value = "/action_event/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	//@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<MessageDto> deleteActionEvent(@PathVariable(value = "id") Long id) {
 		actionEventService.delete(id);
 		return new ResponseEntity<>(new MessageDto("OK", "Action event successfully deleted."), HttpStatus.OK);

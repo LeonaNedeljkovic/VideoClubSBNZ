@@ -1,6 +1,6 @@
 package com.videoClub.model;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -13,6 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "purchase")
 public class Purchase {
@@ -22,7 +24,7 @@ public class Purchase {
 	private Long id;
 
 	@Column(name = "date")
-	private LocalDateTime date;
+	private LocalDate date;
 	
 	@Column(name = "discount")
 	private int discount;
@@ -35,17 +37,19 @@ public class Purchase {
 	
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "offer_id")
+	@JsonIgnore
 	private Offer offer;
 	
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "user_id")
+	@JsonIgnore
 	private RegisteredUser user;
 
 	public Purchase() {
 		super();
 	}
 
-	public Purchase(Long id, LocalDateTime date, int discount, double price, int purchasedMinutes, Offer offer,
+	public Purchase(Long id, LocalDate date, int discount, double price, int purchasedMinutes, Offer offer,
 			RegisteredUser user) {
 		super();
 		this.id = id;
@@ -65,11 +69,11 @@ public class Purchase {
 		this.id = id;
 	}
 
-	public LocalDateTime getDate() {
+	public LocalDate getDate() {
 		return date;
 	}
 
-	public void setDate(LocalDateTime date) {
+	public void setDate(LocalDate date) {
 		this.date = date;
 	}
 
