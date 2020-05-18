@@ -10,10 +10,13 @@ import org.springframework.stereotype.Service;
 
 import com.videoClub.dto.ReviewDTO;
 import com.videoClub.exception.ReviewNotFound;
+import com.videoClub.model.Action;
+import com.videoClub.model.FreeContent;
 import com.videoClub.model.RegisteredUser;
 import com.videoClub.model.Review;
 import com.videoClub.model.TimeInterval;
 import com.videoClub.repository.ReviewRepository;
+import com.videoClub.repository.TimeIntervalRepository;
 import com.videoClub.service.ReviewService;
 import com.videoClub.service.VideoContentService;
 
@@ -24,6 +27,9 @@ public class ReviewServiceImpl implements ReviewService{
 	private ReviewRepository reviewRepository;
 	
 	@Autowired
+	private TimeIntervalRepository timeIntervalRepository;
+	
+	@Autowired
 	private VideoContentService videoContentService;
 	
 	@Autowired
@@ -31,10 +37,14 @@ public class ReviewServiceImpl implements ReviewService{
 	
 	@Override
 	public Review save(ReviewDTO reviewDTO, RegisteredUser user) {
-		KieSession kieSession = kieContainer.newKieSession("rulesSession");
+		KieSession kieSession = kieContainer.newKieSession("reviewRulesSession");
 		List<Review> reviews = reviewRepository.getByVideoContent(reviewDTO.getVideoContentId(), user.getId());
+		Review review = null;
+		for(Action action : user.getAction()){
+			kieSession.insert(action);
+		}
 		if(reviews.isEmpty()){
-			Review review = new Review();
+			review = new Review();
 			review.setUser(user);
 			review.setVideoContent(videoContentService.getOne(reviewDTO.getVideoContentId()));
 			TimeInterval interval = new TimeInterval();
@@ -45,7 +55,7 @@ public class ReviewServiceImpl implements ReviewService{
 			kieSession.insert(interval);
 		}
 		else{
-			Review review = reviews.get(0);
+			review = reviews.get(0);
 			TimeInterval interval = new TimeInterval();
 			interval.setStartMinute(reviewDTO.getStartMinute());
 			interval.setEndMinute(reviewDTO.getEndMinute());
@@ -53,9 +63,10 @@ public class ReviewServiceImpl implements ReviewService{
 			review.getTimeIntervals().add(interval);
 			kieSession.insert(interval);
 		}
+		kieSession.insert(user);
 		kieSession.fireAllRules();
 		kieSession.dispose();
-		return null;
+		return reviewRepository.save(review);
 	}
 
 	@Override
