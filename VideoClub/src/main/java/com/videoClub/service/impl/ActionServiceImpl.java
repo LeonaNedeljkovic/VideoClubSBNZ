@@ -7,10 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.videoClub.dto.ActionDTO;
-import com.videoClub.exception.ActionNotDeletable;
-import com.videoClub.exception.ActionNotFound;
 import com.videoClub.exception.EmptyGenreList;
 import com.videoClub.exception.EmptyOfferList;
+import com.videoClub.exception.EntityNotDeletable;
+import com.videoClub.exception.EntityNotFound;
 import com.videoClub.model.Action;
 import com.videoClub.model.ActionEvent;
 import com.videoClub.model.Discount;
@@ -43,7 +43,7 @@ public class ActionServiceImpl implements ActionService{
 			return action.get();
 		}
 		else{
-			throw new ActionNotFound(id);
+			throw new EntityNotFound(id);
 		}
 	}
 
@@ -118,7 +118,7 @@ public class ActionServiceImpl implements ActionService{
 	public void delete(Long id) {
 		Action action = getOne(id);
 		if(action.getActionEvent().getActions().size() == 1){
-			throw new ActionNotDeletable();
+			throw new EntityNotDeletable();
 		}
 		action.setActionEvent(null);
 		actionRepository.deleteById(id);

@@ -14,9 +14,9 @@ import org.springframework.stereotype.Service;
 
 import com.videoClub.dto.ActionDTO;
 import com.videoClub.dto.ActionEventDTO;
-import com.videoClub.exception.ActionEventNotFound;
 import com.videoClub.exception.EmptyGenreList;
 import com.videoClub.exception.EmptyOfferList;
+import com.videoClub.exception.EntityNotFound;
 import com.videoClub.exception.InvalidDate;
 import com.videoClub.model.Action;
 import com.videoClub.model.ActionEvent;
@@ -135,7 +135,7 @@ public class ActionEventServiceImpl implements ActionEventService{
 			return actionEvent.get();
 		}
 		else{
-			throw new ActionEventNotFound(id);
+			throw new EntityNotFound(id);
 		}
 	}
 

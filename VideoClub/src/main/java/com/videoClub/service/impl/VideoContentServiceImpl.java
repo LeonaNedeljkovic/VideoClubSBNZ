@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.videoClub.dto.VideoContentDTO;
-import com.videoClub.exception.ArtistNotFound;
+import com.videoClub.exception.EntityNotFound;
 import com.videoClub.model.Artist;
 import com.videoClub.model.VideoContent;
 import com.videoClub.model.enumeration.Genre;
@@ -58,7 +58,7 @@ public class VideoContentServiceImpl implements VideoContentService{
 			return video.get();
 		}
 		else{
-			throw new ArtistNotFound(id);
+			throw new EntityNotFound(id);
 		}
 	}
 

@@ -1,7 +1,5 @@
 package com.videoClub.config;
 
-import org.kie.api.KieServices;
-import org.kie.api.runtime.KieContainer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,25 +21,21 @@ public class Config {
 	
 	@Bean
 	public BronzeImmunity bronzeImmunity() {
-		//kie session global...
 		return new BronzeImmunity(ruleService.getImmunityPoints(Rank.BRONZE));
 	}
 	
 	@Bean
 	public SilverImmunity silverImmunity() {
-		//kie session global...
 		return new SilverImmunity(ruleService.getImmunityPoints(Rank.SILVER));
 	}
 	
 	@Bean
 	public GoldImmunity goldImmunity() {
-		//kie session global...
 		return new GoldImmunity(ruleService.getImmunityPoints(Rank.GOLD));
 	}
 	
 	@Bean
 	public BronzeTitle bronzeTitle() {
-		//kie session global...
 		int acquirePoints = ruleService.getTitleAcquirePoints(Rank.BRONZE);
 		int savePoints = ruleService.getTitleSavePoints(Rank.BRONZE);
 		int rewardPoints = ruleService.getTitleRewardPoints(Rank.BRONZE);
@@ -50,7 +44,6 @@ public class Config {
 	
 	@Bean
 	public SilverTitle silverTitle() {
-		//kie session global...
 		int acquirePoints = ruleService.getTitleAcquirePoints(Rank.SILVER);
 		int savePoints = ruleService.getTitleSavePoints(Rank.SILVER);
 		int rewardPoints = ruleService.getTitleRewardPoints(Rank.SILVER);
@@ -59,15 +52,9 @@ public class Config {
 	
 	@Bean
 	public GoldTitle goldTitle() {
-		//kie session global...
 		int acquirePoints = ruleService.getTitleAcquirePoints(Rank.GOLD);
 		int savePoints = ruleService.getTitleSavePoints(Rank.GOLD);
 		int rewardPoints = ruleService.getTitleRewardPoints(Rank.GOLD);
 		return new GoldTitle(acquirePoints, savePoints, rewardPoints);
-	}
-	
-	@Bean
-	public KieContainer kieContainer() {
-		return KieServices.Factory.get().getKieClasspathContainer();
 	}
 }

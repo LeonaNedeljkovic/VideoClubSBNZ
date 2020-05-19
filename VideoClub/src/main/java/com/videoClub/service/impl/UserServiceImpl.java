@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.videoClub.exception.ArtistNotFound;
+import com.videoClub.exception.EntityNotFound;
 import com.videoClub.model.User;
 import com.videoClub.repository.UserRepository;
 import com.videoClub.service.UserService;
@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
 			return user.get();
 		}
 		else{
-			throw new ArtistNotFound(id);
+			throw new EntityNotFound(id);
 		}
 	}
 

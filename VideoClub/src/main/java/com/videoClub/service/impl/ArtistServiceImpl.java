@@ -6,8 +6,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.videoClub.exception.ArtistNotDeletable;
-import com.videoClub.exception.ArtistNotFound;
+import com.videoClub.exception.EntityNotDeletable;
+import com.videoClub.exception.EntityNotFound;
 import com.videoClub.model.Artist;
 import com.videoClub.model.VideoContent;
 import com.videoClub.repository.ArtistRepository;
@@ -35,7 +35,7 @@ public class ArtistServiceImpl implements ArtistService{
 			return artist.get();
 		}
 		else{
-			throw new ArtistNotFound(id);
+			throw new EntityNotFound(id);
 		}
 	}
 
@@ -61,7 +61,7 @@ public class ArtistServiceImpl implements ArtistService{
 		Artist artist = getOne(id);
 		
 		if(!(artist.getRoles().isEmpty()) || !(artist.getDirected().isEmpty())){
-			throw new ArtistNotDeletable(artist);
+			throw new EntityNotDeletable();
 		}
 		
 		artistRepository.deleteById(id);

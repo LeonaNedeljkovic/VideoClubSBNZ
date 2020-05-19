@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.videoClub.dto.ReviewDTO;
-import com.videoClub.exception.ReviewNotFound;
+import com.videoClub.exception.EntityNotFound;
 import com.videoClub.model.Action;
 import com.videoClub.model.FreeContent;
 import com.videoClub.model.RegisteredUser;
@@ -76,7 +76,7 @@ public class ReviewServiceImpl implements ReviewService{
 			return review.get();
 		}
 		else{
-			throw new ReviewNotFound(id);
+			throw new EntityNotFound(id);
 		}
 	}
 }

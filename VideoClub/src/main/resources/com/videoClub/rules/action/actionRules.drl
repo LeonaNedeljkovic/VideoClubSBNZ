@@ -2,6 +2,8 @@
 package com.videoClub.rules.action
 
 import com.videoClub.model.*;
+import com.videoClub.exception.InvalidDiscount;
+import com.videoClub.exception.EmptyGenreList;
 
 
 rule "New Discount action"
@@ -10,6 +12,13 @@ rule "New Discount action"
         $user : RegisteredUser( title == $rank, containsDiscount() == false );
     then
     	modify($user) {getAction().add(d)};
+end
+
+rule "Invalid Discount"
+    when
+        Discount( amount > 75 || amount < 10 || discountOffers.isEmpty() );
+    then
+    	throw new InvalidDiscount();
 end
 
 rule "New FreeMinutes action"
@@ -22,10 +31,24 @@ rule "New FreeMinutes action"
     	update($user);
 end
 
+rule "Invalid FreeMinutes"
+    when
+        FreeMinutes( amount > 1000 || amount < 30 );
+    then
+    	throw new InvalidDiscount();
+end
+
 rule "New FreeContent action"
     when
         fc : FreeContent( $rank : titleRank );
         $user : RegisteredUser( title == $rank, containsFreeContent() == false );
     then
     	modify($user) {getAction().add(fc)};
+end
+
+rule "Invalid FreeContent"
+    when
+        FreeContent( freeGenres.isEmpty() );
+    then
+    	throw new EmptyGenreList();
 end
