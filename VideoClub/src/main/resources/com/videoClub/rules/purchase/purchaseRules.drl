@@ -1,0 +1,35 @@
+//created on: May 18, 2020
+package com.videoClub.rules.purchase
+
+import com.videoClub.model.*;
+import com.videoClub.model.enumeration.*;
+import com.videoClub.exception.*;
+
+rule "Purchase with discount"
+    when
+        $purchase : Purchase( $offer : offer ) and
+        Discount ( $discount : amount, discountOffers contains $offer ) and
+        $user : RegisteredUser( );
+    then
+        $purchase.setDiscount($discount);
+        $purchase.setPrice($offer.getPrice() - Math.round($offer.getPrice()*($discount / 100.0)) );
+        $user.setAvailableMinutes($user.getAvailableMinutes() + $offer.getMinutes());
+        $user.setImmunityPoints($user.getImmunityPoints() + (int)$offer.getPrice());
+        update($purchase);
+        update($user);
+
+end
+
+rule "Purchase without discount"
+    when
+        $purchase : Purchase( $offer : offer ) and
+        $user : RegisteredUser( ) and not
+        Discount ( discountOffers contains $offer );
+    then
+    	$purchase.setDiscount(0);
+        $purchase.setPrice($offer.getPrice());
+        $user.setAvailableMinutes($user.getAvailableMinutes() + $offer.getMinutes());
+        $user.setImmunityPoints($user.getImmunityPoints() + (int)$offer.getPrice());
+        update($purchase);
+        update($user);
+end

@@ -6,8 +6,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.videoClub.exception.OfferNotDeletable;
-import com.videoClub.exception.OfferNotFound;
+import com.videoClub.exception.EntityNotDeletable;
+import com.videoClub.exception.EntityNotFound;
 import com.videoClub.model.Offer;
 import com.videoClub.repository.OfferRepository;
 import com.videoClub.service.OfferService;
@@ -30,7 +30,7 @@ public class OfferServiceImpl implements OfferService{
 			return offer.get();
 		}
 		else{
-			throw new OfferNotFound(id);
+			throw new EntityNotFound(id);
 		}
 	}
 
@@ -43,7 +43,7 @@ public class OfferServiceImpl implements OfferService{
 	public void delete(Long id) {
 		Offer offer = getOne(id);
 		if(getAll().isEmpty() || !(offer.getDiscounts().isEmpty())){
-			throw new OfferNotDeletable();
+			throw new EntityNotDeletable();
 		}
 		offerRepository.deleteById(id);
 	}

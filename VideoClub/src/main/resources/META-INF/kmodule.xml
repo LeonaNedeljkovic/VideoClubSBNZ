@@ -6,4 +6,10 @@
     <kbase name="review" packages="com.videoClub.rules.review">
         <ksession name="reviewRulesSession"/>
     </kbase>
+    <kbase name="purchase" packages="com.videoClub.rules.purchase">
+        <ksession name="purchaseRulesSession"/>
+    </kbase>
+    <kbase name="entityDefiner" packages="com.videoClub.rules.entityDefiner">
+        <ksession name="entityDefinerRulesSession"/>
+    </kbase>
 </kmodule>

@@ -1,13 +1,13 @@
 package com.videoClub.exception;
 
 @SuppressWarnings("serial")
-public class ActionNotDeletable extends RuntimeException  {
+public class InvalidParameters extends RuntimeException{
 
 private String message;
 	
-	public ActionNotDeletable(){
+	public InvalidParameters(){
 		super();
-		this.message = "Action event must contain at least one action.";
+		this.message = "Invalid parameters in request found.";
 	}
 
 	public String getMessage() {
