@@ -33,7 +33,7 @@ public class Purchase {
 	private double price;
 	
 	@Column(name = "purchasedMinutes")
-	private int purchasedMinutes;
+	private Integer purchasedMinutes;
 	
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "offer_id")
@@ -93,7 +93,7 @@ public class Purchase {
 		this.price = price;
 	}
 
-	public int getPurchasedMinutes() {
+	public Integer getPurchasedMinutes() {
 		return purchasedMinutes;
 	}
 

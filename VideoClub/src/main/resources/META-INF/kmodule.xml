@@ -12,4 +12,7 @@
     <kbase name="entityDefiner" packages="com.videoClub.rules.entityDefiner">
         <ksession name="entityDefinerRulesSession"/>
     </kbase>
+    <kbase name="title" packages="com.videoClub.rules.title">
+        <ksession name="titleRulesSession"/>
+    </kbase>
 </kmodule>
