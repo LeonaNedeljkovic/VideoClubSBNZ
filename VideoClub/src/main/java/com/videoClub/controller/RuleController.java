@@ -1,5 +1,7 @@
 package com.videoClub.controller;
 
+import java.util.List;
+
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +21,12 @@ import com.videoClub.bean.GoldTitle;
 import com.videoClub.bean.SilverImmunity;
 import com.videoClub.bean.SilverTitle;
 import com.videoClub.dto.PointsDTO;
+import com.videoClub.model.Purchase;
+import com.videoClub.model.RegisteredUser;
+import com.videoClub.model.User;
 import com.videoClub.model.enumeration.Rank;
 import com.videoClub.service.RuleService;
+import com.videoClub.service.UserService;
 
 @RestController
 @RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -48,7 +54,33 @@ public class RuleController {
 	private RuleService ruleService;
 	
 	@Autowired
+	private UserService userService;
+	
+	@Autowired
 	private KieContainer kieContainer;
+	
+	@GetMapping(value = "/test1", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<PointsDTO> testTitles() {
+		List<User> users = userService.findAll();
+		KieSession kieSession = kieContainer.newKieSession("titleRulesSession");
+		kieSession.setGlobal("bronzeImmunity", bronzeImmunity);
+		kieSession.setGlobal("silverImmunity", silverImmunity);
+		kieSession.setGlobal("goldImmunity", goldImmunity);
+		kieSession.setGlobal("bronzeTitle", bronzeTitle);
+		kieSession.setGlobal("silverTitle", silverTitle);
+		kieSession.setGlobal("goldTitle", goldTitle);
+		for(User user : users){
+			if(user instanceof RegisteredUser){
+				for(Purchase p : ((RegisteredUser) user).getPurchases()){
+					kieSession.insert(p);
+				}
+				kieSession.insert(user);
+			}		
+		}
+		kieSession.fireAllRules();
+		kieSession.dispose();
+		return new ResponseEntity<>(null, HttpStatus.OK);
+	}
 	
 	@GetMapping(value = "/bronze_immunity_points", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<PointsDTO> getBronzeImmunity() {
