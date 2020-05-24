@@ -20,7 +20,6 @@ import com.videoClub.model.Administrator;
 import com.videoClub.model.Authority;
 import com.videoClub.model.Badge;
 import com.videoClub.model.Purchase;
-import com.videoClub.model.Rate;
 import com.videoClub.model.RegisteredUser;
 import com.videoClub.model.Review;
 import com.videoClub.model.User;
@@ -114,7 +113,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 			a.setName(UserRole.ROLE_REGISTERED_USER);
 			newUser.setBadges(new ArrayList<Badge>());
 			newUser.setReviews(new ArrayList<Review>());
-			newUser.setRates(new ArrayList<Rate>());
 			newUser.setPurchases(new ArrayList<Purchase>());
 			newUser.setImmunityPoints(0);
 			newUser.setAvailableMinutes(0);

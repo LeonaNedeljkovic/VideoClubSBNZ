@@ -45,7 +45,6 @@ public class RegisteredUser extends User{
 	@ManyToMany
 	private List<Action> action = new ArrayList<Action>();
 	
-	@JsonIgnore
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Badge> badges = new ArrayList<Badge>();
 	
@@ -53,9 +52,8 @@ public class RegisteredUser extends User{
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Review> reviews = new ArrayList<Review>();
 	
-	@JsonIgnore
-	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	private List<Rate> rates = new ArrayList<Rate>();
+	@ManyToMany
+	private List<Film> favouriteFilms = new ArrayList<Film>();
 	
 	@JsonIgnore
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -66,7 +64,7 @@ public class RegisteredUser extends User{
 	}
 
 	public RegisteredUser(LocalDateTime registryDate, int immunityPoints, int availableMinutes, Rank title,
-			Rank immunity, List<Action> action, List<Badge> badges, List<Review> reviews, List<Rate> rates,
+			Rank immunity, List<Action> action, List<Badge> badges, List<Review> reviews, List<Film> favouriteFilms,
 			List<Purchase> purchases) {
 		super();
 		this.registryDate = registryDate;
@@ -77,13 +75,13 @@ public class RegisteredUser extends User{
 		this.action = action;
 		this.badges = badges;
 		this.reviews = reviews;
-		this.rates = rates;
+		this.favouriteFilms = favouriteFilms;
 		this.purchases = purchases;
 	}
 
 	public RegisteredUser(Long id, String username, String password, String email, LocalDateTime registryDate,
 			int immunityPoints, int availableMinutes, Rank title, Rank immunity, List<Action> action,
-			List<Badge> badges, List<Review> reviews, List<Rate> rates, List<Purchase> purchases) {
+			List<Badge> badges, List<Review> reviews, List<Film> favouriteFilms, List<Purchase> purchases) {
 		super(id, username, password, email);
 		this.registryDate = registryDate;
 		this.immunityPoints = immunityPoints;
@@ -93,10 +91,10 @@ public class RegisteredUser extends User{
 		this.action = action;
 		this.badges = badges;
 		this.reviews = reviews;
-		this.rates = rates;
+		this.favouriteFilms = favouriteFilms;
 		this.purchases = purchases;
 	}
-
+	
 	public LocalDateTime getRegistryDate() {
 		return registryDate;
 	}
@@ -161,14 +159,6 @@ public class RegisteredUser extends User{
 		this.reviews = reviews;
 	}
 
-	public List<Rate> getRates() {
-		return rates;
-	}
-
-	public void setRates(List<Rate> rates) {
-		this.rates = rates;
-	}
-
 	public List<Purchase> getPurchases() {
 		return purchases;
 	}
@@ -181,6 +171,14 @@ public class RegisteredUser extends User{
 		return serialVersionUID;
 	}
 	
+	public List<Film> getFavouriteFilms() {
+		return favouriteFilms;
+	}
+
+	public void setFavouriteFilms(List<Film> favouriteFilms) {
+		this.favouriteFilms = favouriteFilms;
+	}
+
 	public boolean containsDiscount(){
 		for(Action a : action){
 			if(a instanceof Discount){

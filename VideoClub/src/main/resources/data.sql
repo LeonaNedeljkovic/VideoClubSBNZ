@@ -49,29 +49,29 @@ INSERT INTO artist (id, name, surname) VALUES (35, 'Stanely', 'Kubrick') ON DUPL
 INSERT INTO artist (id, name, surname) VALUES (36, 'Ridley', 'Scott') ON DUPLICATE KEY UPDATE id = 36;
 INSERT INTO artist (id, name, surname) VALUES (37, 'Clint', 'Eastwood') ON DUPLICATE KEY UPDATE id = 37;
 
-INSERT INTO video_content (id, name, description, genre, duration, publish_date, year, rating, director_id) VALUES (1, 'Film1', 'Description1', 'HORROR', 120, '2019-12-12 00:00', 2016, 0, 33) ON DUPLICATE KEY UPDATE id = 1;
-INSERT INTO video_content (id, name, description, genre, duration, publish_date, year, rating, director_id) VALUES (2, 'Film2', 'Description2', 'HORROR', 125, '2019-12-12 00:00', 2012, 0, 33) ON DUPLICATE KEY UPDATE id = 2;
-INSERT INTO video_content (id, name, description, genre, duration, publish_date, year, rating, director_id) VALUES (3, 'Film3', 'Description3', 'ACTION', 90, '2019-12-12 00:00', 2014, 0, 35) ON DUPLICATE KEY UPDATE id = 3;
-INSERT INTO video_content (id, name, description, genre, duration, publish_date, year, rating, director_id) VALUES (4, 'Film4', 'Description4', 'DRAMA', 110, '2019-12-12 00:00', 2015, 0, 32) ON DUPLICATE KEY UPDATE id = 4;
-INSERT INTO video_content (id, name, description, genre, duration, publish_date, year, rating, director_id) VALUES (5, 'Film5', 'Description5', 'ACTION', 100, '2019-12-12 00:00', 2001, 0, 31) ON DUPLICATE KEY UPDATE id = 5;
+INSERT INTO film (id, name, description, genre, duration, year, rating, director_id, written_by) VALUES (1, 'Film1', 'Description1', 'HORROR', 120, 2016, 0, 33, 33) ON DUPLICATE KEY UPDATE id = 1;
+INSERT INTO film (id, name, description, genre, duration, year, rating, director_id, written_by) VALUES (2, 'Film2', 'Description2', 'HORROR', 125, 2012, 0, 33, 33) ON DUPLICATE KEY UPDATE id = 2;
+INSERT INTO film (id, name, description, genre, duration, year, rating, director_id, written_by) VALUES (3, 'Film3', 'Description3', 'ACTION', 90, 2014, 0, 33, 33) ON DUPLICATE KEY UPDATE id = 3;
+INSERT INTO film (id, name, description, genre, duration, year, rating, director_id, written_by) VALUES (4, 'Film4', 'Description4', 'DRAMA', 110, 2015, 0, 32, 32) ON DUPLICATE KEY UPDATE id = 4;
+INSERT INTO film (id, name, description, genre, duration, year, rating, director_id, written_by) VALUES (5, 'Film5', 'Description5', 'ACTION', 100, 2001, 0, 31, 31) ON DUPLICATE KEY UPDATE id = 5;
 
 INSERT INTO artist_roles (artist_id, roles_id) VALUES (1, 1);
-INSERT INTO artist_roles (artist_id, roles_id) VALUES (17, 1);
+INSERT INTO artist_roles (artist_id, roles_id) VALUES (1, 2);
+INSERT INTO artist_roles (artist_id, roles_id) VALUES (1, 3);
 INSERT INTO artist_roles (artist_id, roles_id) VALUES (5, 1);
-INSERT INTO artist_roles (artist_id, roles_id) VALUES (25, 1);
-INSERT INTO artist_roles (artist_id, roles_id) VALUES (4, 2);
 INSERT INTO artist_roles (artist_id, roles_id) VALUES (5, 2);
-INSERT INTO artist_roles (artist_id, roles_id) VALUES (16, 2);
-INSERT INTO artist_roles (artist_id, roles_id) VALUES (3, 3);
+INSERT INTO artist_roles (artist_id, roles_id) VALUES (5, 3);
+INSERT INTO artist_roles (artist_id, roles_id) VALUES (6, 4);
 INSERT INTO artist_roles (artist_id, roles_id) VALUES (6, 3);
+INSERT INTO artist_roles (artist_id, roles_id) VALUES (6, 5);
+INSERT INTO artist_roles (artist_id, roles_id) VALUES (18, 1);
 INSERT INTO artist_roles (artist_id, roles_id) VALUES (18, 3);
-INSERT INTO artist_roles (artist_id, roles_id) VALUES (19, 3);
-INSERT INTO artist_roles (artist_id, roles_id) VALUES (26, 4);
-INSERT INTO artist_roles (artist_id, roles_id) VALUES (27, 4);
-INSERT INTO artist_roles (artist_id, roles_id) VALUES (28, 4);
-INSERT INTO artist_roles (artist_id, roles_id) VALUES (1, 5);
-INSERT INTO artist_roles (artist_id, roles_id) VALUES (2, 5);
-INSERT INTO artist_roles (artist_id, roles_id) VALUES (3, 5);
+INSERT INTO artist_roles (artist_id, roles_id) VALUES (18, 4);
+INSERT INTO artist_roles (artist_id, roles_id) VALUES (17, 4);
+INSERT INTO artist_roles (artist_id, roles_id) VALUES (17, 3);
+INSERT INTO artist_roles (artist_id, roles_id) VALUES (17, 2);
+INSERT INTO artist_roles (artist_id, roles_id) VALUES (16, 1);
+INSERT INTO artist_roles (artist_id, roles_id) VALUES (16, 5);
 
 INSERT INTO user (dtype, id, email,last_password_reset_date,password, username, available_minutes, title, immunity, immunity_points, registry_date) VALUES ('RegisteredUser', 1, 'a@a','2019-08-08 00:00','$2a$10$xMipTNv6mB4FdLt52YK4KuzVVFx891Pr0cnWySeko67UbjbZcIAK2','user1',0,'NONE','NONE',0,'2019-08-08 00:00') ON DUPLICATE KEY UPDATE id = 1;
 INSERT INTO user (dtype, id, email,last_password_reset_date,password, username, available_minutes, title, immunity, immunity_points, registry_date) VALUES ('RegisteredUser', 2, 'b@a','2019-08-08 00:00','$2a$10$xMipTNv6mB4FdLt52YK4KuzVVFx891Pr0cnWySeko67UbjbZcIAK2','user2',0,'BRONZE','NONE',0,'2019-08-08 00:00') ON DUPLICATE KEY UPDATE id = 2;
@@ -148,3 +148,5 @@ INSERT INTO purchase (id, date, discount, price, purchased_minutes, offer_id, us
 INSERT INTO purchase (id, date, discount, price, purchased_minutes, offer_id, user_id) VALUES (10, '2020-05-05 00:00', 0, 7, 600, 4, 14) ON DUPLICATE KEY UPDATE id = 10;
 INSERT INTO purchase (id, date, discount, price, purchased_minutes, offer_id, user_id) VALUES (11, '2020-05-05 00:00', 0, 3, 200, 2, 15) ON DUPLICATE KEY UPDATE id = 11;
 INSERT INTO purchase (id, date, discount, price, purchased_minutes, offer_id, user_id) VALUES (12, '2020-05-05 00:00', 0, 3, 200, 2, 15) ON DUPLICATE KEY UPDATE id = 12;
+
+INSERT INTO review (id, watched, watched_time, film_id, user_id, rate) VALUES (1, 1, '2020-05-05 00:00', 1, 1, 0) ON DUPLICATE KEY UPDATE id = 1;

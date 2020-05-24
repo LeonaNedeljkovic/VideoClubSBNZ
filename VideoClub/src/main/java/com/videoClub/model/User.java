@@ -24,6 +24,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+
 @Entity
 @Table(name = "user")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -41,15 +42,18 @@ public class User implements UserDetails {
 	@Column(name = "username")
 	private String username;
 
+	@JsonIgnore
 	@Column(name = "password")
 	private String password;
 
 	@Column(name = "email")
 	private String email;
 
+	@JsonIgnore
 	@Column(name = "last_password_reset_date")
 	private Timestamp lastPasswordResetDate;
 
+	@JsonIgnore
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinTable(name = "user_authority", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "authority_id", referencedColumnName = "id"))
 	private List<Authority> authorities = new ArrayList<>();

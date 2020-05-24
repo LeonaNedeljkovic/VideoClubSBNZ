@@ -22,8 +22,8 @@ public class UserServiceImpl implements UserService {
 	}
 
 	//@Transactional(readOnly = false)
-	public void save(User user) {
-		userRepository.save(user);
+	public User save(User user) {
+		return userRepository.save(user);
 	}
 
 	//@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -61,6 +61,11 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public List<User> findAll() {
 		return userRepository.findAll();
+	}
+
+	@Override
+	public List<User> save(List<User> users) {
+		return userRepository.saveAll(users);
 	}
 
 }

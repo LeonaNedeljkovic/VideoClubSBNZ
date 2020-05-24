@@ -3,8 +3,6 @@ package com.videoClub.model;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,8 +12,6 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import com.videoClub.model.enumeration.BadgeType;
 
 @Entity
 @Table(name = "badge")
@@ -29,20 +25,15 @@ public abstract class Badge {
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "user_id")
 	private RegisteredUser user;
-	
-	@Enumerated(EnumType.STRING)
-	@Column(name = "type")
-	private BadgeType type;
 
-	public Badge() {
-		super();
-	}
-
-	public Badge(Long id, RegisteredUser user, BadgeType type) {
+	public Badge(Long id, RegisteredUser user) {
 		super();
 		this.id = id;
 		this.user = user;
-		this.type = type;
+	}
+	
+	public Badge() {
+		super();
 	}
 
 	public Long getId() {
@@ -60,13 +51,4 @@ public abstract class Badge {
 	public void setUser(RegisteredUser user) {
 		this.user = user;
 	}
-
-	public BadgeType getType() {
-		return type;
-	}
-
-	public void setType(BadgeType type) {
-		this.type = type;
-	}
-	
 }

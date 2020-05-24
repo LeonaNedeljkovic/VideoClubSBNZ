@@ -32,25 +32,30 @@ public class Artist {
 	
 	@JsonIgnore
 	@ManyToMany
-	private List<VideoContent> roles = new ArrayList<VideoContent>();
+	private List<Film> roles = new ArrayList<Film>();
 	
 	@JsonIgnore
 	@OneToMany(mappedBy = "director", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	private List<VideoContent> directed = new ArrayList<VideoContent>();
+	private List<Film> directed = new ArrayList<Film>();
+	
+	@JsonIgnore
+	@OneToMany(mappedBy = "writtenBy", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private List<Film> written = new ArrayList<Film>();
 
 	public Artist() {
 		super();
 	}
-
-	public Artist(Long id, String name, String surname, List<VideoContent> roles, List<VideoContent> directed) {
+	
+	public Artist(Long id, String name, String surname, List<Film> roles, List<Film> directed, List<Film> written) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.surname = surname;
 		this.roles = roles;
 		this.directed = directed;
+		this.written = written;
 	}
-
+	
 	public Long getId() {
 		return id;
 	}
@@ -75,20 +80,27 @@ public class Artist {
 		this.surname = surname;
 	}
 
-	public List<VideoContent> getRoles() {
+	public List<Film> getRoles() {
 		return roles;
 	}
 
-	public void setRoles(List<VideoContent> roles) {
+	public void setRoles(List<Film> roles) {
 		this.roles = roles;
 	}
 
-	public List<VideoContent> getDirected() {
+	public List<Film> getDirected() {
 		return directed;
 	}
 
-	public void setDirected(List<VideoContent> directed) {
+	public void setDirected(List<Film> directed) {
 		this.directed = directed;
 	}
 
+	public List<Film> getWritten() {
+		return written;
+	}
+
+	public void setWritten(List<Film> written) {
+		this.written = written;
+	}
 }

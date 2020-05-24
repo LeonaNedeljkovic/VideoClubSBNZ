@@ -9,10 +9,10 @@ import org.springframework.stereotype.Service;
 import com.videoClub.exception.EntityNotDeletable;
 import com.videoClub.exception.EntityNotFound;
 import com.videoClub.model.Artist;
-import com.videoClub.model.VideoContent;
+import com.videoClub.model.Film;
 import com.videoClub.repository.ArtistRepository;
 import com.videoClub.service.ArtistService;
-import com.videoClub.service.VideoContentService;
+import com.videoClub.service.FilmService;
 
 @Service
 public class ArtistServiceImpl implements ArtistService{
@@ -21,7 +21,7 @@ public class ArtistServiceImpl implements ArtistService{
 	private ArtistRepository artistRepository;
 	
 	@Autowired
-	private VideoContentService videoContentService;
+	private FilmService filmService;
 
 	@Override
 	public Artist save(Artist artist) {
@@ -46,13 +46,13 @@ public class ArtistServiceImpl implements ArtistService{
 
 	@Override
 	public List<Artist> getActorsOfVideoContent(Long videoId) {
-		VideoContent video = videoContentService.getOne(videoId);
+		Film video = filmService.getOne(videoId);
 		return video.getActors();
 	}
 
 	@Override
 	public Artist getDirectorOfVideoContent(Long videoId) {
-		VideoContent video = videoContentService.getOne(videoId);
+		Film video = filmService.getOne(videoId);
 		return video.getDirector();
 	}
 
@@ -65,5 +65,10 @@ public class ArtistServiceImpl implements ArtistService{
 		}
 		
 		artistRepository.deleteById(id);
+	}
+
+	@Override
+	public List<Artist> getWatchedArtists(Long userId) {
+		return artistRepository.getWatchedArtists(userId);
 	}
 }

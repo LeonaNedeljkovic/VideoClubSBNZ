@@ -1,6 +1,6 @@
 package com.videoClub.model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -24,7 +24,7 @@ public class Purchase {
 	private Long id;
 
 	@Column(name = "date")
-	private LocalDate date;
+	private LocalDateTime date;
 	
 	@Column(name = "discount")
 	private int discount;
@@ -49,7 +49,7 @@ public class Purchase {
 		super();
 	}
 
-	public Purchase(Long id, LocalDate date, int discount, double price, int purchasedMinutes, Offer offer,
+	public Purchase(Long id, LocalDateTime date, int discount, double price, int purchasedMinutes, Offer offer,
 			RegisteredUser user) {
 		super();
 		this.id = id;
@@ -69,11 +69,11 @@ public class Purchase {
 		this.id = id;
 	}
 
-	public LocalDate getDate() {
+	public LocalDateTime getDate() {
 		return date;
 	}
 
-	public void setDate(LocalDate date) {
+	public void setDate(LocalDateTime date) {
 		this.date = date;
 	}
 

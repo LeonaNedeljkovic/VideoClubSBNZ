@@ -12,4 +12,5 @@ public interface ArtistService {
 	public List<Artist> getActorsOfVideoContent(Long videoId);
 	public Artist getDirectorOfVideoContent(Long videoId);
 	public void delete(Long id);
+	public List<Artist> getWatchedArtists(Long userId);
 }
