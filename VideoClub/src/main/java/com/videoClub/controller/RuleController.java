@@ -1,5 +1,10 @@
 package com.videoClub.controller;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.kie.api.runtime.KieContainer;
@@ -8,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,6 +31,7 @@ import com.videoClub.model.Purchase;
 import com.videoClub.model.RegisteredUser;
 import com.videoClub.model.User;
 import com.videoClub.model.enumeration.Rank;
+import com.videoClub.service.PurchaseService;
 import com.videoClub.service.RuleService;
 import com.videoClub.service.UserService;
 
@@ -57,30 +64,13 @@ public class RuleController {
 	private UserService userService;
 	
 	@Autowired
+	private PurchaseService purchaseService;
+	
+	@Autowired
 	private KieContainer kieContainer;
 	
-	@GetMapping(value = "/test1", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<PointsDTO> testTitles() {
-		List<User> users = userService.findAll();
-		KieSession kieSession = kieContainer.newKieSession("titleRulesSession");
-		kieSession.setGlobal("bronzeImmunity", bronzeImmunity);
-		kieSession.setGlobal("silverImmunity", silverImmunity);
-		kieSession.setGlobal("goldImmunity", goldImmunity);
-		kieSession.setGlobal("bronzeTitle", bronzeTitle);
-		kieSession.setGlobal("silverTitle", silverTitle);
-		kieSession.setGlobal("goldTitle", goldTitle);
-		for(User user : users){
-			if(user instanceof RegisteredUser){
-				for(Purchase p : ((RegisteredUser) user).getPurchases()){
-					kieSession.insert(p);
-				}
-				kieSession.insert(user);
-			}		
-		}
-		kieSession.fireAllRules();
-		kieSession.dispose();
-		return new ResponseEntity<>(null, HttpStatus.OK);
-	}
+	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+	private DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 	
 	@GetMapping(value = "/bronze_immunity_points", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<PointsDTO> getBronzeImmunity() {
@@ -157,8 +147,8 @@ public class RuleController {
 	@PutMapping(value = "/bronze_immunity_points", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	//@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<PointsDTO> setBronzeImmunity(@RequestBody PointsDTO points) {
+		KieSession kieSession = initializeKieSession("entityDefinerRulesSession");
 		bronzeImmunity.setAcquirePoints(points.getValue());
-		KieSession kieSession = initializeKieSession();
 		kieSession.insert(bronzeImmunity);
 		kieSession.fireAllRules();
 		kieSession.dispose();
@@ -169,8 +159,8 @@ public class RuleController {
 	@PutMapping(value = "/silver_immunity_points", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	//@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<PointsDTO> setSilverImmunity(@RequestBody PointsDTO points) {
+		KieSession kieSession = initializeKieSession("entityDefinerRulesSession");
 		silverImmunity.setAcquirePoints(points.getValue());
-		KieSession kieSession = initializeKieSession();
 		kieSession.insert(silverImmunity);
 		kieSession.fireAllRules();
 		kieSession.dispose();
@@ -181,8 +171,8 @@ public class RuleController {
 	@PutMapping(value = "/gold_immunity_points", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	//@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<PointsDTO> setGoldImmunity(@RequestBody PointsDTO points) {
+		KieSession kieSession = initializeKieSession("entityDefinerRulesSession");
 		goldImmunity.setAcquirePoints(points.getValue());
-		KieSession kieSession = initializeKieSession();
 		kieSession.insert(goldImmunity);
 		kieSession.fireAllRules();
 		kieSession.dispose();
@@ -193,8 +183,8 @@ public class RuleController {
 	@PutMapping(value = "/bronze_title/acquire_points", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	//@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<PointsDTO> setBronzeTitleAcquire(@RequestBody PointsDTO points) {
+		KieSession kieSession = initializeKieSession("entityDefinerRulesSession");
 		bronzeTitle.setAcquirePoints(points.getValue());
-		KieSession kieSession = initializeKieSession();
 		kieSession.insert(bronzeTitle);
 		kieSession.fireAllRules();
 		kieSession.dispose();
@@ -205,8 +195,8 @@ public class RuleController {
 	@PutMapping(value = "/bronze_title/save_points", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	//@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<PointsDTO> setBronzeTitleSave(@RequestBody PointsDTO points) {
+		KieSession kieSession = initializeKieSession("entityDefinerRulesSession");
 		bronzeTitle.setSavePoints(points.getValue());
-		KieSession kieSession = initializeKieSession();
 		kieSession.insert(bronzeTitle);
 		kieSession.fireAllRules();
 		kieSession.dispose();
@@ -217,8 +207,8 @@ public class RuleController {
 	@PutMapping(value = "/bronze_title/reward_points", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	//@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<PointsDTO> setBronzeTitleReward(@RequestBody PointsDTO points) {
+		KieSession kieSession = initializeKieSession("entityDefinerRulesSession");
 		bronzeTitle.setRewardPoints(points.getValue());
-		KieSession kieSession = initializeKieSession();
 		kieSession.insert(bronzeTitle);
 		kieSession.fireAllRules();
 		kieSession.dispose();
@@ -229,8 +219,8 @@ public class RuleController {
 	@PutMapping(value = "/silver_title/acquire_points", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	//@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<PointsDTO> setSilverTitleAcquire(@RequestBody PointsDTO points) {
+		KieSession kieSession = initializeKieSession("entityDefinerRulesSession");
 		silverTitle.setAcquirePoints(points.getValue());
-		KieSession kieSession = initializeKieSession();
 		kieSession.insert(silverTitle);
 		kieSession.fireAllRules();
 		kieSession.dispose();
@@ -241,8 +231,8 @@ public class RuleController {
 	@PutMapping(value = "/silver_title/save_points", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	//@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<PointsDTO> setSilverTitleSave(@RequestBody PointsDTO points) {
+		KieSession kieSession = initializeKieSession("entityDefinerRulesSession");
 		silverTitle.setSavePoints(points.getValue());
-		KieSession kieSession = initializeKieSession();
 		kieSession.insert(silverTitle);
 		kieSession.fireAllRules();
 		kieSession.dispose();
@@ -253,8 +243,8 @@ public class RuleController {
 	@PutMapping(value = "/silver_title/reward_points", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	//@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<PointsDTO> setSilverTitleReward(@RequestBody PointsDTO points) {
+		KieSession kieSession = initializeKieSession("entityDefinerRulesSession");
 		silverTitle.setRewardPoints(points.getValue());
-		KieSession kieSession = initializeKieSession();
 		kieSession.insert(silverTitle);
 		kieSession.fireAllRules();
 		kieSession.dispose();
@@ -266,8 +256,8 @@ public class RuleController {
 	@PutMapping(value = "/gold_title/acquire_points", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	//@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<PointsDTO> setGoldTitleAcquire(@RequestBody PointsDTO points) {
+		KieSession kieSession = initializeKieSession("entityDefinerRulesSession");
 		goldTitle.setAcquirePoints(points.getValue());
-		KieSession kieSession = initializeKieSession();
 		kieSession.insert(goldTitle);
 		kieSession.fireAllRules();
 		kieSession.dispose();
@@ -278,8 +268,8 @@ public class RuleController {
 	@PutMapping(value = "/gold_title/save_points", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	//@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<PointsDTO> setGoldTitleSave(@RequestBody PointsDTO points) {
+		KieSession kieSession = initializeKieSession("entityDefinerRulesSession");
 		goldTitle.setSavePoints(points.getValue());
-		KieSession kieSession = initializeKieSession();
 		kieSession.insert(goldTitle);
 		kieSession.fireAllRules();
 		kieSession.dispose();
@@ -290,8 +280,8 @@ public class RuleController {
 	@PutMapping(value = "/gold_title/reward_points", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	//@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<PointsDTO> setGoldTitleReward(@RequestBody PointsDTO points) {
+		KieSession kieSession = initializeKieSession("entityDefinerRulesSession");
 		goldTitle.setRewardPoints(points.getValue());
-		KieSession kieSession = initializeKieSession();
 		kieSession.insert(goldTitle);
 		kieSession.fireAllRules();
 		kieSession.dispose();
@@ -299,8 +289,31 @@ public class RuleController {
 		return new ResponseEntity<>(new PointsDTO(goldTitle.getRewardPoints()), HttpStatus.OK);
 	}
 	
-	private KieSession initializeKieSession(){
-		KieSession kieSession = kieContainer.newKieSession("entityDefinerRulesSession");
+	@Scheduled(cron="0 0 0 1 1/1 *")
+	public void fireTitleRules() {
+		List<User> users = userService.findAll();
+		KieSession kieSession = initializeKieSession("titleRulesSession");
+		Calendar lastMonth = Calendar.getInstance();
+		lastMonth.setTime(new Date());
+		lastMonth.add(Calendar.MONTH, -1);
+		LocalDateTime date1 = LocalDateTime.parse(sdf.format(new Date()), df);
+		LocalDateTime date2 = LocalDateTime.parse(sdf.format(lastMonth.getTime()), df);
+		for(User user : users){
+			if(user instanceof RegisteredUser){
+				((RegisteredUser) user).setImmunity(Rank.NONE);
+				for(Purchase p : purchaseService.getLastMonthPurchases(user.getId(),date1, date2)){
+					kieSession.insert(p);
+				}
+				kieSession.insert(user);
+			}		
+		}
+		kieSession.fireAllRules();
+		kieSession.dispose();
+		userService.save(users);
+	}
+	
+	private KieSession initializeKieSession(String sessionName){
+		KieSession kieSession = kieContainer.newKieSession(sessionName);
 		kieSession.setGlobal("bronzeImmunity", bronzeImmunity);
 		kieSession.setGlobal("silverImmunity", silverImmunity);
 		kieSession.setGlobal("goldImmunity", goldImmunity);

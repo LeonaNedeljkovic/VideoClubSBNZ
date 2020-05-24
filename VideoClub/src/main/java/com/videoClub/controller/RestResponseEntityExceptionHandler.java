@@ -81,4 +81,19 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
     protected ResponseEntity<MessageDto> handleInvalidTitle(InvalidTitle e) {
 		return new ResponseEntity<>(new MessageDto("Invalid Title", e.getMessage()), HttpStatus.OK);
     }
+	
+	@ExceptionHandler(value = FilmNotReviewed.class)
+    protected ResponseEntity<MessageDto> handleFilmNotReviewed(FilmNotReviewed e) {
+		return new ResponseEntity<>(new MessageDto("Film Not Reviewed", e.getMessage()), HttpStatus.OK);
+    }
+    
+    @ExceptionHandler(value = InvalidRate.class)
+    protected ResponseEntity<MessageDto> handleInvalidRate(InvalidRate e) {
+		return new ResponseEntity<>(new MessageDto("Invalid Rate", e.getMessage()), HttpStatus.OK);
+    }
+    
+    @ExceptionHandler(value = ReviewNotRated.class)
+    protected ResponseEntity<MessageDto> handleReviewNotRated(ReviewNotRated e) {
+		return new ResponseEntity<>(new MessageDto("Review Not Rated", e.getMessage()), HttpStatus.OK);
+    }
 }

@@ -1,46 +1,53 @@
 package com.videoClub.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 
-import com.videoClub.model.enumeration.BadgeType;
 import com.videoClub.model.enumeration.Genre;
+import com.videoClub.model.enumeration.Rank;
 
 @Entity
 public class GenreBadge extends Badge {
-	@ElementCollection(targetClass = Genre.class)
-	@JoinTable(name = "badge_genre", joinColumns = @JoinColumn(name = "id"))
+
 	@Column(name = "genre", nullable = false)
 	@Enumerated(EnumType.STRING)
-	private List<Genre> rewardGenres = new ArrayList<Genre>();
+	private Genre genre;
 
-	public GenreBadge(Long id, RegisteredUser user, List<Genre> rewardGenres) {
-		super(id, user, BadgeType.GENRE_BADGE);
-		this.rewardGenres = rewardGenres;
-	}
+	@Column(name = "genre_rank", nullable = false)
+	@Enumerated(EnumType.STRING)
+	private Rank genreRank;
 
-	public GenreBadge(List<Genre> rewardGenres) {
-		super();
-		this.rewardGenres = rewardGenres;
+	public GenreBadge(Long id, RegisteredUser user, Genre genre, Rank genreRank) {
+		super(id, user);
+		this.genre = genre;
+		this.genreRank = genreRank;
 	}
 
 	public GenreBadge() {
 		super();
 	}
 
-	public List<Genre> getRewardGenres() {
-		return rewardGenres;
+	public GenreBadge(Genre genre, Rank genreRank) {
+		super();
+		this.genre = genre;
+		this.genreRank = genreRank;
 	}
 
-	public void setRewardGenres(List<Genre> rewardGenres) {
-		this.rewardGenres = rewardGenres;
+	public Genre getGenre() {
+		return genre;
+	}
+
+	public void setGenre(Genre genre) {
+		this.genre = genre;
+	}
+
+	public Rank getGenreRank() {
+		return genreRank;
+	}
+
+	public void setGenreRank(Rank genreRank) {
+		this.genreRank = genreRank;
 	}
 }

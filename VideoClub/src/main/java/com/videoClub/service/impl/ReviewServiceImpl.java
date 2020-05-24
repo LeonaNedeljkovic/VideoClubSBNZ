@@ -1,5 +1,10 @@
 package com.videoClub.service.impl;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,14 +16,18 @@ import org.springframework.stereotype.Service;
 import com.videoClub.dto.ReviewDTO;
 import com.videoClub.exception.EntityNotFound;
 import com.videoClub.model.Action;
-import com.videoClub.model.FreeContent;
+import com.videoClub.model.Artist;
+import com.videoClub.model.Badge;
 import com.videoClub.model.RegisteredUser;
 import com.videoClub.model.Review;
 import com.videoClub.model.TimeInterval;
+import com.videoClub.model.User;
+import com.videoClub.repository.BadgeRepository;
 import com.videoClub.repository.ReviewRepository;
-import com.videoClub.repository.TimeIntervalRepository;
 import com.videoClub.service.ReviewService;
-import com.videoClub.service.VideoContentService;
+import com.videoClub.service.UserService;
+import com.videoClub.service.ArtistService;
+import com.videoClub.service.FilmService;
 
 @Service
 public class ReviewServiceImpl implements ReviewService{
@@ -27,13 +36,22 @@ public class ReviewServiceImpl implements ReviewService{
 	private ReviewRepository reviewRepository;
 	
 	@Autowired
-	private TimeIntervalRepository timeIntervalRepository;
+	private FilmService filmService;
 	
 	@Autowired
-	private VideoContentService videoContentService;
+	private ArtistService artistService;
+	
+	@Autowired
+	private UserService userService;
 	
 	@Autowired
 	private KieContainer kieContainer;
+	
+	@Autowired
+	private BadgeRepository badgeRepository;
+	
+	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+	private DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 	
 	@Override
 	public Review save(ReviewDTO reviewDTO, RegisteredUser user) {
@@ -46,7 +64,8 @@ public class ReviewServiceImpl implements ReviewService{
 		if(reviews.isEmpty()){
 			review = new Review();
 			review.setUser(user);
-			review.setVideoContent(videoContentService.getOne(reviewDTO.getVideoContentId()));
+			review.setFilm(filmService.getOne(reviewDTO.getVideoContentId()));
+			review.setWatchedTime(LocalDateTime.parse(sdf.format(new Date()),df));
 			TimeInterval interval = new TimeInterval();
 			interval.setStartMinute(reviewDTO.getStartMinute());
 			interval.setEndMinute(reviewDTO.getEndMinute());
@@ -56,6 +75,7 @@ public class ReviewServiceImpl implements ReviewService{
 		}
 		else{
 			review = reviews.get(0);
+			review.setWatchedTime(LocalDateTime.parse(sdf.format(new Date()),df));
 			TimeInterval interval = new TimeInterval();
 			interval.setStartMinute(reviewDTO.getStartMinute());
 			interval.setEndMinute(reviewDTO.getEndMinute());
@@ -66,6 +86,13 @@ public class ReviewServiceImpl implements ReviewService{
 		kieSession.insert(user);
 		kieSession.fireAllRules();
 		kieSession.dispose();
+		Review newReview = reviewRepository.save(review);
+		fireRulesForNewReview(user);
+		return newReview;
+	}
+	
+	@Override
+	public Review save(Review review){
 		return reviewRepository.save(review);
 	}
 
@@ -78,5 +105,35 @@ public class ReviewServiceImpl implements ReviewService{
 		else{
 			throw new EntityNotFound(id);
 		}
+	}
+
+	@Override
+	public Optional<Review> findByFilmIdAndUserId(Long film, Long user) {
+		return reviewRepository.findByFilmIdAndUserId(film, user);
+	}
+
+	@Override
+	public List<Review> getLastReviews(Long userId) {
+		return reviewRepository.getLastReviews(userId);
+	}
+
+	@Override
+	public void fireRulesForNewReview(User user) {
+		KieSession kieSession = kieContainer.newKieSession("badgeRulesSession");
+		badgeRepository.deleteByUserId(user.getId());
+		((RegisteredUser) user).setBadges(new ArrayList<Badge>());
+		kieSession.insert(user);
+		for(Review r : getLastReviews(user.getId())){
+			kieSession.insert(r);
+		}
+		for(Review r : reviewRepository.getReviewsOfFavouriteFilms(user.getId())){
+			kieSession.insert(r);
+		}
+		for(Artist a : artistService.getWatchedArtists(user.getId())){
+			kieSession.insert(a);
+		}
+		kieSession.fireAllRules();
+		kieSession.dispose();
+		userService.save(user);
 	}
 }

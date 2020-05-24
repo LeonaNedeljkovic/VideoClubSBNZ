@@ -1,7 +1,10 @@
 package com.videoClub.model;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -26,8 +29,8 @@ public class Review {
 	private Long id;
 	
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinColumn(name = "video_content_id")
-	private VideoContent videoContent;
+	@JoinColumn(name = "film_id")
+	private Film film;
 	
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "user_id")
@@ -39,19 +42,35 @@ public class Review {
 	
 	@Column(name = "watched")
 	private boolean watched;
+	
+	@Column(name = "watched_time")
+	private LocalDateTime watchedTime;
+	
+	@Column(name = "rate")
+	private Integer rate;
 
 	public Review() {
 		super();
 	}
 
-	public Review(Long id, VideoContent videoContent, RegisteredUser user, List<TimeInterval> timeIntervals,
-			boolean watched) {
+	public Review(Long id, Film film, RegisteredUser user, List<TimeInterval> timeIntervals, boolean watched,
+			LocalDateTime watchedTime, Integer rate) {
 		super();
 		this.id = id;
-		this.videoContent = videoContent;
+		this.film = film;
 		this.user = user;
 		this.timeIntervals = timeIntervals;
 		this.watched = watched;
+		this.watchedTime = watchedTime;
+		this.rate = rate;
+	}
+
+	public LocalDateTime getWatchedTime() {
+		return watchedTime;
+	}
+
+	public void setWatchedTime(LocalDateTime watchedTime) {
+		this.watchedTime = watchedTime;
 	}
 
 	public Long getId() {
@@ -62,12 +81,12 @@ public class Review {
 		this.id = id;
 	}
 
-	public VideoContent getVideoContent() {
-		return videoContent;
+	public Film getFilm() {
+		return film;
 	}
 
-	public void setVideoContent(VideoContent videoContent) {
-		this.videoContent = videoContent;
+	public void setFilm(Film film) {
+		this.film = film;
 	}
 
 	public RegisteredUser getUser() {
@@ -94,11 +113,23 @@ public class Review {
 		this.watched = watched;
 	}
 
-	public int getFullDuration(){
-		int duration = 0;
+	public Integer getRate() {
+		return rate;
+	}
+
+	public void setRate(Integer rate) {
+		this.rate = rate;
+	}
+
+	public double getWatchedDuration(){
+		Set<Integer> watchedDuration = new HashSet<Integer>();
 		for(TimeInterval ti : this.timeIntervals){
-			duration += ti.getEndMinute() - ti.getStartMinute();
+			for(int i = ti.getStartMinute(); i <= ti.getEndMinute(); i++){
+				watchedDuration.add(i);
+			}
 		}
-		return duration;
+		int watched = watchedDuration.size();
+		double percentage = 100.0*watched/film.getDuration();
+		return percentage;
 	}
 }

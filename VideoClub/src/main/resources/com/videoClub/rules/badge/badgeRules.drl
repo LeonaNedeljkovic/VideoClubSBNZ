@@ -1,0 +1,9 @@
+//created on: May 21, 2020
+package com.videoClub.rules.badge
+
+import com.videoClub.model.*;
+
+rule "Favourite Actor badge acquirement rule"
+    when
+    then
+end

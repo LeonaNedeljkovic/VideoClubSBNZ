@@ -1,6 +1,5 @@
 package com.videoClub.model;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,8 +22,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.videoClub.model.enumeration.Genre;
 
 @Entity
-@Table(name = "video_content")
-public class VideoContent {
+@Table(name = "film")
+public class Film {
+
 	@Id
 	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,10 +41,7 @@ public class VideoContent {
 	private Genre genre;
 	
 	@Column(name = "duration")
-	private double duration;
-	
-	@Column(name = "publishDate")
-	private LocalDate publishDate;
+	private int duration;
 	
 	@Column(name = "year")
 	private int year;
@@ -52,36 +49,39 @@ public class VideoContent {
 	@Column(name = "rating")
 	private double rating;
 	
-	@JsonIgnore
-	@OneToMany(mappedBy = "videoContent", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	private List<Rate> rates = new ArrayList<Rate>();
-	
 	@ManyToMany
 	private List<Artist> actors = new ArrayList<Artist>();
 	
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "director_id")
 	private Artist director;
+	
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name = "written_by")
+	private Artist writtenBy;
+	
+	@JsonIgnore
+	@OneToMany(mappedBy = "film", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private List<Review> reviews = new ArrayList<Review>();
 
-	public VideoContent() {
+	public Film() {
 		super();
 	}
-
-	public VideoContent(Long id, String name, String description, Genre genre, double duration,
-			LocalDate publishDate, int year, double rating, List<Rate> rates, List<Artist> actors,
-			Artist director) {
+	
+	public Film(Long id, String name, String description, Genre genre, int duration, int year, double rating,
+			List<Artist> actors, Artist director, Artist writtenBy, List<Review> reviews) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.description = description;
 		this.genre = genre;
 		this.duration = duration;
-		this.publishDate = publishDate;
 		this.year = year;
 		this.rating = rating;
-		this.rates = rates;
 		this.actors = actors;
 		this.director = director;
+		this.writtenBy = writtenBy;
+		this.reviews = reviews;
 	}
 
 	public Long getId() {
@@ -116,20 +116,12 @@ public class VideoContent {
 		this.genre = genre;
 	}
 
-	public double getDuration() {
+	public int getDuration() {
 		return duration;
 	}
 
-	public void setDuration(double duration) {
+	public void setDuration(int duration) {
 		this.duration = duration;
-	}
-
-	public LocalDate getPublishDate() {
-		return publishDate;
-	}
-
-	public void setPublishDate(LocalDate publishDate) {
-		this.publishDate = publishDate;
 	}
 
 	public int getYear() {
@@ -148,14 +140,6 @@ public class VideoContent {
 		this.rating = rating;
 	}
 
-	public List<Rate> getRates() {
-		return rates;
-	}
-
-	public void setRates(List<Rate> rates) {
-		this.rates = rates;
-	}
-
 	public List<Artist> getActors() {
 		return actors;
 	}
@@ -171,5 +155,34 @@ public class VideoContent {
 	public void setDirector(Artist director) {
 		this.director = director;
 	}
+
+	public List<Review> getReviews() {
+		return reviews;
+	}
+
+	public void setReviews(List<Review> reviews) {
+		this.reviews = reviews;
+	}
+
+	public Artist getWrittenBy() {
+		return writtenBy;
+	}
+
+	public void setWrittenBy(Artist writtenBy) {
+		this.writtenBy = writtenBy;
+	}
 	
+	public void addNewRate(int rate, Long reviewId){
+		double rates = 0;
+		double sum = 0;
+		for(Review r : reviews){
+			if(r.getRate() != 0 && r.getId() != reviewId){
+				rates++;
+				sum += r.getRate();
+			}
+		}
+		rates++;
+		sum += rate;
+		setRating(sum/rates);
+	}
 }

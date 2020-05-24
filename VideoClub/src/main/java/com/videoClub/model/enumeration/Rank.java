@@ -1,8 +1,12 @@
 package com.videoClub.model.enumeration;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonValue;
 
-@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum Rank {
-	NONE, BRONZE, SILVER, GOLD
+	NONE, BRONZE, SILVER, GOLD;
+	
+	@JsonValue
+	public String getRank(){
+		return this.toString();
+	}
 }

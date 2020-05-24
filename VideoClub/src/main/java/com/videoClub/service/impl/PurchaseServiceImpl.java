@@ -1,9 +1,10 @@
 package com.videoClub.service.impl;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import org.kie.api.runtime.KieContainer;
@@ -36,14 +37,14 @@ public class PurchaseServiceImpl implements PurchaseService{
 	@Autowired
 	private KieContainer kieContainer;
 	
-	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-	private DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+	private DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
 	@Override
 	public Purchase save(RegisteredUser user, long offerId) {
 		KieSession kieSession = kieContainer.newKieSession("purchaseRulesSession");
 		Purchase purchase = new Purchase();
-		purchase.setDate(LocalDate.parse(sdf.format(new Date()),df));
+		purchase.setDate(LocalDateTime.parse(sdf.format(new Date()),df));
 		purchase.setUser(user);
 		Offer offer = offerService.getOne(offerId);
 		purchase.setOffer(offer);
@@ -74,8 +75,7 @@ public class PurchaseServiceImpl implements PurchaseService{
 	}
 
 	@Override
-	public double getLastMonthPayment(RegisteredUser user) {
-		// TODO Auto-generated method stub
-		return 0;
+	public List<Purchase> getLastMonthPurchases(Long userId, LocalDateTime now, LocalDateTime monthAgo) {
+		return purchaseRepository.getLastMonthPurchases(userId, now, monthAgo);
 	}
 }

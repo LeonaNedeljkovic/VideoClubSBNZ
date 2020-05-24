@@ -14,6 +14,8 @@ public interface UserService {
 
 	User findUserByToken(String token);
 
-	void save(User user);
+	User save(User user);
+	
+	public List<User> save(List<User> users);
 	
 }
