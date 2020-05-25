@@ -79,11 +79,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
-		.cors().and()
+		.cors().and().csrf().disable()
 		// communication between client and server is stateless
 		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 		// za neautorizovane zahteve posalji 401 gresku
-		.exceptionHandling().authenticationEntryPoint(restAuthenticationEntryPoint).and()
+		
 		.authorizeRequests()
 		.antMatchers("/auth/login").permitAll()
 		.antMatchers(HttpMethod.GET,"/api/test1").permitAll()

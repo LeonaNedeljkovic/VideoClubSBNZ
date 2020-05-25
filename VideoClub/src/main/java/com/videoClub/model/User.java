@@ -53,10 +53,10 @@ public class User implements UserDetails {
 	@Column(name = "last_password_reset_date")
 	private Timestamp lastPasswordResetDate;
 
-	@JsonIgnore
+	//@JsonIgnore
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinTable(name = "user_authority", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "authority_id", referencedColumnName = "id"))
-	private List<Authority> authorities = new ArrayList<>();
+	private List<Authority> authorities;
 
 	public User() {
 		super();
@@ -104,8 +104,7 @@ public class User implements UserDetails {
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.authorities;
 	}
 
 	public Timestamp getLastPasswordResetDate() {
