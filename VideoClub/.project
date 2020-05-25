@@ -45,8 +45,14 @@
 			<arguments>
 			</arguments>
 		</buildCommand>
+		<buildCommand>
+			<name>org.springframework.ide.eclipse.core.springbuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
 	</buildSpec>
 	<natures>
+		<nature>org.springframework.ide.eclipse.core.springnature</nature>
 		<nature>org.fusesource.ide.project.RiderProjectNature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>org.eclipse.bpmn2.modeler.core.bpmn2Nature</nature>
