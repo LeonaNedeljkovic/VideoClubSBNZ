@@ -3,6 +3,8 @@ package com.videoClub.service.impl;
 import java.util.List;
 import java.util.Optional;
 
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +37,9 @@ public class ActionServiceImpl implements ActionService{
 	
 	@Autowired
 	private OfferService offerService;
+	
+	@Autowired
+	private KieContainer kieContainer;
 
 	@Override
 	public Action getOne(Long id) {
