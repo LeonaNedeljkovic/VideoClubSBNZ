@@ -79,7 +79,7 @@ public class FilmServiceImpl implements FilmService{
 	}
 
 	@Override
-	public Film rateFilm(Long filmId, Integer rate, User user) {
+	public Film rateFilm(Long filmId, Integer rate, RegisteredUser user) {
 		Optional<Review> reviewOpt = reviewService.findByFilmIdAndUserId(filmId, user.getId());
 		Review review = null;
 		if(reviewOpt.isPresent()){
@@ -91,10 +91,8 @@ public class FilmServiceImpl implements FilmService{
 		review.setRate(rate);
 		Film film = getOne(filmId);
 		film.addNewRate(rate, review.getId());
-		Film retval = filmRepository.save(film);
 		reviewService.save(review);
-		reviewService.fireRulesForNewReview(user);
-		return retval;
+		return filmRepository.save(film);
 	}
 
 	@Override

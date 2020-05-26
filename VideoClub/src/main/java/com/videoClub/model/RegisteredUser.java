@@ -45,9 +45,6 @@ public class RegisteredUser extends User{
 	@ManyToMany
 	private List<Action> action = new ArrayList<Action>();
 	
-	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	private List<Badge> badges = new ArrayList<Badge>();
-	
 	@JsonIgnore
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Review> reviews = new ArrayList<Review>();
@@ -64,7 +61,7 @@ public class RegisteredUser extends User{
 	}
 
 	public RegisteredUser(LocalDateTime registryDate, int immunityPoints, int availableMinutes, Rank title,
-			Rank immunity, List<Action> action, List<Badge> badges, List<Review> reviews, List<Film> favouriteFilms,
+			Rank immunity, List<Action> action, List<Review> reviews, List<Film> favouriteFilms,
 			List<Purchase> purchases) {
 		super();
 		this.registryDate = registryDate;
@@ -73,7 +70,6 @@ public class RegisteredUser extends User{
 		this.title = title;
 		this.immunity = immunity;
 		this.action = action;
-		this.badges = badges;
 		this.reviews = reviews;
 		this.favouriteFilms = favouriteFilms;
 		this.purchases = purchases;
@@ -81,7 +77,7 @@ public class RegisteredUser extends User{
 
 	public RegisteredUser(Long id, String username, String password, String email, LocalDateTime registryDate,
 			int immunityPoints, int availableMinutes, Rank title, Rank immunity, List<Action> action,
-			List<Badge> badges, List<Review> reviews, List<Film> favouriteFilms, List<Purchase> purchases) {
+			List<Review> reviews, List<Film> favouriteFilms, List<Purchase> purchases) {
 		super(id, username, password, email);
 		this.registryDate = registryDate;
 		this.immunityPoints = immunityPoints;
@@ -89,7 +85,6 @@ public class RegisteredUser extends User{
 		this.title = title;
 		this.immunity = immunity;
 		this.action = action;
-		this.badges = badges;
 		this.reviews = reviews;
 		this.favouriteFilms = favouriteFilms;
 		this.purchases = purchases;
@@ -141,14 +136,6 @@ public class RegisteredUser extends User{
 
 	public void setAction(List<Action> action) {
 		this.action = action;
-	}
-
-	public List<Badge> getBadges() {
-		return badges;
-	}
-
-	public void setBadges(List<Badge> badges) {
-		this.badges = badges;
 	}
 
 	public List<Review> getReviews() {

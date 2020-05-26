@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import com.videoClub.dto.UserDto;
 import com.videoClub.model.Administrator;
 import com.videoClub.model.Authority;
-import com.videoClub.model.Badge;
 import com.videoClub.model.Purchase;
 import com.videoClub.model.RegisteredUser;
 import com.videoClub.model.Review;
@@ -111,7 +110,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 			RegisteredUser newUser = new RegisteredUser();
 			Authority a = new Authority();
 			a.setName(UserRole.ROLE_REGISTERED_USER);
-			newUser.setBadges(new ArrayList<Badge>());
 			newUser.setReviews(new ArrayList<Review>());
 			newUser.setPurchases(new ArrayList<Purchase>());
 			newUser.setImmunityPoints(0);

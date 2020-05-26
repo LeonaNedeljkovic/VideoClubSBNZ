@@ -17,15 +17,13 @@ import com.videoClub.dto.ReviewDTO;
 import com.videoClub.exception.EntityNotFound;
 import com.videoClub.model.Action;
 import com.videoClub.model.Artist;
-import com.videoClub.model.Badge;
 import com.videoClub.model.RegisteredUser;
 import com.videoClub.model.Review;
 import com.videoClub.model.TimeInterval;
-import com.videoClub.model.User;
-import com.videoClub.repository.BadgeRepository;
+import com.videoClub.model.drl.Badge;
+import com.videoClub.model.drl.UserConclusion;
 import com.videoClub.repository.ReviewRepository;
 import com.videoClub.service.ReviewService;
-import com.videoClub.service.UserService;
 import com.videoClub.service.ArtistService;
 import com.videoClub.service.FilmService;
 
@@ -42,13 +40,7 @@ public class ReviewServiceImpl implements ReviewService{
 	private ArtistService artistService;
 	
 	@Autowired
-	private UserService userService;
-	
-	@Autowired
 	private KieContainer kieContainer;
-	
-	@Autowired
-	private BadgeRepository badgeRepository;
 	
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	private DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
@@ -86,9 +78,7 @@ public class ReviewServiceImpl implements ReviewService{
 		kieSession.insert(user);
 		kieSession.fireAllRules();
 		kieSession.dispose();
-		Review newReview = reviewRepository.save(review);
-		fireRulesForNewReview(user);
-		return newReview;
+		return reviewRepository.save(review);
 	}
 	
 	@Override
@@ -118,11 +108,10 @@ public class ReviewServiceImpl implements ReviewService{
 	}
 
 	@Override
-	public void fireRulesForNewReview(User user) {
+	public UserConclusion fireRulesForNewReview(RegisteredUser user) {
+		UserConclusion conclusion = new UserConclusion(user, new ArrayList<Badge>());
 		KieSession kieSession = kieContainer.newKieSession("badgeRulesSession");
-		badgeRepository.deleteByUserId(user.getId());
-		((RegisteredUser) user).setBadges(new ArrayList<Badge>());
-		kieSession.insert(user);
+		kieSession.insert(conclusion);
 		for(Review r : getLastReviews(user.getId())){
 			kieSession.insert(r);
 		}
@@ -134,6 +123,6 @@ public class ReviewServiceImpl implements ReviewService{
 		}
 		kieSession.fireAllRules();
 		kieSession.dispose();
-		userService.save(user);
+		return conclusion;
 	}
 }

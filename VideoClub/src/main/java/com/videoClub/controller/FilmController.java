@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.videoClub.dto.FilmDTO;
-import com.videoClub.dto.RateDTO;
 import com.videoClub.exception.NotLoggedIn;
 import com.videoClub.model.Film;
 import com.videoClub.model.RegisteredUser;
@@ -47,13 +45,13 @@ public class FilmController {
 		return null;
 	}
 	
-	@PostMapping(value = "/film/rate", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Film> rateFilm(@RequestBody RateDTO rateDTO) {
+	@PostMapping(value = "/film/rate/{id}/{rate}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Film> rateFilm(@PathVariable(value = "id") Long id, @PathVariable(value = "rate") Integer rate) {
 		RegisteredUser user = (RegisteredUser) this.customUserDetailsService.loadUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 		if(user == null){
 			throw new NotLoggedIn();
 		}
-		return new ResponseEntity<>(filmService.rateFilm(rateDTO.getVideoId(), rateDTO.getRate(), user), HttpStatus.OK);
+		return new ResponseEntity<>(filmService.rateFilm(id, rate, user), HttpStatus.OK);
 	}
 	
 	@PostMapping(value = "/film/favourites/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -66,7 +64,6 @@ public class FilmController {
 	}
 	
 	@GetMapping(value = "/film/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<Film> getFilmInfo(@PathVariable(value = "id") Long id) {
 		return new ResponseEntity<>(filmService.getOne(id), HttpStatus.OK);
 	}
