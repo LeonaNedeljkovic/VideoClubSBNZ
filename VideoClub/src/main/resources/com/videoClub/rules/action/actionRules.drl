@@ -4,7 +4,11 @@ package com.videoClub.rules.action
 import com.videoClub.model.*;
 import com.videoClub.exception.InvalidDiscount;
 import com.videoClub.exception.EmptyGenreList;
+import com.videoClub.service.ActionEventService;
+import java.time.LocalDate;
 
+global ActionEventService actionEventService;
+global LocalDate now;
 
 rule "New Discount action"
     when
@@ -52,3 +56,14 @@ rule "Invalid FreeContent"
     then
     	throw new EmptyGenreList();
 end
+
+rule "Delete expired action events"
+	when
+		$ae: ActionEvent(  endDate.isBefore(now), $id: id );
+	then
+		actionEventService.delete($id);
+end
+
+
+
+	
