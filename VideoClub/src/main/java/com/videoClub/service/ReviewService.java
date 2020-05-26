@@ -6,7 +6,7 @@ import java.util.Optional;
 import com.videoClub.dto.ReviewDTO;
 import com.videoClub.model.RegisteredUser;
 import com.videoClub.model.Review;
-import com.videoClub.model.User;
+import com.videoClub.model.drl.UserConclusion;
 
 public interface ReviewService {
 
@@ -14,6 +14,6 @@ public interface ReviewService {
 	public Review getOne(Long id);
 	public Optional<Review> findByFilmIdAndUserId(Long film, Long user);
 	public List<Review> getLastReviews(Long userId);
-	public void fireRulesForNewReview(User user);
+	public UserConclusion fireRulesForNewReview(RegisteredUser user);
 	public Review save(Review review);
 }

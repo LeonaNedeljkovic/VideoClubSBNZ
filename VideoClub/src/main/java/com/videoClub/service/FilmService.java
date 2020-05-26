@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.videoClub.dto.FilmDTO;
 import com.videoClub.model.Film;
+import com.videoClub.model.RegisteredUser;
 import com.videoClub.model.User;
 
 public interface FilmService {
@@ -14,6 +15,6 @@ public interface FilmService {
 	//public List<VideoContent> getByActors();
 	//public List<VideoContent> getByDirector(Long directorId);
 	public void delete(Long id);
-	public Film rateFilm(Long filmId, Integer rate, User user);
+	public Film rateFilm(Long filmId, Integer rate, RegisteredUser user);
 	public List<Film> saveFilmToFavourites(Long filmId, User user);
 }

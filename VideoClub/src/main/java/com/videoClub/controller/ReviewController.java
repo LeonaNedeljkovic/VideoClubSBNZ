@@ -19,6 +19,7 @@ import com.videoClub.exception.EntityForbidden;
 import com.videoClub.exception.NotLoggedIn;
 import com.videoClub.model.RegisteredUser;
 import com.videoClub.model.Review;
+import com.videoClub.model.drl.UserConclusion;
 import com.videoClub.service.ReviewService;
 import com.videoClub.service.impl.CustomUserDetailsService;
 
@@ -64,5 +65,15 @@ public class ReviewController {
 			throw new EntityForbidden();
 		}
 		return new ResponseEntity<>(review, HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/review/test", produces = MediaType.APPLICATION_JSON_VALUE)
+	//@PreAuthorize("hasRole('REGISTERED_USER')")
+	public ResponseEntity<UserConclusion> tesy() {
+		RegisteredUser user = (RegisteredUser) this.customUserDetailsService.loadUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+		if(user == null){
+			throw new NotLoggedIn();
+		}
+		return new ResponseEntity<>(reviewService.fireRulesForNewReview(user), HttpStatus.OK);
 	}
 }
