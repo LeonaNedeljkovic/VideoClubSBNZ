@@ -30,13 +30,13 @@ public class OfferController {
 	private OfferService offerService;
 	
 	@PostMapping(value = "/offer", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<Offer> createOffer(@RequestBody Offer offer) {
 		return new ResponseEntity<>(offerService.save(offer), HttpStatus.OK);
 	}
 	
 	@PutMapping(value = "/offer/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<Offer> updateOffer(@RequestBody Offer offer) {
 		return new ResponseEntity<>(offerService.save(offer), HttpStatus.OK);
 	}
@@ -52,7 +52,7 @@ public class OfferController {
 	}
 	
 	@DeleteMapping(value = "/offer/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<MessageDto> deleteOffer(@PathVariable(value = "id") Long id) {
 		offerService.delete(id);
 		return new ResponseEntity<>(new MessageDto("OK", "Offer successfully deleted."), HttpStatus.OK);

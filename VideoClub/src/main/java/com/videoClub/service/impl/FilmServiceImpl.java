@@ -128,7 +128,6 @@ public class FilmServiceImpl implements FilmService{
 	public List<RecommendedFilm> getRecommendedFilms(RegisteredUser user) {
 		UserConclusion conclusion = reviewService.fireRulesForNewReview(user);
 		List<Film> unwatched = filmRepository.getUnwatchedFilms(user.getId());
-		System.out.println("ISPRED");
 		KieSession kieSession = kieContainer.newKieSession("filmRecommendationRulesSession");
 		kieSession.insert(conclusion);
 		List<RecommendedFilm> recommendedFilms = new ArrayList<RecommendedFilm>();
@@ -139,7 +138,6 @@ public class FilmServiceImpl implements FilmService{
 		}
 		kieSession.fireAllRules();
 		kieSession.dispose();
-		System.out.println("IZA");
 		Collections.sort(recommendedFilms, new RecommendedFilmComparator());
 		recommendedFilms = recommendedFilms.stream().filter(recommendedFilm -> recommendedFilm.getRecommendPoints() > 0)
                 .collect(Collectors.toList());

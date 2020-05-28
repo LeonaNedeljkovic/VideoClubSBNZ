@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,13 +36,13 @@ public class FilmController {
 	private CustomUserDetailsService customUserDetailsService;
 	
 	@PostMapping(value = "/film", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<Film> createFilm(@RequestBody FilmDTO filmDTO) {
 		return new ResponseEntity<>(filmService.save(filmDTO), HttpStatus.OK);
 	}
 	
 	@PutMapping(value = "/film/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<Film> updateFilm(@RequestBody FilmDTO filmDTO) {
 		return null;
 	}
@@ -65,9 +66,9 @@ public class FilmController {
 	}
 	
 	@GetMapping(value = "/film/recommended", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('ROLE_REGISTERED_USER')")
 	public ResponseEntity<List<RecommendedFilm>> getRecommended() {
 		RegisteredUser user = (RegisteredUser) this.customUserDetailsService.loadUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-		System.out.println(user.getUsername());
 		if(user == null){
 			throw new NotLoggedIn();
 		}
@@ -85,7 +86,7 @@ public class FilmController {
 	}
 	
 	@DeleteMapping(value = "/film/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void deleteFilm() {
 		// TODO implementirati...
 	}

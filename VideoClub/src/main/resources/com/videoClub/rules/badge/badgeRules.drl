@@ -5,192 +5,46 @@ import com.videoClub.model.*;
 import com.videoClub.model.drl.*;
 import com.videoClub.model.enumeration.*;
 
-rule "ALWAYS_WATCHED ArtistReviewBadge badge acquirement rule"
-	salience 10
+rule "ArtistReviewBadge acquirement rule"
+	no-loop
+	lock-on-active
     when
     	$artist : Artist( $id : id );
     	$conclusion : UserConclusion( $user : user, $reviews : user.getReviews() );
-    	Number( intValue > 0, $watchedNum : intValue ) from accumulate(
-         	$review : Review( this memberOf $reviews, watched == true, film memberOf $artist.getRoles() 
+    	Number( $watchedNum : intValue ) from accumulate(
+         	$review : Review( this memberOf $reviews, watched == true, rate == 0, film memberOf $artist.getRoles() 
          	|| $artist.getId() == film.getDirector().getId() || $artist.getId() == film.getWrittenBy().getId()),
          	count( $review ) );
-     	Number( intValue == 0, $unwatchedNum : intValue ) from accumulate(
+     	Number( $unwatchedNum : intValue ) from accumulate(
          	$review : Review( this memberOf $reviews, watched == false, film memberOf $artist.getRoles() 
          	|| $artist.getId() == film.getDirector().getId() || $artist.getId() == film.getWrittenBy().getId()),
          	count( $review ) );
     then
-    	System.out.println("User acquired ALWAYS_WATCHED badge for: " + $artist.getName() + " " + $artist.getSurname()
-    	+ " Watched time: " + $watchedNum);
-    	$conclusion.getBadges().add(new ArtistReviewBadge(ArtistReviewRank.ALWAYS_WATCHED, $artist,$watchedNum,$unwatchedNum));
-    	delete($artist);
+    	System.out.println("User acquired ArtistReviewBadge for: " + $artist.getName() + " " + $artist.getSurname()
+    	+ ". Watched films: " + $watchedNum + ", Unwatched films: " + $unwatchedNum);
+    	$conclusion.getBadges().add(new ArtistReviewBadge($artist, $watchedNum, $unwatchedNum));
     	update($conclusion);
+    	update($artist);
 end
 
-rule "GLADLY_WATCHED ArtistReviewBadge badge acquirement rule"
-	salience 10
-    when
-    	$artist : Artist( $id : id );
-    	$conclusion : UserConclusion( $user : user, $reviews : user.getReviews() );
-    	Number( intValue > 0, $watchedNum : intValue ) from accumulate(
-         	$review : Review( this memberOf $reviews, watched == true, film memberOf $artist.getRoles() 
-         	|| $artist.getId() == film.getDirector().getId() || $artist.getId() == film.getWrittenBy().getId()),
-         	count( $review ) );
-     	Number( intValue < $watchedNum, $unwatchedNum : intValue ) from accumulate(
-         	$review : Review( this memberOf $reviews, watched == false, film memberOf $artist.getRoles() 
-         	|| $artist.getId() == film.getDirector().getId() || $artist.getId() == film.getWrittenBy().getId()),
-         	count( $review ) );
-    then
-    	System.out.println("User acquired GLADLY_WATCHED badge for: " + $artist.getName() + " " + $artist.getSurname()+ " Watched time: " + $watchedNum);
-    	$conclusion.getBadges().add(new ArtistReviewBadge(ArtistReviewRank.GLADLY_WATCHED, $artist,$watchedNum,$unwatchedNum));
-    	delete($artist);
-    	update($conclusion);
-end
-
-rule "WATCHED ArtistReviewBadge badge acquirement rule"
-	salience 10
-    when
-    	$artist : Artist( $id : id );
-    	$conclusion : UserConclusion( $user : user, $reviews : user.getReviews() );
-    	Number( intValue > 0, $watchedNum : intValue ) from accumulate(
-         	$review : Review( this memberOf $reviews, watched == true, film memberOf $artist.getRoles() 
-         	|| $artist.getId() == film.getDirector().getId() || $artist.getId() == film.getWrittenBy().getId()),
-         	count( $review ) );
-     	Number( intValue == $watchedNum, $unwatchedNum : intValue ) from accumulate(
-         	$review : Review( this memberOf $reviews, watched == false, film memberOf $artist.getRoles() 
-         	|| $artist.getId() == film.getDirector().getId() || $artist.getId() == film.getWrittenBy().getId()),
-         	count( $review ) );
-    then
-    	System.out.println("User acquired WATCHED badge for: " + $artist.getName() + " " + $artist.getSurname()+ " Watched time: " + $watchedNum);
-    	$conclusion.getBadges().add(new ArtistReviewBadge(ArtistReviewRank.WATCHED, $artist,$watchedNum,$unwatchedNum));
-    	delete($artist);
-    	update($conclusion);
-end
-
-rule "RARELY_WATCHED ArtistReviewBadge badge acquirement rule"
-	salience 10
-    when
-    	$artist : Artist( $id : id );
-    	$conclusion : UserConclusion( $user : user, $reviews : user.getReviews() );
-    	Number( intValue > 0, $watchedNum : intValue ) from accumulate(
-         	$review : Review( this memberOf $reviews, watched == true, film memberOf $artist.getRoles() 
-         	|| $artist.getId() == film.getDirector().getId() || $artist.getId() == film.getWrittenBy().getId()),
-         	count( $review ) );
-     	Number( intValue > $watchedNum, $unwatchedNum : intValue ) from accumulate(
-         	$review : Review( this memberOf $reviews, watched == false, film memberOf $artist.getRoles() 
-         	|| $artist.getId() == film.getDirector().getId() || $artist.getId() == film.getWrittenBy().getId()),
-         	count( $review ) );
-    then
-    	System.out.println("User acquired RARELY_WATCHED badge for: " + $artist.getName() + " " + $artist.getSurname()+ " Watched time: " + $watchedNum);
-    	$conclusion.getBadges().add(new ArtistReviewBadge(ArtistReviewRank.RARELY_WATCHED, $artist,$watchedNum,$unwatchedNum));
-    	delete($artist);
-    	update($conclusion);
-end
-
-rule "NEVER_WATCHED ArtistReviewBadge badge acquirement rule"
-	salience 10
-    when
-    	$artist : Artist( $id : id );
-    	$conclusion : UserConclusion( $user : user, $reviews : user.getReviews() );
-    	Number( intValue == 0, $watchedNum : intValue ) from accumulate(
-         	$review : Review( this memberOf $reviews, watched == true, film memberOf $artist.getRoles() 
-         	|| $artist.getId() == film.getDirector().getId() || $artist.getId() == film.getWrittenBy().getId()),
-         	count( $review ) );
-     	Number( intValue > 0, $unwatchedNum : intValue ) from accumulate(
-         	$review : Review( this memberOf $reviews, watched == false, film memberOf $artist.getRoles() 
-         	|| $artist.getId() == film.getDirector().getId() || $artist.getId() == film.getWrittenBy().getId()),
-         	count( $review ) );
-    then
-    	System.out.println("User acquired NEVER_WATCHED badge for: " + $artist.getName() + " " + $artist.getSurname()+ " Watched time: " + $watchedNum);
-    	$conclusion.getBadges().add(new ArtistReviewBadge(ArtistReviewRank.NEVER_WATCHED, $artist,$watchedNum,$unwatchedNum));
-    	delete($artist);
-    	update($conclusion);
-end
-
-rule "FAVOURITE ArtistRateBadge badge acquirement rule"
-	salience 50
+rule "ArtistRateBadge badge acquirement rule"
+	no-loop
+	lock-on-active
     when
     	$artist : Artist( $id : id );
     	$conclusion : UserConclusion( $user : user, $reviews : user.getReviews(), $favouriteFilms : user.getFavouriteFilms() );
-    	Number( $rating : doubleValue >= 4 ) from accumulate(
+    	Number( doubleValue > 0, $rating : doubleValue ) from accumulate(
          	$review : Review( this memberOf $reviews, $rate : rate, rate > 0, film memberOf $artist.getRoles()
          	|| $artist.getId() == film.getDirector().getId() || $artist.getId() == film.getWrittenBy().getId()),
          	average( $rate ) );
-        Number( intValue > 0 ) from accumulate(
+        Number( $favourites : intValue ) from accumulate(
          	$review : Review( this memberOf $reviews, film memberOf $favouriteFilms, film memberOf $artist.getRoles()
          	|| $artist.getId() == film.getDirector().getId() || $artist.getId() == film.getWrittenBy().getId()),
          	count( $review ) );
     then
-    	System.out.println("User acquired FAVOURITE badge for: " + $artist.getName() + " " + $artist.getSurname());
-    	$conclusion.getBadges().add(new ArtistRateBadge(ArtistRateRank.FAVOURITE, $artist, $rating));
-    	delete($artist);
+    	System.out.println("User acquired ArtistRateBadge badge for: " + $artist.getName() + " " + $artist.getSurname());
+    	$conclusion.getBadges().add(new ArtistRateBadge($artist, $rating, $favourites));
     	update($conclusion);
-end
-
-rule "LIKED ArtistRateBadge badge acquirement rule"
-	salience 50
-    when
-    	$artist : Artist( $id : id );
-    	$conclusion : UserConclusion( $user : user, $reviews : user.getReviews(), $favouriteFilms : user.getFavouriteFilms() );
-    	Number( $rating : doubleValue >= 4 ) from accumulate(
-         	$review : Review( this memberOf $reviews, $rate : rate, rate > 0, film memberOf $artist.getRoles()
-         	|| $artist.getId() == film.getDirector().getId() || $artist.getId() == film.getWrittenBy().getId()),
-         	average( $rate ) );
-        $favourites : Number( intValue == 0 ) from accumulate(
-         	$review : Review( this memberOf $reviews, film memberOf $favouriteFilms, film memberOf $artist.getRoles()
-         	|| $artist.getId() == film.getDirector().getId() || $artist.getId() == film.getWrittenBy().getId()),
-         	count( $review ) );
-    then
-    	System.out.println("User acquired LIKED badge for: " + $artist.getName() + " " + $artist.getSurname());
-    	$conclusion.getBadges().add(new ArtistRateBadge(ArtistRateRank.LIKED, $artist, $rating));
-    	delete($artist);
-    	update($conclusion);
-end
-
-rule "OK ArtistRateBadge badge acquirement rule"
-	salience 50
-    when
-    	$artist : Artist( $id : id );
-    	$conclusion : UserConclusion( $user : user, $reviews : user.getReviews() );
-    	Number( $rating : doubleValue >= 3 && doubleValue < 4 ) from accumulate(
-         	$review : Review( this memberOf $reviews, $rate : rate, rate > 0, film memberOf $artist.getRoles()
-         	|| $artist.getId() == film.getDirector().getId() || $artist.getId() == film.getWrittenBy().getId()),
-         	average( $rate ) );
-    then
-    	System.out.println("User acquired OK badge for: " + $artist.getName() + " " + $artist.getSurname());
-    	$conclusion.getBadges().add(new ArtistRateBadge(ArtistRateRank.OK, $artist, $rating));
-    	delete($artist);
-    	update($conclusion);
-end
-
-rule "UNLIKED ArtistRateBadge badge acquirement rule"
-	salience 50
-    when
-    	$artist : Artist( $id : id );
-    	$conclusion : UserConclusion( $user : user, $reviews : user.getReviews() );
-    	Number( $rating : doubleValue >= 2 && doubleValue < 3 ) from accumulate(
-         	$review : Review( this memberOf $reviews, $rate : rate, rate > 0, film memberOf $artist.getRoles()
-         	|| $artist.getId() == film.getDirector().getId() || $artist.getId() == film.getWrittenBy().getId()),
-         	average( $rate ) );
-    then
-    	System.out.println("User acquired UNLIKED badge for: " + $artist.getName() + " " + $artist.getSurname());
-    	$conclusion.getBadges().add(new ArtistRateBadge(ArtistRateRank.UNLIKED, $artist, $rating));
-    	delete($artist);
-    	update($conclusion);
-end
-
-rule "HATED ArtistRateBadge badge acquirement rule"
-	salience 50
-    when
-    	$artist : Artist( $id : id );
-    	$conclusion : UserConclusion( $user : user, $reviews : user.getReviews() );
-    	Number( $rating : doubleValue < 2 &&  doubleValue > 0 ) from accumulate(
-         	$review : Review( this memberOf $reviews, $rate : rate, rate > 0, film memberOf $artist.getRoles()
-         	|| $artist.getId() == film.getDirector().getId() || $artist.getId() == film.getWrittenBy().getId()),
-         	average( $rate ) );
-    then
-    	System.out.println("User acquired HATED badge for: " + $artist.getName() + " " + $artist.getSurname());
-    	$conclusion.getBadges().add(new ArtistRateBadge(ArtistRateRank.HATED, $artist, $rating));
-    	delete($artist);
-    	update($conclusion);
+    	update($artist);
 end
 

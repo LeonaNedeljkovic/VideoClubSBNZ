@@ -3,8 +3,6 @@ package com.videoClub.service.impl;
 import java.util.List;
 import java.util.Optional;
 
-import org.kie.api.runtime.KieContainer;
-import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,9 +35,6 @@ public class ActionServiceImpl implements ActionService{
 	
 	@Autowired
 	private OfferService offerService;
-	
-	@Autowired
-	private KieContainer kieContainer;
 
 	@Override
 	public Action getOne(Long id) {
@@ -56,13 +51,11 @@ public class ActionServiceImpl implements ActionService{
 	public Action update(ActionDTO actionDTO) {
 		Action action = getOne(actionDTO.getId());
 		ActionType type = ActionType.valueOf(actionDTO.getActionType());
-		boolean delete = type.equals(action.getActionType());
 		if(type.equals(ActionType.DISCOUNT)){
 			if(actionDTO.getDiscountOffersIds().isEmpty()){
 				throw new EmptyOfferList();
 			}
 			Discount discount = new Discount();
-			discount.setActionType(ActionType.DISCOUNT);
 			discount.setAmount(actionDTO.getAmount());
 			discount.setDescription(actionDTO.getDescription());
 			discount.setTitleRank(Rank.valueOf(actionDTO.getRank()));
@@ -78,7 +71,6 @@ public class ActionServiceImpl implements ActionService{
 				throw new EmptyGenreList();
 			}
 			FreeContent freeContent = new FreeContent();
-			freeContent.setActionType(ActionType.FREE_CONTENT);
 			freeContent.setDescription(actionDTO.getDescription());
 			freeContent.setTitleRank(Rank.valueOf(actionDTO.getRank()));
 			for(String genre : actionDTO.getGenres()){
@@ -90,7 +82,6 @@ public class ActionServiceImpl implements ActionService{
 		}
 		else if(type.equals(ActionType.FREE_MINUTES)){
 			FreeMinutes freeMinutes = new FreeMinutes();
-			freeMinutes.setActionType(ActionType.FREE_MINUTES);
 			freeMinutes.setDescription(actionDTO.getDescription());
 			freeMinutes.setTitleRank(Rank.valueOf(actionDTO.getRank()));
 			freeMinutes.setAmount(actionDTO.getAmount());
@@ -98,13 +89,7 @@ public class ActionServiceImpl implements ActionService{
 			freeMinutes.setId(action.getId());
 			action = freeMinutes;
 		}
-		if(delete){
-			delete(action.getId());
-		}
 		Action newAction = actionRepository.save(action);
-		if(delete){
-			delete(actionDTO.getId());
-		}
 		return newAction;
 	}
 

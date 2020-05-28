@@ -34,7 +34,7 @@ public class PurchaseController {
 	private CustomUserDetailsService customUserDetailsService;
 	
 	@PostMapping(value = "/purchase/{offerId}", produces = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("hasRole('ROLE_REGISTERED_USER')")
+	@PreAuthorize("hasRole('ROLE_REGISTERED_USER')")
 	public ResponseEntity<Purchase> createPurchase(@PathVariable(value = "offerId") Long offerId) {
 		RegisteredUser user = (RegisteredUser) this.customUserDetailsService.loadUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 		if(user == null){
@@ -44,7 +44,7 @@ public class PurchaseController {
 	}
 	
 	@GetMapping(value = "/purchase/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("hasRole('ROLE_REGISTERED_USER')")
+	@PreAuthorize("hasRole('ROLE_REGISTERED_USER')")
 	public ResponseEntity<Purchase> getPurchase(@PathVariable(value = "id") Long id) {
 		RegisteredUser user = (RegisteredUser) this.customUserDetailsService.loadUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 		if(user == null){
@@ -58,7 +58,7 @@ public class PurchaseController {
 	}
 	
 	@GetMapping(value = "/purchases", produces = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("hasRole('ROLE_REGISTERED_USER')")
+	@PreAuthorize("hasRole('ROLE_REGISTERED_USER')")
 	public ResponseEntity<List<Purchase>> getPurchasesByUser() {
 		RegisteredUser user = (RegisteredUser) this.customUserDetailsService.loadUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 		if(user == null){

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,7 +37,7 @@ public class ReviewController {
 	private CustomUserDetailsService customUserDetailsService;
 	
 	@PostMapping(value = "/review", produces = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("hasRole('REGISTERED_USER')")
+	@PreAuthorize("hasRole('ROLE_REGISTERED_USER')")
 	public ResponseEntity<Review> saveReview(@RequestBody ReviewDTO reviewDTO) {
 		RegisteredUser user = (RegisteredUser) this.customUserDetailsService.loadUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 		if(user == null){
@@ -46,7 +47,7 @@ public class ReviewController {
 	}
 	
 	@GetMapping(value = "/reviews", produces = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("hasRole('REGISTERED_USER')")
+	@PreAuthorize("hasRole('ROLE_REGISTERED_USER')")
 	public ResponseEntity<List<Review>> getByUser() {
 		RegisteredUser user = (RegisteredUser) this.customUserDetailsService.loadUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 		if(user == null){
@@ -56,7 +57,7 @@ public class ReviewController {
 	}
 	
 	@GetMapping(value = "/review/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("hasRole('REGISTERED_USER')")
+	@PreAuthorize("hasRole('ROLE_REGISTERED_USER')")
 	public ResponseEntity<Review> getOne(@PathVariable(value = "id") Long id) {
 		RegisteredUser user = (RegisteredUser) this.customUserDetailsService.loadUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 		if(user == null){
@@ -67,15 +68,5 @@ public class ReviewController {
 			throw new EntityForbidden();
 		}
 		return new ResponseEntity<>(review, HttpStatus.OK);
-	}
-	
-	@GetMapping(value = "/review/test", produces = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("hasRole('REGISTERED_USER')")
-	public ResponseEntity<UserConclusion> tesy() {
-		RegisteredUser user = (RegisteredUser) this.customUserDetailsService.loadUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-		if(user == null){
-			throw new NotLoggedIn();
-		}
-		return new ResponseEntity<>(reviewService.fireRulesForNewReview(user), HttpStatus.OK);
 	}
 }

@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -147,7 +148,7 @@ public class RuleController {
 	}
 	
 	@PutMapping(value = "/bronze_immunity_points", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<PointsDTO> setBronzeImmunity(@RequestBody PointsDTO points) {
 		KieSession kieSession = initializeKieSession("entityDefinerRulesSession");
 		bronzeImmunity.setAcquirePoints(points.getValue());
@@ -159,7 +160,7 @@ public class RuleController {
 	}
 	
 	@PutMapping(value = "/silver_immunity_points", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<PointsDTO> setSilverImmunity(@RequestBody PointsDTO points) {
 		KieSession kieSession = initializeKieSession("entityDefinerRulesSession");
 		silverImmunity.setAcquirePoints(points.getValue());
@@ -171,7 +172,7 @@ public class RuleController {
 	}
 	
 	@PutMapping(value = "/gold_immunity_points", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<PointsDTO> setGoldImmunity(@RequestBody PointsDTO points) {
 		KieSession kieSession = initializeKieSession("entityDefinerRulesSession");
 		goldImmunity.setAcquirePoints(points.getValue());
@@ -183,7 +184,7 @@ public class RuleController {
 	}
 	
 	@PutMapping(value = "/bronze_title/acquire_points", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<PointsDTO> setBronzeTitleAcquire(@RequestBody PointsDTO points) {
 		KieSession kieSession = initializeKieSession("entityDefinerRulesSession");
 		bronzeTitle.setAcquirePoints(points.getValue());
@@ -195,7 +196,7 @@ public class RuleController {
 	}
 	
 	@PutMapping(value = "/bronze_title/save_points", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<PointsDTO> setBronzeTitleSave(@RequestBody PointsDTO points) {
 		KieSession kieSession = initializeKieSession("entityDefinerRulesSession");
 		bronzeTitle.setSavePoints(points.getValue());
@@ -207,7 +208,7 @@ public class RuleController {
 	}
 	
 	@PutMapping(value = "/bronze_title/reward_points", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<PointsDTO> setBronzeTitleReward(@RequestBody PointsDTO points) {
 		KieSession kieSession = initializeKieSession("entityDefinerRulesSession");
 		bronzeTitle.setRewardPoints(points.getValue());
@@ -219,7 +220,7 @@ public class RuleController {
 	}
 	
 	@PutMapping(value = "/silver_title/acquire_points", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<PointsDTO> setSilverTitleAcquire(@RequestBody PointsDTO points) {
 		KieSession kieSession = initializeKieSession("entityDefinerRulesSession");
 		silverTitle.setAcquirePoints(points.getValue());
@@ -231,7 +232,7 @@ public class RuleController {
 	}
 	
 	@PutMapping(value = "/silver_title/save_points", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<PointsDTO> setSilverTitleSave(@RequestBody PointsDTO points) {
 		KieSession kieSession = initializeKieSession("entityDefinerRulesSession");
 		silverTitle.setSavePoints(points.getValue());
@@ -243,7 +244,7 @@ public class RuleController {
 	}
 	
 	@PutMapping(value = "/silver_title/reward_points", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<PointsDTO> setSilverTitleReward(@RequestBody PointsDTO points) {
 		KieSession kieSession = initializeKieSession("entityDefinerRulesSession");
 		silverTitle.setRewardPoints(points.getValue());
@@ -256,7 +257,7 @@ public class RuleController {
 	}
 	
 	@PutMapping(value = "/gold_title/acquire_points", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<PointsDTO> setGoldTitleAcquire(@RequestBody PointsDTO points) {
 		KieSession kieSession = initializeKieSession("entityDefinerRulesSession");
 		goldTitle.setAcquirePoints(points.getValue());
@@ -268,7 +269,7 @@ public class RuleController {
 	}
 	
 	@PutMapping(value = "/gold_title/save_points", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<PointsDTO> setGoldTitleSave(@RequestBody PointsDTO points) {
 		KieSession kieSession = initializeKieSession("entityDefinerRulesSession");
 		goldTitle.setSavePoints(points.getValue());
@@ -280,7 +281,7 @@ public class RuleController {
 	}
 	
 	@PutMapping(value = "/gold_title/reward_points", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<PointsDTO> setGoldTitleReward(@RequestBody PointsDTO points) {
 		KieSession kieSession = initializeKieSession("entityDefinerRulesSession");
 		goldTitle.setRewardPoints(points.getValue());

@@ -5,9 +5,10 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
-import com.videoClub.model.enumeration.ActionType;
 import com.videoClub.model.enumeration.Rank;
 
 @Entity
@@ -17,15 +18,18 @@ public class Discount extends Action {
 	private int amount;
 	
 	@ManyToMany
+	@JoinTable(name = "discount_offers", 
+			  joinColumns = @JoinColumn(name = "discount_id"), 
+			  inverseJoinColumns = @JoinColumn(name = "offer_id"))
 	private List<Offer> discountOffers = new ArrayList<Offer>();
 
 	public Discount() {
 		super();
 	}
 	
-	public Discount(Long id, String description, ActionEvent actionEvent, Rank titleRank, ActionType actionType,
-			List<RegisteredUser> users, int amount, List<Offer> discountOffers) {
-		super(id, description, actionEvent, titleRank, actionType, users);
+	public Discount(Long id, String description, ActionEvent actionEvent, Rank titleRank,
+			int amount, List<Offer> discountOffers) {
+		super(id, description, actionEvent, titleRank);
 		this.amount = amount;
 		this.discountOffers = discountOffers;
 	}

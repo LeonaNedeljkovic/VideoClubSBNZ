@@ -1,29 +1,18 @@
 package com.videoClub.service.impl;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import org.kie.api.runtime.KieContainer;
-import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.videoClub.comparator.RecommendedFilmComparator;
 import com.videoClub.exception.EntityNotDeletable;
 import com.videoClub.exception.EntityNotFound;
 import com.videoClub.model.Artist;
 import com.videoClub.model.Film;
-import com.videoClub.model.RegisteredUser;
-import com.videoClub.model.User;
-import com.videoClub.model.drl.RecommendedFilm;
-import com.videoClub.model.drl.UserConclusion;
 import com.videoClub.repository.ArtistRepository;
 import com.videoClub.service.ArtistService;
 import com.videoClub.service.FilmService;
-import com.videoClub.service.ReviewService;
-import com.videoClub.service.UserService;
 
 @Service
 public class ArtistServiceImpl implements ArtistService{

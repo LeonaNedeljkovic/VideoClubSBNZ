@@ -50,6 +50,9 @@ public class Film {
 	@Column(name = "rating")
 	private double rating;
 	
+	@Column(name = "poster")
+	private String poster;
+	
 	@ManyToMany
 	@JoinTable(name = "film_actors", 
 			  joinColumns = @JoinColumn(name = "film_id"), 
@@ -71,9 +74,9 @@ public class Film {
 	public Film() {
 		super();
 	}
-	
+
 	public Film(Long id, String name, String description, Genre genre, int duration, int year, double rating,
-			List<Artist> actors, Artist director, Artist writtenBy, List<Review> reviews) {
+			String poster, List<Artist> actors, Artist director, Artist writtenBy, List<Review> reviews) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -82,12 +85,13 @@ public class Film {
 		this.duration = duration;
 		this.year = year;
 		this.rating = rating;
+		this.poster = poster;
 		this.actors = actors;
 		this.director = director;
 		this.writtenBy = writtenBy;
 		this.reviews = reviews;
 	}
-
+	
 	public Long getId() {
 		return id;
 	}
@@ -176,6 +180,14 @@ public class Film {
 		this.writtenBy = writtenBy;
 	}
 	
+	public String getPoster() {
+		return poster;
+	}
+
+	public void setPoster(String poster) {
+		this.poster = poster;
+	}
+
 	public void addNewRate(int rate, Long reviewId){
 		double rates = 0;
 		double sum = 0;

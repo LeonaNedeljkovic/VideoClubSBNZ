@@ -1,8 +1,5 @@
 package com.videoClub.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,12 +12,10 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.videoClub.model.enumeration.ActionType;
 import com.videoClub.model.enumeration.Rank;
 
 @Entity
@@ -43,27 +38,17 @@ public abstract class Action {
 	@Enumerated(EnumType.STRING)
 	@Column(name = "title_rank")
 	private Rank titleRank;
-	
-	@Enumerated(EnumType.STRING)
-	@Column(name = "action_type")
-	private ActionType actionType;
-	
-	@ManyToMany
-	private List<RegisteredUser> users = new ArrayList<RegisteredUser>();
 
 	public Action() {
 		super();
 	}
 
-	public Action(Long id, String description, ActionEvent actionEvent, Rank titleRank, ActionType actionType,
-			List<RegisteredUser> users) {
+	public Action(Long id, String description, ActionEvent actionEvent, Rank titleRank) {
 		super();
 		this.id = id;
 		this.description = description;
 		this.actionEvent = actionEvent;
 		this.titleRank = titleRank;
-		this.actionType = actionType;
-		this.users = users;
 	}
 
 	public Long getId() {
@@ -96,21 +81,5 @@ public abstract class Action {
 
 	public void setTitleRank(Rank titleRank) {
 		this.titleRank = titleRank;
-	}
-
-	public ActionType getActionType() {
-		return actionType;
-	}
-
-	public void setActionType(ActionType actionType) {
-		this.actionType = actionType;
-	}
-
-	public List<RegisteredUser> getUsers() {
-		return users;
-	}
-
-	public void setUsers(List<RegisteredUser> users) {
-		this.users = users;
 	}
 }

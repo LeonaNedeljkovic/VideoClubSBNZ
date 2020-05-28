@@ -49,6 +49,10 @@ public class RegisteredUser extends User{
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Review> reviews = new ArrayList<Review>();
 	
+	@JsonIgnore
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private List<Notification> notifications = new ArrayList<Notification>();
+	
 	@ManyToMany
 	private List<Film> favouriteFilms = new ArrayList<Film>();
 	
@@ -61,8 +65,8 @@ public class RegisteredUser extends User{
 	}
 
 	public RegisteredUser(LocalDateTime registryDate, int immunityPoints, int availableMinutes, Rank title,
-			Rank immunity, List<Action> action, List<Review> reviews, List<Film> favouriteFilms,
-			List<Purchase> purchases) {
+			Rank immunity, List<Action> action, List<Review> reviews, List<Notification> notificationa,
+			List<Film> favouriteFilms, List<Purchase> purchases) {
 		super();
 		this.registryDate = registryDate;
 		this.immunityPoints = immunityPoints;
@@ -71,13 +75,15 @@ public class RegisteredUser extends User{
 		this.immunity = immunity;
 		this.action = action;
 		this.reviews = reviews;
+		this.notifications = notificationa;
 		this.favouriteFilms = favouriteFilms;
 		this.purchases = purchases;
 	}
-
+	
 	public RegisteredUser(Long id, String username, String password, String email, LocalDateTime registryDate,
 			int immunityPoints, int availableMinutes, Rank title, Rank immunity, List<Action> action,
-			List<Review> reviews, List<Film> favouriteFilms, List<Purchase> purchases) {
+			List<Review> reviews, List<Notification> notificationa, List<Film> favouriteFilms,
+			List<Purchase> purchases) {
 		super(id, username, password, email);
 		this.registryDate = registryDate;
 		this.immunityPoints = immunityPoints;
@@ -86,10 +92,11 @@ public class RegisteredUser extends User{
 		this.immunity = immunity;
 		this.action = action;
 		this.reviews = reviews;
+		this.notifications = notificationa;
 		this.favouriteFilms = favouriteFilms;
 		this.purchases = purchases;
 	}
-	
+
 	public LocalDateTime getRegistryDate() {
 		return registryDate;
 	}
@@ -164,6 +171,14 @@ public class RegisteredUser extends User{
 
 	public void setFavouriteFilms(List<Film> favouriteFilms) {
 		this.favouriteFilms = favouriteFilms;
+	}
+
+	public List<Notification> getNotifications() {
+		return notifications;
+	}
+
+	public void setNotifications(List<Notification> notifications) {
+		this.notifications = notifications;
 	}
 
 	public boolean containsDiscount(){
