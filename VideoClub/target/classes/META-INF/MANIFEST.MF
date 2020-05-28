@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Implementation-Title: Drools :: Sample Maven Project
 Implementation-Version: 1.0.0-SNAPSHOT
-Built-By: Korisnik
+Built-By: Leona
 Implementation-Vendor-Id: com.videoClub
-Build-Jdk: 1.8.0_152
+Build-Jdk: 1.8.0_251
 Implementation-URL: https://projects.spring.io/spring-boot/#/spring-bo
  ot-starter-parent/VideoClub
 Created-By: Maven Integration for Eclipse

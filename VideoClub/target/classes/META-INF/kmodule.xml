@@ -18,4 +18,7 @@
     <kbase name="badge" packages="com.videoClub.rules.badge">
         <ksession name="badgeRulesSession"/>
     </kbase>
+    <kbase name="filmRecommendation" packages="com.videoClub.rules.filmRecommendation">
+        <ksession name="filmRecommendationRulesSession"/>
+    </kbase>
 </kmodule>

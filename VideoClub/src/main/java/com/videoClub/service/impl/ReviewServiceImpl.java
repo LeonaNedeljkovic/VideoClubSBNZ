@@ -56,6 +56,7 @@ public class ReviewServiceImpl implements ReviewService{
 		if(reviews.isEmpty()){
 			review = new Review();
 			review.setUser(user);
+			review.setRate(0);
 			review.setFilm(filmService.getOne(reviewDTO.getVideoContentId()));
 			review.setWatchedTime(LocalDateTime.parse(sdf.format(new Date()),df));
 			TimeInterval interval = new TimeInterval();

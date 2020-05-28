@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,12 +20,12 @@ import com.videoClub.dto.FilmDTO;
 import com.videoClub.exception.NotLoggedIn;
 import com.videoClub.model.Film;
 import com.videoClub.model.RegisteredUser;
+import com.videoClub.model.drl.RecommendedFilm;
 import com.videoClub.service.FilmService;
 import com.videoClub.service.impl.CustomUserDetailsService;
 
 @RestController
 @RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
-@CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*")
 public class FilmController {
 
 	@Autowired
@@ -63,6 +62,16 @@ public class FilmController {
 			throw new NotLoggedIn();
 		}
 		return new ResponseEntity<>(filmService.saveFilmToFavourites(id, user), HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/film/recommended", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<RecommendedFilm>> getRecommended() {
+		RegisteredUser user = (RegisteredUser) this.customUserDetailsService.loadUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+		System.out.println(user.getUsername());
+		if(user == null){
+			throw new NotLoggedIn();
+		}
+		return new ResponseEntity<>(filmService.getRecommendedFilms(user), HttpStatus.OK);
 	}
 	
 	@GetMapping(value = "/film/{id}", produces = MediaType.APPLICATION_JSON_VALUE)

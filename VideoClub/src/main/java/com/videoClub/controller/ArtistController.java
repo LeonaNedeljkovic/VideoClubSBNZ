@@ -30,7 +30,7 @@ import com.videoClub.service.impl.CustomUserDetailsService;
 
 @RestController
 @RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
-@CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*")
+//@CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*")
 public class ArtistController {
 
 	@Autowired
@@ -99,4 +99,5 @@ public class ArtistController {
 		artistService.delete(id);
 		return new ResponseEntity<>(new MessageDto("OK", "Artist successfully deleted."), HttpStatus.OK);
 	}
+
 }

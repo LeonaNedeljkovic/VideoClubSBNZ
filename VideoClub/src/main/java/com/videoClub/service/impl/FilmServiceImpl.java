@@ -1,12 +1,17 @@
 package com.videoClub.service.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.videoClub.comparator.RecommendedFilmComparator;
 import com.videoClub.dto.FilmDTO;
 import com.videoClub.exception.EntityNotFound;
 import com.videoClub.exception.FilmNotReviewed;
@@ -16,6 +21,8 @@ import com.videoClub.model.Film;
 import com.videoClub.model.RegisteredUser;
 import com.videoClub.model.Review;
 import com.videoClub.model.User;
+import com.videoClub.model.drl.RecommendedFilm;
+import com.videoClub.model.drl.UserConclusion;
 import com.videoClub.model.enumeration.Genre;
 import com.videoClub.repository.FilmRepository;
 import com.videoClub.service.ArtistService;
@@ -37,6 +44,9 @@ public class FilmServiceImpl implements FilmService{
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private KieContainer kieContainer;
 
 	@Override
 	public Film save(FilmDTO filmDTO) {
@@ -112,5 +122,30 @@ public class FilmServiceImpl implements FilmService{
 		((RegisteredUser) user).getFavouriteFilms().add(film);
 		RegisteredUser saved = (RegisteredUser) userService.save(user);
 		return saved.getFavouriteFilms();
+	}
+
+	@Override
+	public List<RecommendedFilm> getRecommendedFilms(RegisteredUser user) {
+		UserConclusion conclusion = reviewService.fireRulesForNewReview(user);
+		List<Film> unwatched = filmRepository.getUnwatchedFilms(user.getId());
+		System.out.println("ISPRED");
+		KieSession kieSession = kieContainer.newKieSession("filmRecommendationRulesSession");
+		kieSession.insert(conclusion);
+		List<RecommendedFilm> recommendedFilms = new ArrayList<RecommendedFilm>();
+		for(Film f : unwatched){
+			RecommendedFilm rf = new RecommendedFilm(0.0,f);
+			recommendedFilms.add(rf);
+			kieSession.insert(rf);
+		}
+		kieSession.fireAllRules();
+		kieSession.dispose();
+		System.out.println("IZA");
+		Collections.sort(recommendedFilms, new RecommendedFilmComparator());
+		recommendedFilms = recommendedFilms.stream().filter(recommendedFilm -> recommendedFilm.getRecommendPoints() > 0)
+                .collect(Collectors.toList());
+		if(recommendedFilms.size() > 15) {
+			recommendedFilms = recommendedFilms.subList(0, 14);
+		}
+		return recommendedFilms;
 	}
 }
