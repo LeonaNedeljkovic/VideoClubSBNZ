@@ -2,8 +2,6 @@ package com.videoClub.controller;
 
 import java.util.List;
 
-import org.kie.api.runtime.KieContainer;
-import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,12 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.videoClub.dto.MessageDto;
-import com.videoClub.exception.NotLoggedIn;
 import com.videoClub.model.Artist;
-import com.videoClub.model.RegisteredUser;
-import com.videoClub.model.Review;
 import com.videoClub.service.ArtistService;
-import com.videoClub.service.impl.CustomUserDetailsService;
 
 @RestController
 @RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -35,31 +29,6 @@ public class ArtistController {
 
 	@Autowired
 	private ArtistService artistService;
-	
-	@Autowired
-	private CustomUserDetailsService customUserDetailsService;
-	
-	@Autowired
-	private KieContainer kieContainer;
-	
-	@GetMapping(value = "/test2", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Artist> test2() {
-		RegisteredUser user = (RegisteredUser) this.customUserDetailsService.loadUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-		if(user == null){
-			throw new NotLoggedIn();
-		}
-		KieSession kieSession = kieContainer.newKieSession("badgeRulesSession");
-		for(Artist a : artistService.getAll()){
-			kieSession.insert(a);
-		}
-		for(Review r : user.getReviews()){
-			kieSession.insert(r);
-		}
-		kieSession.insert(user);
-		kieSession.fireAllRules();
-		kieSession.dispose();
-		return new ResponseEntity<>(null, HttpStatus.OK);
-	}
 	
 	@PostMapping(value = "/artist", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('ROLE_ADMIN')")

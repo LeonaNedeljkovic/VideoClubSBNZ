@@ -28,14 +28,21 @@ public class Offer {
 	private double price;
 	
 	@JsonIgnore
-	@ManyToMany
+	@ManyToMany(mappedBy = "discountOffers")
 	private List<Discount> discounts = new ArrayList<Discount>();
 
-	public Offer(Long id, int minutes, double price) {
+	public Offer(int minutes, double price) {
+		super();
+		this.minutes = minutes;
+		this.price = price;
+	}
+
+	public Offer(Long id, int minutes, double price, List<Discount> discounts) {
 		super();
 		this.id = id;
 		this.minutes = minutes;
 		this.price = price;
+		this.discounts = discounts;
 	}
 
 	public Offer() {

@@ -11,7 +11,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.JoinTable;
 import javax.persistence.JoinColumn;
 
-import com.videoClub.model.enumeration.ActionType;
 import com.videoClub.model.enumeration.Genre;
 import com.videoClub.model.enumeration.Rank;
 
@@ -27,9 +26,9 @@ public class FreeContent extends Action {
 		super();
 	}
 
-	public FreeContent(Long id, String description, ActionEvent actionEvent, Rank titleRank, ActionType actionType,
-			List<RegisteredUser> users, List<Genre> freeGenres) {
-		super(id, description, actionEvent, titleRank, actionType, users);
+	public FreeContent(Long id, String description, ActionEvent actionEvent, Rank titleRank,
+			List<Genre> freeGenres) {
+		super(id, description, actionEvent, titleRank);
 		this.freeGenres = freeGenres;
 	}
 
@@ -44,5 +43,13 @@ public class FreeContent extends Action {
 
 	public void setFreeGenres(List<Genre> freeGenres) {
 		this.freeGenres = freeGenres;
+	}
+	
+	public String contentToString(){
+		String genres = "";
+		for(Genre g : freeGenres){
+			genres += g.toString() + ", ";
+		}
+		return genres;
 	}
 }

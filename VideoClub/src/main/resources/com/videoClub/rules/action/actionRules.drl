@@ -12,10 +12,16 @@ global LocalDate now;
 
 rule "New Discount action"
     when
-        d : Discount( $rank : titleRank );
+        $d : Discount( $rank : titleRank );
         $user : RegisteredUser( title == $rank, containsDiscount() == false );
     then
-    	modify($user) {getAction().add(d)};
+    	modify($user) {
+    		getAction().add($d), 
+    		getNotifications().add(new Notification("New Discount Action for you!",
+    			"You are rewarded with a discount of "+$d.getAmount()+
+    			"% on special offers! Hurry to take advantage of it as it only lasts until the end of the action event.",
+    			false, $user))
+    	};
 end
 
 rule "Invalid Discount"
@@ -27,11 +33,14 @@ end
 
 rule "New FreeMinutes action"
     when
-        fm : FreeMinutes( $rank : titleRank );
+        $fm : FreeMinutes( $rank : titleRank );
         $user : RegisteredUser( title == $rank, containsFreeMinutes() == false );
     then
-    	$user.getAction().add(fm);
-    	$user.setAvailableMinutes($user.getAvailableMinutes() + fm.getAmount());
+    	$user.getAction().add($fm);
+    	$user.setAvailableMinutes($user.getAvailableMinutes() + $fm.getAmount());
+    	$user.getNotifications().add(new Notification("Free Minutes for you!",
+    			"You are rewarded with "+$fm.getAmount()+"minutes!",
+    			false, $user));
     	update($user);
 end
 
@@ -47,7 +56,12 @@ rule "New FreeContent action"
         fc : FreeContent( $rank : titleRank );
         $user : RegisteredUser( title == $rank, containsFreeContent() == false );
     then
-    	modify($user) {getAction().add(fc)};
+    	modify($user) {getAction().add(fc),
+    		getNotifications().add(new Notification("Free Content for you!",
+    			"You are rewarded with free films in "+fc.contentToString()+ " genre!"+
+    			"Hurry to take advantage as this action only lasts until the end of the event.",
+    			false, $user))
+    	};
 end
 
 rule "Invalid FreeContent"

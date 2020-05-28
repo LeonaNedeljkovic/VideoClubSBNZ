@@ -4,8 +4,6 @@ import java.util.List;
 
 import com.videoClub.model.Artist;
 import com.videoClub.model.Film;
-import com.videoClub.model.enumeration.ArtistRateRank;
-import com.videoClub.model.enumeration.ArtistReviewRank;
 
 public class RecommendedFilm {
 
@@ -38,28 +36,66 @@ public class RecommendedFilm {
 		this.film = film;
 	}
 	
-	public double actorBadgeRating(List<Badge> badges, ArtistRateRank rank){
+	public double actorBadgeRating(List<Badge> badges){
 		double num = 0.0;
+		int i = 0;
 		for(Badge badge : badges){
 			if(badge instanceof ArtistRateBadge){
 				for(Artist a : film.getActors()){
-					if(((ArtistRateBadge)badge).getArtist().getId() == a.getId()
-							&& ((ArtistRateBadge)badge).getArtistRateRank().equals(rank)){
+					if(((ArtistRateBadge)badge).getArtist().getId() == a.getId()){
 						num += ((ArtistRateBadge)badge).getAverageRate();
+						i++;
 					}
+				}
+			}
+		}
+		return num/i;
+	}
+	
+	public int actorFavourites(List<Badge> badges){
+		int i = 0;
+		for(Badge badge : badges){
+			if(badge instanceof ArtistRateBadge){
+				for(Artist a : film.getActors()){
+					if(((ArtistRateBadge)badge).getArtist().getId() == a.getId()){
+						i += ((ArtistRateBadge)badge).getFavourites();
+					}
+				}
+			}
+		}
+		return i;
+	}
+	
+	public int directorFavourites(List<Badge> badges){
+		int num = 0;
+		for(Badge badge : badges){
+			if(badge instanceof ArtistRateBadge){
+				if(film.getDirector().getId() == ((ArtistRateBadge) badge).getArtist().getId()){
+					num += ((ArtistRateBadge)badge).getFavourites();
 				}
 			}
 		}
 		return num;
 	}
 	
-	public int actorBadgeWatchedReviews(List<Badge> badges, ArtistReviewRank rank){
+	public int scenaristFavourites(List<Badge> badges){
+		int num = 0;
+		for(Badge badge : badges){
+			if(badge instanceof ArtistRateBadge){
+				if(film.getWrittenBy().getId() == ((ArtistRateBadge) badge).getArtist().getId()){
+					num += ((ArtistRateBadge)badge).getFavourites();
+				}
+			}
+		}
+		return num;
+	}
+	
+	public int actorBadgeWatchedReviews(List<Badge> badges){
 		int num = 0;
 		for(Badge badge : badges){
 			if(badge instanceof ArtistReviewBadge){
 				for(Artist a : film.getActors()){
-					if(((ArtistReviewBadge)badge).getArtist().getId() == a.getId()
-							&& ((ArtistReviewBadge)badge).getArtistReviewRank().equals(rank)){
+					if(((ArtistReviewBadge)badge).getArtist().getId() == a.getId()){
 						num += ((ArtistReviewBadge)badge).getWatchedNumber();
 					}
 				}
@@ -68,14 +104,13 @@ public class RecommendedFilm {
 		return num;
 	}
 	
-	public int actorBadgeUnwatchedReviews(List<Badge> badges, ArtistReviewRank rank){
+	public int actorBadgeUnwatchedReviews(List<Badge> badges){
 		int num = 0;
 		for(Badge badge : badges){
 			if(badge instanceof ArtistReviewBadge){
 				for(Artist a : film.getActors()){
-					if(((ArtistReviewBadge)badge).getArtist().getId() == a.getId()
-							&& ((ArtistReviewBadge)badge).getArtistReviewRank().equals(rank)){
-						num += ((ArtistReviewBadge)badge).getUnwatchedNumber() - ((ArtistReviewBadge)badge).getWatchedNumber();
+					if(((ArtistReviewBadge)badge).getArtist().getId() == a.getId()){
+						num += ((ArtistReviewBadge)badge).getUnwatchedNumber();
 					}
 				}
 			}
@@ -83,25 +118,39 @@ public class RecommendedFilm {
 		return num;
 	}
 	
-	public double directorScenaristBadgeRating(List<Badge> badges, ArtistRateRank rank){
+	public double directorBadgeRating(List<Badge> badges){
 		double num = 0.0;
+		int i = 0;
 		for(Badge badge : badges){
 			if(badge instanceof ArtistRateBadge){
-				if(((ArtistRateBadge)badge).getArtistRateRank().equals(rank) && (film.getDirector().getId() == ((ArtistRateBadge) badge).getArtist().getId()
-						|| film.getWrittenBy().getId() == ((ArtistRateBadge) badge).getArtist().getId())){
+				if(film.getDirector().getId() == ((ArtistRateBadge) badge).getArtist().getId()){
 					num += ((ArtistRateBadge)badge).getAverageRate();
+					i++;
 				}
 			}
 		}
-		return num;
+		return num/i;
 	}
 	
-	public int directorScenaristBadgeWatchedReviews(List<Badge> badges, ArtistReviewRank rank){
+	public double scenaristBadgeRating(List<Badge> badges){
+		double num = 0.0;
+		int i = 0;
+		for(Badge badge : badges){
+			if(badge instanceof ArtistRateBadge){
+				if(film.getWrittenBy().getId() == ((ArtistRateBadge) badge).getArtist().getId()){
+					num += ((ArtistRateBadge)badge).getAverageRate();
+					i++;
+				}
+			}
+		}
+		return num/i;
+	}
+	
+	public int directorBadgeWatchedReviews(List<Badge> badges){
 		int num = 0;
 		for(Badge badge : badges){
 			if(badge instanceof ArtistReviewBadge){
-				if(((ArtistReviewBadge)badge).getArtistReviewRank().equals(rank) && (film.getDirector().getId() == ((ArtistReviewBadge) badge).getArtist().getId()
-						|| film.getWrittenBy().getId() == ((ArtistReviewBadge) badge).getArtist().getId())){
+				if(film.getDirector().getId() == ((ArtistReviewBadge) badge).getArtist().getId()){
 					num += ((ArtistReviewBadge)badge).getWatchedNumber();
 				}
 			}
@@ -109,13 +158,36 @@ public class RecommendedFilm {
 		return num;
 	}
 	
-	public int directorScenaristBadgeUnwatchedReviews(List<Badge> badges, ArtistReviewRank rank){
+	public int scenaristBadgeWatchedReviews(List<Badge> badges){
 		int num = 0;
 		for(Badge badge : badges){
 			if(badge instanceof ArtistReviewBadge){
-				if(((ArtistReviewBadge)badge).getArtistReviewRank().equals(rank) && (film.getDirector().getId() == ((ArtistReviewBadge) badge).getArtist().getId()
-						|| film.getWrittenBy().getId() == ((ArtistReviewBadge) badge).getArtist().getId())){
-					num += ((ArtistReviewBadge)badge).getUnwatchedNumber() - ((ArtistReviewBadge)badge).getWatchedNumber();
+				if(film.getWrittenBy().getId() == ((ArtistReviewBadge) badge).getArtist().getId()){
+					num += ((ArtistReviewBadge)badge).getWatchedNumber();
+				}
+			}
+		}
+		return num;
+	}
+	
+	public int directorBadgeUnwatchedReviews(List<Badge> badges){
+		int num = 0;
+		for(Badge badge : badges){
+			if(badge instanceof ArtistReviewBadge){
+				if(film.getDirector().getId() == ((ArtistReviewBadge) badge).getArtist().getId()){
+					num += ((ArtistReviewBadge)badge).getUnwatchedNumber();
+				}
+			}
+		}
+		return num;
+	}
+	
+	public int scenaristBadgeUnwatchedReviews(List<Badge> badges){
+		int num = 0;
+		for(Badge badge : badges){
+			if(badge instanceof ArtistReviewBadge){
+				if(film.getWrittenBy().getId() == ((ArtistReviewBadge) badge).getArtist().getId()){
+					num += ((ArtistReviewBadge)badge).getUnwatchedNumber();
 				}
 			}
 		}

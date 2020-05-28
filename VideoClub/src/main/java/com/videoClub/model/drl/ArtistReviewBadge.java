@@ -1,18 +1,15 @@
 package com.videoClub.model.drl;
 
 import com.videoClub.model.Artist;
-import com.videoClub.model.enumeration.ArtistReviewRank;
 
 public class ArtistReviewBadge extends Badge {
 
-	private ArtistReviewRank artistReviewRank;
 	private Artist artist;
 	private Integer watchedNumber;
 	private Integer unwatchedNumber;
 
-	public ArtistReviewBadge(ArtistReviewRank artistReviewRank, Artist artist, int watchedNumber, int unwatchedNumber) {
+	public ArtistReviewBadge(Artist artist, int watchedNumber, int unwatchedNumber) {
 		super();
-		this.artistReviewRank = artistReviewRank;
 		this.artist = artist;
 		this.watchedNumber = watchedNumber;
 		this.unwatchedNumber = unwatchedNumber;
@@ -20,14 +17,6 @@ public class ArtistReviewBadge extends Badge {
 
 	public ArtistReviewBadge() {
 		super();
-	}
-
-	public ArtistReviewRank getArtistReviewRank() {
-		return artistReviewRank;
-	}
-
-	public void setArtistReviewRank(ArtistReviewRank artistReviewRank) {
-		this.artistReviewRank = artistReviewRank;
 	}
 
 	public Artist getArtist() {

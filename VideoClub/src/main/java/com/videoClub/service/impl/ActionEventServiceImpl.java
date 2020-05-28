@@ -71,7 +71,6 @@ public class ActionEventServiceImpl implements ActionEventService{
 					throw new EmptyOfferList();
 				}
 				Discount discount = new Discount();
-				discount.setActionType(ActionType.DISCOUNT);
 				discount.setAmount(action.getAmount());
 				discount.setDescription(action.getDescription());
 				discount.setTitleRank(Rank.valueOf(action.getRank()));
@@ -87,7 +86,6 @@ public class ActionEventServiceImpl implements ActionEventService{
 					throw new EmptyGenreList();
 				}
 				FreeContent freeContent = new FreeContent();
-				freeContent.setActionType(ActionType.FREE_CONTENT);
 				freeContent.setDescription(action.getDescription());
 				freeContent.setTitleRank(Rank.valueOf(action.getRank()));
 				freeContent.setActionEvent(actionEvent);
@@ -99,7 +97,6 @@ public class ActionEventServiceImpl implements ActionEventService{
 			}
 			else if(type.equals(ActionType.FREE_MINUTES)){
 				FreeMinutes freeMinutes = new FreeMinutes();
-				freeMinutes.setActionType(ActionType.FREE_MINUTES);
 				freeMinutes.setDescription(action.getDescription());
 				freeMinutes.setTitleRank(Rank.valueOf(action.getRank()));
 				freeMinutes.setAmount(action.getAmount());

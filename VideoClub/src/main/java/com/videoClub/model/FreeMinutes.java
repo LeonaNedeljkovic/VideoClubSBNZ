@@ -1,11 +1,8 @@
 package com.videoClub.model;
 
-import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
-import com.videoClub.model.enumeration.ActionType;
 import com.videoClub.model.enumeration.Rank;
 
 @Entity
@@ -18,9 +15,9 @@ public class FreeMinutes extends Action {
 		super();
 	}
 	
-	public FreeMinutes(Long id, String description, ActionEvent actionEvent, Rank titleRank, ActionType actionType,
-			List<RegisteredUser> users, int amount) {
-		super(id, description, actionEvent, titleRank, actionType, users);
+	public FreeMinutes(Long id, String description, ActionEvent actionEvent, Rank titleRank,
+			int amount) {
+		super(id, description, actionEvent, titleRank);
 		this.amount = amount;
 	}
 
