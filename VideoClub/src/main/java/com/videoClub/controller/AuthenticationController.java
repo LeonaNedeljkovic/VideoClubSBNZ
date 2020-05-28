@@ -33,7 +33,7 @@ import com.videoClub.service.impl.CustomUserDetailsService;
 
 @RestController
 @RequestMapping(value = "/auth")
-@CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*")
+//@CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*")
 public class AuthenticationController {
 
 	@Autowired

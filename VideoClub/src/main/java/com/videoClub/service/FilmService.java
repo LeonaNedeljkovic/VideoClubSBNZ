@@ -6,6 +6,7 @@ import com.videoClub.dto.FilmDTO;
 import com.videoClub.model.Film;
 import com.videoClub.model.RegisteredUser;
 import com.videoClub.model.User;
+import com.videoClub.model.drl.RecommendedFilm;
 
 public interface FilmService {
 
@@ -17,4 +18,5 @@ public interface FilmService {
 	public void delete(Long id);
 	public Film rateFilm(Long filmId, Integer rate, RegisteredUser user);
 	public List<Film> saveFilmToFavourites(Long filmId, User user);
+	public List<RecommendedFilm> getRecommendedFilms(RegisteredUser user);
 }

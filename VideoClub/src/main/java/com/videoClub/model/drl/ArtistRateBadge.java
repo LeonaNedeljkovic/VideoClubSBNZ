@@ -6,7 +6,7 @@ import com.videoClub.model.enumeration.ArtistRateRank;
 public class ArtistRateBadge extends Badge{
 
 	private ArtistRateRank artistRateRank;
-	private double averageRate;
+	private Double averageRate;
 	private Artist artist;
 
 	public ArtistRateBadge( ArtistRateRank artistRateRank, Artist artist, double averageRate) {
@@ -28,7 +28,7 @@ public class ArtistRateBadge extends Badge{
 		this.artistRateRank = artistRateRank;
 	}
 
-	public double getAverageRate() {
+	public Double getAverageRate() {
 		return averageRate;
 	}
 

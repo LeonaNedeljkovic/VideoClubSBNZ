@@ -31,7 +31,7 @@ public class Artist {
 	private String surname;
 	
 	@JsonIgnore
-	@ManyToMany
+	@ManyToMany(mappedBy = "actors")
 	private List<Film> roles = new ArrayList<Film>();
 	
 	@JsonIgnore

@@ -13,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -50,6 +51,9 @@ public class Film {
 	private double rating;
 	
 	@ManyToMany
+	@JoinTable(name = "film_actors", 
+			  joinColumns = @JoinColumn(name = "film_id"), 
+			  inverseJoinColumns = @JoinColumn(name = "artist_id"))
 	private List<Artist> actors = new ArrayList<Artist>();
 	
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
