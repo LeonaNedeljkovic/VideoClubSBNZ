@@ -1,15 +1,9 @@
 package com.videoClub.controller;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.kie.api.KieBase;
-import org.kie.api.KieBaseConfiguration;
-import org.kie.api.KieServices;
-import org.kie.api.conf.EventProcessingOption;
-import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,7 +16,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,7 +26,6 @@ import com.videoClub.dto.MessageDto;
 import com.videoClub.dto.UserDto;
 import com.videoClub.event.LoggingEvent;
 import com.videoClub.model.Administrator;
-import com.videoClub.model.RegisteredUser;
 import com.videoClub.model.User;
 import com.videoClub.model.UserTokenState;
 import com.videoClub.model.enumeration.UserRole;
@@ -88,6 +80,10 @@ public class AuthenticationController {
 	public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtAuthenticationRequest authenticationRequest,
 			HttpServletResponse response) throws AuthenticationException, IOException {
 		final Authentication authentication;
+		User reguser = (User) this.userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
+		if(reguser.getAllowedToLogIn() == false){
+			return new ResponseEntity<>(new MessageDto("Not allowed to login.", "You can not login after three failed attempts. Try again later."), HttpStatus.FORBIDDEN);
+		}
 		try {
 			authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
 					authenticationRequest.getUsername(), authenticationRequest.getPassword()));
@@ -130,7 +126,7 @@ public class AuthenticationController {
 			// Vrati token kao odgovor na uspesno autentifikaciju
 			return new ResponseEntity<>(new UserTokenState(jwt, expiresIn, userType), HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>(new MessageDto("Not allowed to login.", "Error"), HttpStatus.FORBIDDEN);
+			return new ResponseEntity<>(new MessageDto("Not allowed to login.", "You can not login after three failed attempts. Try again later."), HttpStatus.FORBIDDEN);
 		}
 	}
 

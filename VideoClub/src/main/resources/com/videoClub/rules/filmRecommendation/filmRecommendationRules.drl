@@ -5,285 +5,319 @@ import com.videoClub.model.*;
 import com.videoClub.model.drl.*;
 import com.videoClub.model.enumeration.*;
 
-rule "Reward favourite director"
-	no-loop
+import java.util.ArrayList;
+import java.util.List;
+
+
+rule "Reward director for favourite films"
 	lock-on-active
     when
+        $recommendation : RecommendedFilm( $points : recommendPoints, $film : film );
         $conclusion : UserConclusion( $badges : badges );
-        $recommendation : RecommendedFilm( $points : recommendPoints, $film : film,
-        	 $recommendation.directorFavourites($badges) > 0 );
+        Number( intValue > 0, $favouriteNum : intValue ) from accumulate(
+        	ArtistRateBadge(artist.getId() == $film.getDirector().getId(),
+        			favourites > 0, $fav : favourites ) from $badges,
+        	sum($fav) );
     then
-    	$recommendation.setRecommendPoints($points+30*$recommendation.directorFavourites($badges));
+    	$recommendation.setRecommendPoints($points+30*$favouriteNum);
         System.out.println("Film: "+ $film.getName() + " acquired " + 
-        30*$recommendation.directorFavourites($badges)+ 
-        " points for favourite director");
+        30*$favouriteNum+ " points for favourite director");
         update($conclusion);
         update($recommendation);
 end
 
-rule "Reward favourite scenarist"
-	no-loop
+rule "Reward scenarist for favourite films"
 	lock-on-active
     when
+        $recommendation : RecommendedFilm( $points : recommendPoints, $film : film );
         $conclusion : UserConclusion( $badges : badges );
-        $recommendation : RecommendedFilm( $points : recommendPoints, $film : film,
-        	 $recommendation.scenaristFavourites($badges) > 0 );
+        Number( intValue > 0, $favouriteNum : intValue ) from accumulate(
+        	ArtistRateBadge(artist.getId() == $film.getWrittenBy().getId(),
+        			favourites > 0, $fav : favourites ) from $badges,
+        	sum($fav) );
     then
-    	$recommendation.setRecommendPoints($points+20*$recommendation.scenaristFavourites($badges));
+    	$recommendation.setRecommendPoints($points+20*$favouriteNum);
         System.out.println("Film: "+ $film.getName() + " acquired " + 
-        20*$recommendation.scenaristFavourites($badges)+ 
-        " points for favourite director");
+        20*$favouriteNum+ " points for favourite scenarist");
         update($conclusion);
         update($recommendation);
 end
 
-rule "Reward favourite actors"
-	no-loop
+rule "Reward actors for favourite films"
 	lock-on-active
     when
+        $recommendation : RecommendedFilm( $points : recommendPoints, 
+        	$actors : film.getActors(), $film : film );
         $conclusion : UserConclusion( $badges : badges );
-        $recommendation : RecommendedFilm( $points : recommendPoints, $film : film,
-        	 $recommendation.actorFavourites($badges) > 0 );
+        Number( intValue > 0, $favouriteNum : intValue ) from accumulate(
+        	ArtistRateBadge(artist memberOf $actors,
+        			favourites > 0, $fav : favourites ) from $badges,
+        	sum($fav) );
     then
-    	$recommendation.setRecommendPoints($points+10*$recommendation.actorFavourites($badges));
+    	$recommendation.setRecommendPoints($points+10*$favouriteNum);
         System.out.println("Film: "+ $film.getName() + " acquired " + 
-        10*$recommendation.actorFavourites($badges)+ 
-        " points for favourite actors");
+        10*$favouriteNum+ " points for favourite actors");
         update($conclusion);
         update($recommendation);
 end
 
 rule "Reward highly rated director"
-	no-loop
 	lock-on-active
     when
+        $recommendation : RecommendedFilm( $points : recommendPoints, 
+        	$actors : film.getActors(), $film : film );
         $conclusion : UserConclusion( $badges : badges );
-        $recommendation : RecommendedFilm( $points : recommendPoints, $film : film,
-        	directorBadgeRating($badges) > 3 );
+        ArtistRateBadge(artist.getId() == $film.getDirector().getId(),
+        		averageRate >= 4, $averageRate : averageRate ) from $badges;
     then
-        $recommendation.setRecommendPoints($points+20*$recommendation.directorBadgeRating($badges));
+        $recommendation.setRecommendPoints($points+30.0*$averageRate);
         System.out.println("Film: "+ $film.getName() + " acquired "+
-        20*$recommendation.directorBadgeRating($badges)+
-        " points for highly rated director");
-        update($conclusion);
-        update($recommendation);
-end
-
-rule "Reward highly rated scenarist"
-	no-loop
-	lock-on-active
-    when
-        $conclusion : UserConclusion( $badges : badges );
-        $recommendation : RecommendedFilm( $points : recommendPoints, $film : film,
-        	scenaristBadgeRating($badges) > 3 );
-    then
-        $recommendation.setRecommendPoints($points+15*$recommendation.scenaristBadgeRating($badges));
-        System.out.println("Film: "+ $film.getName() + " acquired "+
-        15*$recommendation.scenaristBadgeRating($badges)+
-        " points for highly rated director");
+        30.0*$averageRate+" points for highly rated director");
         update($conclusion);
         update($recommendation);
 end
 
 rule "Reward highly rated actors"
-	no-loop
 	lock-on-active
     when
+        $recommendation : RecommendedFilm( $points : recommendPoints, 
+        	$actors : film.getActors(), $film : film );
         $conclusion : UserConclusion( $badges : badges );
-        $recommendation : RecommendedFilm( $points : recommendPoints, $film : film,
-        	actorBadgeRating($badges) > 3 );
+        Number( doubleValue >= 4, $averageRate : doubleValue ) from accumulate(
+        	ArtistRateBadge(artist memberOf $actors,
+        			$rate: getAverageDoubleRate() ) from $badges,
+        	average($rate) );
     then
-        $recommendation.setRecommendPoints($points+5*$recommendation.actorBadgeRating($badges));
+        $recommendation.setRecommendPoints($points+30*$averageRate);
         System.out.println("Film: "+ $film.getName() + " acquired " + 
-        5*$recommendation.actorBadgeRating($badges)+ 
-        " points for highly rated actors");
+        30*$averageRate+ " points for highly rated actors");
+        update($conclusion);
+        update($recommendation);
+end
+
+rule "Reward highly rated scenarist"
+	lock-on-active
+    when
+        $recommendation : RecommendedFilm( $points : recommendPoints, 
+        	$actors : film.getActors(), $film : film );
+        $conclusion : UserConclusion( $badges : badges );
+        ArtistRateBadge(artist.getId() == $film.getWrittenBy().getId(),
+        		averageRate >= 4, $averageRate : averageRate ) from $badges;
+    then
+        $recommendation.setRecommendPoints($points+$averageRate*20);
+        System.out.println("Film: "+ $film.getName() + " acquired "+
+        20*$averageRate+" points for highly rated scenarist");
         update($conclusion);
         update($recommendation);
 end
 
 rule "Reward watched director"
-	no-loop
 	lock-on-active
     when
+        $recommendation : RecommendedFilm( $points : recommendPoints, 
+        	$actors : film.getActors(), $film : film );
         $conclusion : UserConclusion( $badges : badges );
-        $recommendation : RecommendedFilm( $points : recommendPoints, $film : film,
-        	directorBadgeWatchedReviews($badges) > 0 );
+        ArtistReviewBadge(artist.getId() == $film.getDirector().getId(),
+        		watchedNumber > 0, $watchedNum : watchedNumber ) from $badges;
     then
-        $recommendation.setRecommendPoints($points+20*$recommendation.directorBadgeWatchedReviews($badges));
+        $recommendation.setRecommendPoints($points+15*$watchedNum);
         System.out.println("Film: "+ $film.getName() + " acquired "+
-        20*$recommendation.directorBadgeWatchedReviews($badges)+
-        " points for watched films of director");
-        update($conclusion);
-        update($recommendation);
-end
-
-rule "Reward watched scenarist"
-	no-loop
-	lock-on-active
-    when
-        $conclusion : UserConclusion( $badges : badges );
-        $recommendation : RecommendedFilm( $points : recommendPoints, $film : film,
-        	scenaristBadgeWatchedReviews($badges) > 0 );
-    then
-        $recommendation.setRecommendPoints($points+10*$recommendation.scenaristBadgeWatchedReviews($badges));
-        System.out.println("Film: "+ $film.getName() + " acquired "+
-        10*$recommendation.scenaristBadgeWatchedReviews($badges)+
-        " points for watched films of scenarist");
+        15*$watchedNum+" points for watched films of director");
         update($conclusion);
         update($recommendation);
 end
 
 rule "Reward watched actors"
-	no-loop
 	lock-on-active
     when
+        $recommendation : RecommendedFilm( $points : recommendPoints, 
+        	$actors : film.getActors(), $film : film );
         $conclusion : UserConclusion( $badges : badges );
-        $recommendation : RecommendedFilm( $points : recommendPoints, $film : film,
-        	actorBadgeWatchedReviews($badges) > 0 );
+        Number( intValue > 0, $watchedNum : intValue ) from accumulate(
+        	ArtistReviewBadge(artist memberOf $actors,
+        			watchedNumber > 0, $watched : getWatchedNumberInteger() ) from $badges,
+        	average($watched) );
     then
-        $recommendation.setRecommendPoints($points+5*$recommendation.actorBadgeWatchedReviews($badges));
+        $recommendation.setRecommendPoints($points+15*$watchedNum);
+        System.out.println("Film: "+ $film.getName() + " acquired "+
+        15*$watchedNum+" points for watched films of actors");
+        update($conclusion);
+        update($recommendation);
+end
+
+rule "Reward watched scenarist"
+	lock-on-active
+    when
+        $recommendation : RecommendedFilm( $points : recommendPoints, 
+        	$actors : film.getActors(), $film : film );
+        $conclusion : UserConclusion( $badges : badges );
+        ArtistReviewBadge(artist.getId() == $film.getWrittenBy().getId(),
+        		watchedNumber > 0, $watchedNum : watchedNumber ) from $badges;
+    then
+        $recommendation.setRecommendPoints($points+10*$watchedNum);
+        System.out.println("Film: "+ $film.getName() + " acquired "+
+        10*$watchedNum+" points for watched films of scenarist");
+        update($conclusion);
+        update($recommendation);
+end
+
+rule "Reward average rated director"
+	lock-on-active
+    when
+        $recommendation : RecommendedFilm( $points : recommendPoints, 
+        	$actors : film.getActors(), $film : film );
+        $conclusion : UserConclusion( $badges : badges );
+        ArtistRateBadge(artist.getId() == $film.getDirector().getId(),
+        		averageRate < 4 && averageRate >= 3, $averageRate : averageRate ) from $badges;
+    then
+        $recommendation.setRecommendPoints($points+5*$averageRate);
+        System.out.println("Film: "+ $film.getName() + " acquired "+
+        5*$averageRate+" points for average rated director");
+        update($conclusion);
+        update($recommendation);
+end
+
+rule "Reward average rated actors"
+	lock-on-active
+    when
+        $recommendation : RecommendedFilm( $points : recommendPoints, 
+        	$actors : film.getActors(), $film : film );
+        $conclusion : UserConclusion( $badges : badges );
+        Number( doubleValue < 4 && doubleValue >= 3, $averageRate : doubleValue ) from accumulate(
+        	ArtistRateBadge(artist memberOf $actors,
+        			$rate: getAverageDoubleRate() ) from $badges,
+        	average($rate) );
+    then
+        $recommendation.setRecommendPoints($points+5*$averageRate);
         System.out.println("Film: "+ $film.getName() + " acquired " + 
-        5*$recommendation.actorBadgeWatchedReviews($badges)+ 
-        " points for watched films of actors");
+        5*$averageRate+ " points for average rated actors");
+        update($conclusion);
+        update($recommendation);
+end
+
+rule "Reward average rated scenarist"
+	lock-on-active
+    when
+        $recommendation : RecommendedFilm( $points : recommendPoints, 
+        	$actors : film.getActors(), $film : film );
+        $conclusion : UserConclusion( $badges : badges );
+        ArtistRateBadge(artist.getId() == $film.getWrittenBy().getId(),
+        		averageRate < 4 && averageRate >= 3, $averageRate : averageRate ) from $badges;
+    then
+        $recommendation.setRecommendPoints($points+$averageRate*3);
+        System.out.println("Film: "+ $film.getName() + " acquired "+
+        3*$averageRate+" points for average rated scenarist");
         update($conclusion);
         update($recommendation);
 end
 
 rule "Punish unwatched director"
-	no-loop
 	lock-on-active
     when
+        $recommendation : RecommendedFilm( $points : recommendPoints, 
+        	$actors : film.getActors(), $film : film );
         $conclusion : UserConclusion( $badges : badges );
-        $recommendation : RecommendedFilm( $points : recommendPoints, $film : film,
-        	directorBadgeUnwatchedReviews($badges) > 0 );
+        ArtistReviewBadge(artist.getId() == $film.getDirector().getId(),
+        		unwatchedNumber > 0, $unwatchedNum : unwatchedNumber ) from $badges;
     then
-        $recommendation.setRecommendPoints($points-20*$recommendation.directorBadgeUnwatchedReviews($badges));
+        $recommendation.setRecommendPoints($points-15*$unwatchedNum);
         System.out.println("Film: "+ $film.getName() + " lost "+
-        20*$recommendation.directorBadgeUnwatchedReviews($badges)+
-        " points for unwatched films of director");
-        update($conclusion);
-        update($recommendation);
-end
-
-rule "Punish unwatched scenarist"
-	no-loop
-	lock-on-active
-    when
-        $conclusion : UserConclusion( $badges : badges );
-        $recommendation : RecommendedFilm( $points : recommendPoints, $film : film,
-        	scenaristBadgeUnwatchedReviews($badges) > 0 );
-    then
-        $recommendation.setRecommendPoints($points-10*$recommendation.scenaristBadgeUnwatchedReviews($badges));
-        System.out.println("Film: "+ $film.getName() + " lost "+
-        10*$recommendation.scenaristBadgeUnwatchedReviews($badges)+
-        " points for unwatched films of scenarist");
+        15*$unwatchedNum+" points for unwatched films of director");
         update($conclusion);
         update($recommendation);
 end
 
 rule "Punish unwatched actors"
-	no-loop
 	lock-on-active
     when
+        $recommendation : RecommendedFilm( $points : recommendPoints, 
+        	$actors : film.getActors(), $film : film );
         $conclusion : UserConclusion( $badges : badges );
-        $recommendation : RecommendedFilm( $points : recommendPoints, $film : film,
-        	actorBadgeUnwatchedReviews($badges) > 0 );
+        Number( intValue > 0, $unwatchedNum : intValue ) from accumulate(
+        	ArtistReviewBadge(artist memberOf $actors,
+        			unwatchedNumber > 0, $unwatched : getUnwatchedNumberInteger() ) from $badges,
+        	average($unwatched) );
     then
-        $recommendation.setRecommendPoints($points-5*$recommendation.actorBadgeUnwatchedReviews($badges));
-        System.out.println("Film: "+ $film.getName() + " lost " + 
-        5*$recommendation.actorBadgeUnwatchedReviews($badges)+ 
-        " points for unwatched films of actors");
-        update($conclusion);
-        update($recommendation);
-end
-
-rule "Punish poorly rated director"
-	no-loop
-	lock-on-active
-    when
-        $conclusion : UserConclusion( $badges : badges );
-        $recommendation : RecommendedFilm( $points : recommendPoints, $film : film,
-        	directorBadgeRating($badges) == 3 );
-    then
-        $recommendation.setRecommendPoints($points-50);
+        $recommendation.setRecommendPoints($points-15*$unwatchedNum);
         System.out.println("Film: "+ $film.getName() + " lost "+
-        "50 points for poorly rated director");
+        15*$unwatchedNum+" points for unwatched films of actors");
         update($conclusion);
         update($recommendation);
 end
 
-rule "Punish poorly rated scenarist"
-	no-loop
+rule "Punish unwatched scenarist"
 	lock-on-active
     when
+        $recommendation : RecommendedFilm( $points : recommendPoints, 
+        	$actors : film.getActors(), $film : film );
         $conclusion : UserConclusion( $badges : badges );
-        $recommendation : RecommendedFilm( $points : recommendPoints, $film : film,
-        	scenaristBadgeRating($badges) == 3 );
+        ArtistReviewBadge(artist.getId() == $film.getWrittenBy().getId(),
+        		unwatchedNumber > 0, $unwatchedNum : unwatchedNumber ) from $badges;
     then
-        $recommendation.setRecommendPoints($points-30);
+        $recommendation.setRecommendPoints($points-10*$unwatchedNum);
         System.out.println("Film: "+ $film.getName() + " lost "+
-        "30 points for poorly rated scenarist");
+        10*$unwatchedNum+" points for unwatched films of scenarist");
         update($conclusion);
         update($recommendation);
 end
 
-rule "Punish poorly rated actors"
-	no-loop
+rule "Punish badly rated director"
 	lock-on-active
     when
+        $recommendation : RecommendedFilm( $points : recommendPoints, 
+        	$actors : film.getActors(), $film : film );
         $conclusion : UserConclusion( $badges : badges );
-        $recommendation : RecommendedFilm( $points : recommendPoints, $film : film,
-        	actorBadgeRating($badges) == 3 );
+        ArtistRateBadge(artist.getId() == $film.getDirector().getId(),
+        		averageRate < 3 && averageRate > 0, $averageRate : averageRate ) from $badges;
     then
-        $recommendation.setRecommendPoints($points-20);
-        System.out.println("Film: "+ $film.getName() + " lost " + 
-        "20 points for poorly rated actors");
-        update($conclusion);
-        update($recommendation);
-end
-
-rule "Punish horribly rated director"
-	no-loop
-	lock-on-active
-    when
-        $conclusion : UserConclusion( $badges : badges );
-        $recommendation : RecommendedFilm( $points : recommendPoints, $film : film,
-        	directorBadgeRating($badges) < 3 && directorBadgeRating($badges) > 0);
-    then
-        $recommendation.setRecommendPoints($points-100);
+        $recommendation.setRecommendPoints($points-10*(10-$averageRate));
         System.out.println("Film: "+ $film.getName() + " lost "+
-        "100 points for horribly rated director");
+        10*(10-$averageRate)+" points for badly rated director");
         update($conclusion);
         update($recommendation);
 end
 
-rule "Punish horribly rated scenarist"
-	no-loop
+rule "Punish badly rated actors"
 	lock-on-active
     when
+        $recommendation : RecommendedFilm( $points : recommendPoints, 
+        	$actors : film.getActors(), $film : film );
         $conclusion : UserConclusion( $badges : badges );
-        $recommendation : RecommendedFilm( $points : recommendPoints, $film : film,
-        	scenaristBadgeRating($badges) < 3 && scenaristBadgeRating($badges) > 0);
+        Number( doubleValue < 3 && doubleValue > 0, $averageRate : doubleValue ) from accumulate(
+        	ArtistRateBadge(artist memberOf $actors,
+        			$rate: getAverageDoubleRate() ) from $badges,
+        	average($rate) );
     then
-        $recommendation.setRecommendPoints($points-70);
+        $recommendation.setRecommendPoints($points-10*(10-$averageRate));
         System.out.println("Film: "+ $film.getName() + " lost "+
-        "100 points for horribly rated scenarist");
+        10*(10-$averageRate)+" points for badly rated actors");
         update($conclusion);
         update($recommendation);
 end
 
-rule "Punish horribly rated actors"
-	no-loop
+rule "Punish badly rated scenarist"
 	lock-on-active
     when
+        $recommendation : RecommendedFilm( $points : recommendPoints, 
+        	$actors : film.getActors(), $film : film );
         $conclusion : UserConclusion( $badges : badges );
-        $recommendation : RecommendedFilm( $points : recommendPoints, $film : film,
-        	actorBadgeRating($badges) < 3 && actorBadgeRating($badges) > 0);
+        ArtistRateBadge(artist.getId() == $film.getWrittenBy().getId(),
+        		averageRate < 3 && averageRate > 0, $averageRate : averageRate ) from $badges;
     then
-        $recommendation.setRecommendPoints($points-50);
-        System.out.println("Film: "+ $film.getName() + " lost " + 
-        "50 points for horribly rated actors");
+        $recommendation.setRecommendPoints($points-10*(7-$averageRate));
+        System.out.println("Film: "+ $film.getName() + " lost "+
+        10*(7-$averageRate)+" points for badly rated scenarist");
         update($conclusion);
         update($recommendation);
+end
+
+rule "Delete bad recommendadion"
+	salience -100
+	lock-on-active
+    when
+        $recommendation : RecommendedFilm( recommendPoints <= 0, $film : film );
+     then
+        delete($recommendation);
+        System.out.println("Film: "+ $film.getName() + " removed from recommendadions.");
 end
 

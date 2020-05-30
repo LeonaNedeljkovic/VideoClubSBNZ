@@ -5,8 +5,8 @@ import com.videoClub.model.Artist;
 public class ArtistReviewBadge extends Badge {
 
 	private Artist artist;
-	private Integer watchedNumber;
-	private Integer unwatchedNumber;
+	private int watchedNumber;
+	private int unwatchedNumber;
 
 	public ArtistReviewBadge(Artist artist, int watchedNumber, int unwatchedNumber) {
 		super();
@@ -27,15 +27,23 @@ public class ArtistReviewBadge extends Badge {
 		this.artist = artist;
 	}
 
-	public Integer getWatchedNumber() {
+	public int getWatchedNumber() {
 		return watchedNumber;
+	}
+	
+	public Integer getWatchedNumberInteger() {
+		return watchedNumber;
+	}
+	
+	public Integer getUnwatchedNumberInteger() {
+		return unwatchedNumber;
 	}
 
 	public void setWatchedNumber(int watchedNumber) {
 		this.watchedNumber = watchedNumber;
 	}
 
-	public Integer getUnwatchedNumber() {
+	public int getUnwatchedNumber() {
 		return unwatchedNumber;
 	}
 

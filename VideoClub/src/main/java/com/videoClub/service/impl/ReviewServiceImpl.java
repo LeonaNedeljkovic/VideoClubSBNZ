@@ -11,9 +11,6 @@ import java.util.Optional;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.videoClub.dto.ReviewDTO;
@@ -25,7 +22,6 @@ import com.videoClub.model.Review;
 import com.videoClub.model.TimeInterval;
 import com.videoClub.model.drl.Badge;
 import com.videoClub.model.drl.UserConclusion;
-import com.videoClub.model.enumeration.Genre;
 import com.videoClub.repository.ReviewRepository;
 import com.videoClub.service.ReviewService;
 import com.videoClub.service.ArtistService;
@@ -111,6 +107,11 @@ public class ReviewServiceImpl implements ReviewService{
 	public List<Review> getLastReviews(Long userId) {
 		return reviewRepository.getLastReviews(userId);
 	}
+	
+	@Override
+	public List<Review> getReviewsOfFavouriteFilms(Long userId) {
+		return reviewRepository.getReviewsOfFavouriteFilms(userId);
+	}
 
 	@Override
 	public UserConclusion fireRulesForNewReview(RegisteredUser user) {
@@ -129,12 +130,5 @@ public class ReviewServiceImpl implements ReviewService{
 		kieSession.fireAllRules();
 		kieSession.dispose();
 		return conclusion;
-	}
-
-	@Override
-	public List<Genre> topThreeUserGenre(Long id) {
-		Pageable pageable = PageRequest.of(0, 3);
-		Page<Genre> p = reviewRepository.topThreeUserGenre(id,pageable);
-		return p.getContent();
 	}
 }

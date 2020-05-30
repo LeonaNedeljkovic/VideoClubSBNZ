@@ -31,7 +31,7 @@ rule "More than 3 logging in unsuccessfully in 10 minutes from one user"
         update($t1);
         
 end
-
+ 
 rule "Less than 3 logging in unsuccessfully in 10 minutes from one user"
 	lock-on-active
     when
