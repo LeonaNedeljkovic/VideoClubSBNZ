@@ -4,7 +4,7 @@ import com.videoClub.model.Artist;
 
 public class ArtistRateBadge extends Badge{
 
-	private Double averageRate;
+	private double averageRate;
 	private Artist artist;
 	private Integer favourites;
 
@@ -19,7 +19,11 @@ public class ArtistRateBadge extends Badge{
 		super();
 	}
 
-	public Double getAverageRate() {
+	public double getAverageRate() {
+		return averageRate;
+	}
+	
+	public Double getAverageDoubleRate() {
 		return averageRate;
 	}
 
@@ -41,9 +45,5 @@ public class ArtistRateBadge extends Badge{
 
 	public void setFavourites(Integer favourites) {
 		this.favourites = favourites;
-	}
-
-	public void setAverageRate(Double averageRate) {
-		this.averageRate = averageRate;
 	}
 }

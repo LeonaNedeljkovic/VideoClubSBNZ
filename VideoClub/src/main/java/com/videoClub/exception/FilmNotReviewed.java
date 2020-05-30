@@ -7,7 +7,7 @@ public class FilmNotReviewed extends RuntimeException {
 	
 	public FilmNotReviewed(){
 		super();
-		this.message = "You have to watch film to the end before giving it a rate.";
+		this.message = "You have to watch film to the end before giving it a rate or adding it to favourites.";
 	}
 
 	public String getMessage() {

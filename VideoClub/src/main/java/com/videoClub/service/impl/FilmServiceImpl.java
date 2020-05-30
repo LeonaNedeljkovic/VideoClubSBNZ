@@ -15,7 +15,6 @@ import com.videoClub.comparator.RecommendedFilmComparator;
 import com.videoClub.dto.FilmDTO;
 import com.videoClub.exception.EntityNotFound;
 import com.videoClub.exception.FilmNotReviewed;
-import com.videoClub.exception.ReviewNotRated;
 import com.videoClub.model.Artist;
 import com.videoClub.model.Film;
 import com.videoClub.model.RegisteredUser;
@@ -99,6 +98,10 @@ public class FilmServiceImpl implements FilmService{
 			throw new FilmNotReviewed();
 		}
 		review.setRate(rate);
+		KieSession kieSession = kieContainer.newKieSession("reviewRulesSession");
+		kieSession.insert(review);
+		kieSession.fireAllRules();
+		kieSession.dispose();
 		Film film = getOne(filmId);
 		film.addNewRate(rate, review.getId());
 		reviewService.save(review);
@@ -116,10 +119,12 @@ public class FilmServiceImpl implements FilmService{
 		else{
 			throw new FilmNotReviewed();
 		}
-		if(review.getRate() < 5){
-			throw new ReviewNotRated();
-		}
 		((RegisteredUser) user).getFavouriteFilms().add(film);
+		review.setUser((RegisteredUser) user);
+		KieSession kieSession = kieContainer.newKieSession("reviewRulesSession");
+		kieSession.insert(review);
+		kieSession.fireAllRules();
+		kieSession.dispose();
 		RegisteredUser saved = (RegisteredUser) userService.save(user);
 		return saved.getFavouriteFilms();
 	}

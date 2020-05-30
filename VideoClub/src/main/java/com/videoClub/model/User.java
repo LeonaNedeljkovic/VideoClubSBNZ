@@ -1,7 +1,6 @@
 package com.videoClub.model;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -154,7 +153,7 @@ public class User implements UserDetails {
 		return allowedToLogIn;
 	}
 
-	public void setAllowedToLogIn(Boolean allowedToLogIn) {
+	public void setAllowedToLogIn(boolean allowedToLogIn) {
 		this.allowedToLogIn = allowedToLogIn;
 	}
 	

@@ -6,7 +6,6 @@ import com.videoClub.model.drl.*;
 import com.videoClub.model.enumeration.*;
 
 rule "ArtistReviewBadge acquirement rule"
-	no-loop
 	lock-on-active
     when
     	$artist : Artist( $id : id );
@@ -15,7 +14,7 @@ rule "ArtistReviewBadge acquirement rule"
          	$review : Review( this memberOf $reviews, watched == true, rate == 0, film memberOf $artist.getRoles() 
          	|| $artist.getId() == film.getDirector().getId() || $artist.getId() == film.getWrittenBy().getId()),
          	count( $review ) );
-     	Number( $unwatchedNum : intValue ) from accumulate(
+     	Number( $unwatchedNum : intValue, $unwatchedNum + $watchedNum > 0 ) from accumulate(
          	$review : Review( this memberOf $reviews, watched == false, film memberOf $artist.getRoles() 
          	|| $artist.getId() == film.getDirector().getId() || $artist.getId() == film.getWrittenBy().getId()),
          	count( $review ) );
@@ -28,7 +27,6 @@ rule "ArtistReviewBadge acquirement rule"
 end
 
 rule "ArtistRateBadge badge acquirement rule"
-	no-loop
 	lock-on-active
     when
     	$artist : Artist( $id : id );

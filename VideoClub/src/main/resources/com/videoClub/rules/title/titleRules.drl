@@ -15,7 +15,6 @@ global GoldTitle goldTitle;
 
 rule "Acquire Bronze title rule"
 	no-loop
-	salience 50
     when
     	$user : RegisteredUser( $id : id, title == Rank.NONE );
         $total : Number( intValue >= bronzeTitle.getAcquirePoints() 
@@ -28,12 +27,14 @@ rule "Acquire Bronze title rule"
 		System.out.println($user.getUsername() + " acquired BRONZE title with " + $total + 
 		" purchased minutes. Reward minutes: " + bronzeTitle.getRewardPoints() +
 		", Total minutes: " + $user.getAvailableMinutes());
+		$user.getNotifications().add(new Notification("Bronze Title acquirement",
+    	"Congratulations! You have acquired Bronze title for this month, which rewarded you with "
+    	+ bronzeTitle.getRewardPoints() +" free minutes!",false, $user));
 		
 end
 
 rule "Acquire Silver title rule"
 	no-loop
-	salience 50
     when
     	$user : RegisteredUser( $id : id, title == Rank.NONE || title == Rank.BRONZE );
         $total : Number( intValue >= silverTitle.getAcquirePoints() 
@@ -46,11 +47,13 @@ rule "Acquire Silver title rule"
 		System.out.println($user.getUsername() + " acquired SILVER title with " + $total + 
 		" purchased minutes. Reward minutes: " + silverTitle.getRewardPoints() +
 		", Total minutes: " + $user.getAvailableMinutes());
+		$user.getNotifications().add(new Notification("Silver Title acquirement",
+    	"Congratulations! You have acquired Silver title for this month, which rewarded you with "
+    	+ silverTitle.getRewardPoints() +" free minutes!",false, $user));
 end
 
 rule "Acquire Gold title rule"
 	no-loop
-	salience 50
     when
     	$user : RegisteredUser( $id : id, title != Rank.GOLD );
         $total : Number( intValue >= goldTitle.getAcquirePoints() ) from accumulate(
@@ -62,10 +65,12 @@ rule "Acquire Gold title rule"
 		System.out.println($user.getUsername() + " acquired GOLD title with " + $total + 
 		" purchased minutes. Reward minutes: " + goldTitle.getRewardPoints() +
 		", Total minutes: " + $user.getAvailableMinutes());
+		$user.getNotifications().add(new Notification("Gold Title acquirement",
+    	"Congratulations! You have acquired Gold title for this month, which rewarded you with "
+    	+ goldTitle.getRewardPoints() +" free minutes!",false, $user));
 end
 
 rule "Save Bronze title rule"
-	salience 40
 	no-loop
     when
     	$user : RegisteredUser( $id : id, title == Rank.BRONZE );
@@ -78,10 +83,12 @@ rule "Save Bronze title rule"
 		System.out.println($user.getUsername() + " saved BRONZE title with " + $total + 
 		" purchased minutes. Reward minutes: " + bronzeTitle.getRewardPoints() +
 		", Total minutes: " + $user.getAvailableMinutes());
+		$user.getNotifications().add(new Notification("Bronze Title saved",
+    	"Congratulations! You have saved Bronze title for this month, which rewarded you with "
+    	+ bronzeTitle.getRewardPoints() +" free minutes!",false, $user));
 end
 
 rule "Save Silver title rule"
-	salience 40
 	no-loop
     when
     	$user : RegisteredUser( $id : id, title == Rank.SILVER );
@@ -94,10 +101,12 @@ rule "Save Silver title rule"
 		System.out.println($user.getUsername() + " saved SILVER title with " + $total + 
 		" purchased minutes. Reward minutes: " + silverTitle.getRewardPoints() +
 		", Total minutes: " + $user.getAvailableMinutes());
+		$user.getNotifications().add(new Notification("Silver Title saved",
+    	"Congratulations! You have saved Silver title for this month, which rewarded you with "
+    	+ silverTitle.getRewardPoints() +" free minutes!",false, $user));
 end
 
 rule "Save Gold title rule"
-	salience 40
 	no-loop
     when
     	$user : RegisteredUser( $id : id, title == Rank.GOLD );
@@ -109,6 +118,9 @@ rule "Save Gold title rule"
 		System.out.println($user.getUsername() + " saved GOLD title with " + $total + 
 		" purchased minutes. Reward minutes: " + goldTitle.getRewardPoints() +
 		", Total minutes: " + $user.getAvailableMinutes());
+		$user.getNotifications().add(new Notification("Gold Title saved",
+    	"Congratulations! You have saved Gold title for this month, which rewarded you with "
+    	+ goldTitle.getRewardPoints() +" free minutes!",false, $user));
 end
 
 rule "Acquire Bronze immunity rule"
@@ -171,6 +183,9 @@ rule "Save Bronze title with immunity rule"
 		System.out.println($user.getUsername() + " saved BRONZE title with immunity. " + 
 		"Reward minutes: " + bronzeTitle.getRewardPoints() +
 		", Total minutes: " + $user.getAvailableMinutes());
+		$user.getNotifications().add(new Notification("Bronze Title saved with immunity",
+    	"Congratulations! You have saved Bronze title with immunity for this month, which rewarded you with "
+    	+ bronzeTitle.getRewardPoints() +" free minutes!",false, $user));
 end
 
 rule "Save Silver title with immunity rule"
@@ -182,6 +197,9 @@ rule "Save Silver title with immunity rule"
 		System.out.println($user.getUsername() + " saved SILVER title with immunity. " + 
 		"Reward minutes: " + silverTitle.getRewardPoints() +
 		", Total minutes: " + $user.getAvailableMinutes());
+		$user.getNotifications().add(new Notification("Silver Title saved with immunity",
+    	"Congratulations! You have saved Silver title with immunity for this month, which rewarded you with "
+    	+ silverTitle.getRewardPoints() +" free minutes!",false, $user));
 end
 
 rule "Save Gold title with immunity rule"
@@ -193,6 +211,9 @@ rule "Save Gold title with immunity rule"
 		System.out.println($user.getUsername() + " saved GOLD title with immunity. " + 
 		"Reward minutes: " + goldTitle.getRewardPoints() +
 		", Total minutes: " + $user.getAvailableMinutes());
+		$user.getNotifications().add(new Notification("Gold Title saved with immunity",
+    	"Congratulations! You have saved Gold title with immunity for this month, which rewarded you with "
+    	+ goldTitle.getRewardPoints() +" free minutes!",false, $user));
 end
 
 rule "Lose Bronze title rule"
@@ -205,6 +226,8 @@ rule "Lose Bronze title rule"
     then
 		$user.setTitle(Rank.NONE);
 		System.out.println($user.getUsername()+" lost BRONZE title. Current title: "+$user.getTitle());
+		$user.getNotifications().add(new Notification("Bronze Title lost",
+    	"You have lost bronze title for this month.",false, $user));
 end
 
 rule "Lose Silver title rule"
@@ -218,6 +241,9 @@ rule "Lose Silver title rule"
 		$user.setTitle(Rank.BRONZE);
 		$user.setAvailableMinutes($user.getAvailableMinutes() + bronzeTitle.getRewardPoints());
 		System.out.println($user.getUsername()+" lost SILVER title. Current title: "+$user.getTitle());
+		$user.getNotifications().add(new Notification("Silver title lost, Bronze title acquired",
+    	"You have lost Silver title. But don't worry because you have acquired Bronze title for this month, which rewarded you with "
+    	+ bronzeTitle.getRewardPoints() +" free minutes!",false, $user));
 end
 
 rule "Lose Gold title rule"
@@ -231,4 +257,7 @@ rule "Lose Gold title rule"
 		$user.setTitle(Rank.SILVER);
 		$user.setAvailableMinutes($user.getAvailableMinutes() + silverTitle.getRewardPoints());
 		System.out.println($user.getUsername()+" lost GOLD title. Current title: "+$user.getTitle());
+		$user.getNotifications().add(new Notification("Silver title lost, Bronze title acquired",
+    	"You have lost Gold title. But don't worry because you have acquired Silver title for this month, which rewarded you with "
+    	+ silverTitle.getRewardPoints() +" free minutes!",false, $user));
 end
