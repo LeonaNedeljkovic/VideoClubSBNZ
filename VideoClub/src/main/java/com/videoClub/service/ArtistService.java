@@ -3,6 +3,7 @@ package com.videoClub.service;
 import java.util.List;
 
 import com.videoClub.model.Artist;
+import com.videoClub.model.drl.ArtistRateBadge;
 
 public interface ArtistService {
 

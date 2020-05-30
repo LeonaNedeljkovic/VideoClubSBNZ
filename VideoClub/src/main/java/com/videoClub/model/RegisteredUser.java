@@ -12,6 +12,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 import com.videoClub.model.enumeration.Rank;
 
@@ -59,6 +60,7 @@ public class RegisteredUser extends User{
 	@JsonIgnore
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Purchase> purchases = new ArrayList<Purchase>();
+	
 
 	public RegisteredUser() {
 		super();
@@ -84,7 +86,7 @@ public class RegisteredUser extends User{
 			int immunityPoints, int availableMinutes, Rank title, Rank immunity, List<Action> action,
 			List<Review> reviews, List<Notification> notificationa, List<Film> favouriteFilms,
 			List<Purchase> purchases) {
-		super(id, username, password, email);
+		super(id, username, password, email,true);
 		this.registryDate = registryDate;
 		this.immunityPoints = immunityPoints;
 		this.availableMinutes = availableMinutes;

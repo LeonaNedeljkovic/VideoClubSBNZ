@@ -57,17 +57,21 @@ public class User implements UserDetails {
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinTable(name = "user_authority", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "authority_id", referencedColumnName = "id"))
 	private List<Authority> authorities;
+	
+	@Column(name = "allowed_to_login")
+	private Boolean allowedToLogIn;
 
 	public User() {
 		super();
 	}
 
-	public User(Long id, String username, String password, String email) {
+	public User(Long id, String username, String password, String email, Boolean allowedToLogin) {
 		super();
 		this.id = id;
 		this.username = username;
 		this.password = password;
 		this.email = email;
+		this.allowedToLogIn = allowedToLogin;
 	}
 
 	public Long getId() {
@@ -145,4 +149,14 @@ public class User implements UserDetails {
 		// TODO Auto-generated method stub
 		return true;
 	}
+
+	public Boolean getAllowedToLogIn() {
+		return allowedToLogIn;
+	}
+
+	public void setAllowedToLogIn(Boolean allowedToLogIn) {
+		this.allowedToLogIn = allowedToLogIn;
+	}
+	
+	
 }

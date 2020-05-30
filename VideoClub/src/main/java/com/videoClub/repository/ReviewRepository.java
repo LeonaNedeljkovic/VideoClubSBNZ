@@ -3,11 +3,14 @@ package com.videoClub.repository;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.videoClub.model.Review;
+import com.videoClub.model.enumeration.Genre;
 
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long>{
@@ -28,4 +31,8 @@ public interface ReviewRepository extends JpaRepository<Review, Long>{
 		    "WHERE r.user.id = ?1 AND r.film.id IN "+
 			"(SELECT f.id FROM r.user.favouriteFilms f) ")
 	public List<Review> getReviewsOfFavouriteFilms(Long userId);
+	
+	@Query("SELECT r.film.genre from Review r where r.user.id = ?1 and r.watched = 1 "+
+	"GROUP BY r.film.genre ORDER BY count(r.film.genre) DESC")
+	public Page<Genre> topThreeUserGenre(Long userId,Pageable pageable);
 }
