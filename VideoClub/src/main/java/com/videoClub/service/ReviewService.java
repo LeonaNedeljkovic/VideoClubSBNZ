@@ -7,6 +7,7 @@ import com.videoClub.dto.ReviewDTO;
 import com.videoClub.model.RegisteredUser;
 import com.videoClub.model.Review;
 import com.videoClub.model.drl.UserConclusion;
+import com.videoClub.model.enumeration.Genre;
 
 public interface ReviewService {
 
@@ -16,4 +17,5 @@ public interface ReviewService {
 	public List<Review> getLastReviews(Long userId);
 	public UserConclusion fireRulesForNewReview(RegisteredUser user);
 	public Review save(Review review);
+	public List<Genre> topThreeUserGenre(Long id);
 }

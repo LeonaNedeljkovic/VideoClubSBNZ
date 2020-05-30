@@ -57,4 +57,6 @@ public class ActionController {
 		actionService.delete(id);
 		return new ResponseEntity<>(new MessageDto("OK", "Action successfully deleted."), HttpStatus.OK);
 	}
+	
+	
 }

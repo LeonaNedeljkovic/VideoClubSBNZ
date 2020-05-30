@@ -22,6 +22,7 @@ import com.videoClub.exception.NotLoggedIn;
 import com.videoClub.model.RegisteredUser;
 import com.videoClub.model.Review;
 import com.videoClub.model.drl.UserConclusion;
+import com.videoClub.model.enumeration.Genre;
 import com.videoClub.service.ReviewService;
 import com.videoClub.service.impl.CustomUserDetailsService;
 
@@ -69,4 +70,5 @@ public class ReviewController {
 		}
 		return new ResponseEntity<>(review, HttpStatus.OK);
 	}
+	
 }

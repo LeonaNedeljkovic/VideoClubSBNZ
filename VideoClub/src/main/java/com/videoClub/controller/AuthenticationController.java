@@ -1,9 +1,16 @@
 package com.videoClub.controller;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.kie.api.KieBase;
+import org.kie.api.KieBaseConfiguration;
+import org.kie.api.KieServices;
+import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,11 +31,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.videoClub.auth.JwtAuthenticationRequest;
 import com.videoClub.dto.MessageDto;
 import com.videoClub.dto.UserDto;
+import com.videoClub.event.LoggingEvent;
 import com.videoClub.model.Administrator;
+import com.videoClub.model.RegisteredUser;
 import com.videoClub.model.User;
 import com.videoClub.model.UserTokenState;
 import com.videoClub.model.enumeration.UserRole;
 import com.videoClub.security.TokenHelper;
+import com.videoClub.service.UserService;
 import com.videoClub.service.impl.CustomUserDetailsService;
 
 @RestController
@@ -45,15 +55,21 @@ public class AuthenticationController {
 	@Autowired
 	private CustomUserDetailsService userDetailsService;
 
+	@Autowired
+	private UserService userService;
+
+	@Autowired
+	private KieSession kieSession;
+
 	@PostMapping(value = "/registerUser")
 	public ResponseEntity<Boolean> registerUser(@RequestBody UserDto user) {
 		Boolean result = this.userDetailsService.registerUser(user, UserRole.ROLE_REGISTERED_USER);
 		if (result == true) {
 			return new ResponseEntity<>(result, HttpStatus.OK);
-		}else {
+		} else {
 			return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 		}
-	
+
 	}
 
 	@PostMapping(value = "/registerAdmin")
@@ -62,47 +78,60 @@ public class AuthenticationController {
 		Boolean result = this.userDetailsService.registerUser(user, UserRole.ROLE_ADMIN);
 		if (result == true) {
 			return new ResponseEntity<>(result, HttpStatus.OK);
-		}else {
+		} else {
 			return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 		}
-		
+
 	}
 
 	@PostMapping(value = "/login")
 	public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtAuthenticationRequest authenticationRequest,
 			HttpServletResponse response) throws AuthenticationException, IOException {
-		
 		final Authentication authentication;
 		try {
 			authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
 					authenticationRequest.getUsername(), authenticationRequest.getPassword()));
-			
 		} catch (BadCredentialsException e) {
+			User user = userService.findByUsername(authenticationRequest.getUsername());
+			if (user != null) {
+				LoggingEvent loggingEvent = new LoggingEvent(user,false);
+				kieSession.insert(loggingEvent);
+				kieSession.fireAllRules();
+				userService.save(loggingEvent.getUser());
+			}
 			return new ResponseEntity<>(new MessageDto("Wrong username or password.", "Error"), HttpStatus.NOT_FOUND);
 		} catch (DisabledException e) {
 			return new ResponseEntity<>(new MessageDto("Account is not verified. Check your email.", "Error"),
 					HttpStatus.FORBIDDEN);
 		}
-		
+
 		User user = (User) authentication.getPrincipal();
-		
-		// Ubaci username + password u kontext
-		
-		SecurityContextHolder.getContext().setAuthentication(authentication);
-		//System.out.println("NAME"+SecurityContextHolder.getContext().getAuthentication().getName());
-		// Kreiraj token
-		String jwt = tokenUtils.generateToken(user.getUsername());
-		int expiresIn = tokenUtils.getExpiredIn();
-		UserRole userType = null;
+		LoggingEvent loggingEvent = new LoggingEvent(user,true);
+		kieSession.insert(loggingEvent);
+		kieSession.fireAllRules();
 
-		if (user instanceof Administrator) {
-			userType = UserRole.ROLE_ADMIN;
+		if (user.getAllowedToLogIn() == true) {
+
+			// Ubaci username + password u kontext
+
+			SecurityContextHolder.getContext().setAuthentication(authentication);
+			// System.out.println("NAME"+SecurityContextHolder.getContext().getAuthentication().getName());
+			// Kreiraj token
+			String jwt = tokenUtils.generateToken(user.getUsername());
+			int expiresIn = tokenUtils.getExpiredIn();
+			UserRole userType = null;
+
+			if (user instanceof Administrator) {
+				userType = UserRole.ROLE_ADMIN;
+			} else {
+				userType = UserRole.ROLE_REGISTERED_USER;
+			}
+
+			// Vrati token kao odgovor na uspesno autentifikaciju
+			return new ResponseEntity<>(new UserTokenState(jwt, expiresIn, userType), HttpStatus.OK);
 		} else {
-			userType = UserRole.ROLE_REGISTERED_USER;
+			return new ResponseEntity<>(new MessageDto("Not allowed to login.", "Error"), HttpStatus.FORBIDDEN);
 		}
-
-		// Vrati token kao odgovor na uspesno autentifikaciju
-		return new ResponseEntity<>(new UserTokenState(jwt, expiresIn, userType), HttpStatus.OK);
 	}
 
 }

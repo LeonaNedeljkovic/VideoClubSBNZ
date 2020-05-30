@@ -2,6 +2,7 @@ package com.videoClub.model.drl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.videoClub.model.RegisteredUser;
 
@@ -35,4 +36,5 @@ public class UserConclusion {
 	public void setBadges(List<Badge> badges) {
 		this.badges = badges;
 	}
+	
 }
