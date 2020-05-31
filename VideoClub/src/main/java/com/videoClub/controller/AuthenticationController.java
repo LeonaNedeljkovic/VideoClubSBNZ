@@ -1,17 +1,12 @@
 package com.videoClub.controller;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.kie.api.KieBase;
-import org.kie.api.KieBaseConfiguration;
-import org.kie.api.KieServices;
-import org.kie.api.conf.EventProcessingOption;
-import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,7 +17,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,7 +27,6 @@ import com.videoClub.dto.MessageDto;
 import com.videoClub.dto.UserDto;
 import com.videoClub.event.LoggingEvent;
 import com.videoClub.model.Administrator;
-import com.videoClub.model.RegisteredUser;
 import com.videoClub.model.User;
 import com.videoClub.model.UserTokenState;
 import com.videoClub.model.enumeration.UserRole;
@@ -59,6 +52,7 @@ public class AuthenticationController {
 	private UserService userService;
 
 	@Autowired
+	@Qualifier("loggingKieSession")
 	private KieSession kieSession;
 
 	@PostMapping(value = "/registerUser")
