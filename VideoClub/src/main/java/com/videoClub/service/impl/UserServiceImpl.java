@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.videoClub.exception.EntityNotFound;
+import com.videoClub.model.RegisteredUser;
 import com.videoClub.model.User;
 import com.videoClub.repository.UserRepository;
 import com.videoClub.service.UserService;
@@ -66,6 +67,11 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public List<User> save(List<User> users) {
 		return userRepository.saveAll(users);
+	}
+
+	@Override
+	public List<RegisteredUser> getAllRegisteredUsers() {
+		return userRepository.findAllRegisteredUsers();
 	}
 
 }

@@ -28,7 +28,6 @@ rule "More than 3 logging in unsuccessfully in 10 minutes from one user"
     	System.out.println("Many unsuccessful logging in from same username");
     	$user.setAllowedToLogIn(false);
         insert(new SuspiciousUserEvent($user, "Many unsuccessful logging in from same username"));
-        update($t1);
         
 end
  
@@ -49,7 +48,6 @@ rule "Less than 3 logging in unsuccessfully in 10 minutes from one user"
     then
     	System.out.println("User fine");
     	$user.setAllowedToLogIn(true);
-        update($t1);
         delete($sp);
         
 end
@@ -62,6 +60,6 @@ rule "No previous logging information about user, user is allowed to log in"
     then
     	System.out.println("User fine");
     	$user.setAllowedToLogIn(true);
-        update($t1);
+    	delete($t1);
         
 end

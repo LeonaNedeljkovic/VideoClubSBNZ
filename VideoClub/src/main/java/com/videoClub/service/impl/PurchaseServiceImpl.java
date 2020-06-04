@@ -10,9 +10,12 @@ import java.util.Optional;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import com.videoClub.event.PurchaseEvent;
 import com.videoClub.exception.EntityNotFound;
+import com.videoClub.exception.TooManyPurchasesFromUser;
 import com.videoClub.model.Action;
 import com.videoClub.model.Offer;
 import com.videoClub.model.Purchase;
@@ -37,6 +40,10 @@ public class PurchaseServiceImpl implements PurchaseService{
 	@Autowired
 	private KieContainer kieContainer;
 	
+	@Autowired
+	@Qualifier("cepPurchaseSession")
+	private KieSession cepPurchaseSession;
+	
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	private DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
@@ -44,23 +51,28 @@ public class PurchaseServiceImpl implements PurchaseService{
 	public Purchase save(RegisteredUser user, long offerId) {
 		KieSession kieSession = kieContainer.newKieSession("purchaseRulesSession");
 		Purchase purchase = new Purchase();
-		purchase.setDate(LocalDateTime.parse(sdf.format(new Date()),df));
+		purchase.setDate(LocalDateTime.parse(sdf.format(new Date()), df));
 		purchase.setUser(user);
 		Offer offer = offerService.getOne(offerId);
 		purchase.setOffer(offer);
 		purchase.setPrice(offer.getPrice());
 		purchase.setPurchasedMinutes(offer.getMinutes());
-		kieSession.insert(purchase);
-		kieSession.insert(user);
-		for(Action a : user.getAction()){
-			kieSession.insert(a);
-			System.out.println("aaa");
+		cepPurchaseSession.insert(new PurchaseEvent(purchase, user));
+		int numFired = cepPurchaseSession.fireAllRules();
+		if (numFired == 0) {
+			kieSession.insert(purchase);
+			kieSession.insert(user);
+			for (Action a : user.getAction()) {
+				kieSession.insert(a);
+				System.out.println("aaa");
+			}
+			System.out.println("bbb");
+			kieSession.fireAllRules();
+			kieSession.dispose();
+			userService.save(user);
+			return purchaseRepository.save(purchase);
 		}
-		System.out.println("bbb");
-		kieSession.fireAllRules();
-		kieSession.dispose();
-		userService.save(user);
-		return purchaseRepository.save(purchase);
+		throw new TooManyPurchasesFromUser();
 	}
 
 	@Override
