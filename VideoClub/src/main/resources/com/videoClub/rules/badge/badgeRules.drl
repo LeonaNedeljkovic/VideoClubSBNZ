@@ -11,11 +11,11 @@ rule "ArtistReviewBadge acquirement rule"
     	$artist : Artist( $id : id );
     	$conclusion : UserConclusion( $user : user, $reviews : user.getReviews() );
     	Number( $watchedNum : intValue ) from accumulate(
-         	$review : Review( this memberOf $reviews, watched == true, rate == 0, film memberOf $artist.getRoles() 
+         	$review : Review( this memberOf $reviews, watched == true, rate == 0, $artist memberOf film.getActors() 
          	|| $artist.getId() == film.getDirector().getId() || $artist.getId() == film.getWrittenBy().getId()),
          	count( $review ) );
      	Number( $unwatchedNum : intValue, $unwatchedNum + $watchedNum > 0 ) from accumulate(
-         	$review : Review( this memberOf $reviews, watched == false, film memberOf $artist.getRoles() 
+         	$review : Review( this memberOf $reviews, watched == false, $artist memberOf film.getActors()
          	|| $artist.getId() == film.getDirector().getId() || $artist.getId() == film.getWrittenBy().getId()),
          	count( $review ) );
     then
@@ -32,11 +32,11 @@ rule "ArtistRateBadge badge acquirement rule"
     	$artist : Artist( $id : id );
     	$conclusion : UserConclusion( $user : user, $reviews : user.getReviews(), $favouriteFilms : user.getFavouriteFilms() );
     	Number( doubleValue > 0, $rating : doubleValue ) from accumulate(
-         	$review : Review( this memberOf $reviews, $rate : rate, rate > 0, film memberOf $artist.getRoles()
+         	$review : Review( this memberOf $reviews, $rate : rate, rate > 0, $artist memberOf film.getActors()
          	|| $artist.getId() == film.getDirector().getId() || $artist.getId() == film.getWrittenBy().getId()),
          	average( $rate ) );
         Number( $favourites : intValue ) from accumulate(
-         	$review : Review( this memberOf $reviews, film memberOf $favouriteFilms, film memberOf $artist.getRoles()
+         	$review : Review( this memberOf $reviews, film memberOf $favouriteFilms, $artist memberOf film.getActors()
          	|| $artist.getId() == film.getDirector().getId() || $artist.getId() == film.getWrittenBy().getId()),
          	count( $review ) );
     then

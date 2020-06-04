@@ -13,6 +13,10 @@ public class Administrator extends User {
 	public Administrator() {
 		
 	}
+	
+	public Administrator(Long id, String username, String password, String email) {
+		super(id, username, password, email);
+	}
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;

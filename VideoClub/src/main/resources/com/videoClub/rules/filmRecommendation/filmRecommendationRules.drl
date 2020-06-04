@@ -168,7 +168,7 @@ rule "Reward average rated director"
         	$actors : film.getActors(), $film : film );
         $conclusion : UserConclusion( $badges : badges );
         ArtistRateBadge(artist.getId() == $film.getDirector().getId(),
-        		averageRate < 4 && averageRate >= 3, $averageRate : averageRate ) from $badges;
+        		averageRate < 4 && averageRate > 3, $averageRate : averageRate ) from $badges;
     then
         $recommendation.setRecommendPoints($points+5*$averageRate);
         System.out.println("Film: "+ $film.getName() + " acquired "+
@@ -183,7 +183,7 @@ rule "Reward average rated actors"
         $recommendation : RecommendedFilm( $points : recommendPoints, 
         	$actors : film.getActors(), $film : film );
         $conclusion : UserConclusion( $badges : badges );
-        Number( doubleValue < 4 && doubleValue >= 3, $averageRate : doubleValue ) from accumulate(
+        Number( doubleValue < 4 && doubleValue > 3, $averageRate : doubleValue ) from accumulate(
         	ArtistRateBadge(artist memberOf $actors,
         			$rate: getAverageDoubleRate() ) from $badges,
         	average($rate) );
@@ -202,7 +202,7 @@ rule "Reward average rated scenarist"
         	$actors : film.getActors(), $film : film );
         $conclusion : UserConclusion( $badges : badges );
         ArtistRateBadge(artist.getId() == $film.getWrittenBy().getId(),
-        		averageRate < 4 && averageRate >= 3, $averageRate : averageRate ) from $badges;
+        		averageRate < 4 && averageRate > 3, $averageRate : averageRate ) from $badges;
     then
         $recommendation.setRecommendPoints($points+$averageRate*3);
         System.out.println("Film: "+ $film.getName() + " acquired "+
@@ -268,7 +268,7 @@ rule "Punish badly rated director"
         	$actors : film.getActors(), $film : film );
         $conclusion : UserConclusion( $badges : badges );
         ArtistRateBadge(artist.getId() == $film.getDirector().getId(),
-        		averageRate < 3 && averageRate > 0, $averageRate : averageRate ) from $badges;
+        		averageRate <= 3 && averageRate > 0, $averageRate : averageRate ) from $badges;
     then
         $recommendation.setRecommendPoints($points-10*(10-$averageRate));
         System.out.println("Film: "+ $film.getName() + " lost "+
@@ -283,7 +283,7 @@ rule "Punish badly rated actors"
         $recommendation : RecommendedFilm( $points : recommendPoints, 
         	$actors : film.getActors(), $film : film );
         $conclusion : UserConclusion( $badges : badges );
-        Number( doubleValue < 3 && doubleValue > 0, $averageRate : doubleValue ) from accumulate(
+        Number( doubleValue <= 3 && doubleValue > 0, $averageRate : doubleValue ) from accumulate(
         	ArtistRateBadge(artist memberOf $actors,
         			$rate: getAverageDoubleRate() ) from $badges,
         	average($rate) );
@@ -302,22 +302,12 @@ rule "Punish badly rated scenarist"
         	$actors : film.getActors(), $film : film );
         $conclusion : UserConclusion( $badges : badges );
         ArtistRateBadge(artist.getId() == $film.getWrittenBy().getId(),
-        		averageRate < 3 && averageRate > 0, $averageRate : averageRate ) from $badges;
+        		averageRate <= 3 && averageRate > 0, $averageRate : averageRate ) from $badges;
     then
         $recommendation.setRecommendPoints($points-10*(7-$averageRate));
         System.out.println("Film: "+ $film.getName() + " lost "+
         10*(7-$averageRate)+" points for badly rated scenarist");
         update($conclusion);
         update($recommendation);
-end
-
-rule "Delete bad recommendadion"
-	salience -100
-	lock-on-active
-    when
-        $recommendation : RecommendedFilm( recommendPoints <= 0, $film : film );
-     then
-        delete($recommendation);
-        System.out.println("Film: "+ $film.getName() + " removed from recommendadions.");
 end
 
