@@ -96,4 +96,9 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
     protected ResponseEntity<MessageDto> handleReviewNotRated(ReviewNotRated e) {
 		return new ResponseEntity<>(new MessageDto("Review Not Rated", e.getMessage()), HttpStatus.OK);
     }
+    
+    @ExceptionHandler(value = TooManyPurchasesFromUser.class)
+    protected ResponseEntity<MessageDto> handleTooManyPurchasesFromUser(TooManyPurchasesFromUser e) {
+		return new ResponseEntity<>(new MessageDto("Too many purchases from user", e.getMessage()), HttpStatus.OK);
+    }
 }

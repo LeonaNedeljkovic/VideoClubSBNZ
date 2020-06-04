@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -51,6 +52,7 @@ public class AuthenticationController {
 	private UserService userService;
 
 	@Autowired
+	@Qualifier("loggingKieSession")
 	private KieSession kieSession;
 
 	@PostMapping(value = "/registerUser")
@@ -94,6 +96,9 @@ public class AuthenticationController {
 				kieSession.insert(loggingEvent);
 				kieSession.fireAllRules();
 				userService.save(loggingEvent.getUser());
+				if(loggingEvent.getUser().getAllowedToLogIn() == false) {
+					return new ResponseEntity<>(new MessageDto("Not allowed to login.", "You can not login after three failed attempts. Try again later."), HttpStatus.FORBIDDEN);
+				}
 			}
 			return new ResponseEntity<>(new MessageDto("Wrong username or password.", "Error"), HttpStatus.NOT_FOUND);
 		} catch (DisabledException e) {
@@ -105,6 +110,7 @@ public class AuthenticationController {
 		LoggingEvent loggingEvent = new LoggingEvent(user,true);
 		kieSession.insert(loggingEvent);
 		kieSession.fireAllRules();
+		userService.save(user);
 
 		if (user.getAllowedToLogIn() == true) {
 

@@ -4,36 +4,32 @@ package com.videoClub.rules.purchase
 import com.videoClub.model.*;
 import com.videoClub.model.enumeration.*;
 import com.videoClub.exception.*;
-import java.text.DecimalFormat;
-import java.math.RoundingMode;
 
 rule "Purchase with discount"
     when
-        $purchase : Purchase( $offer : offer );
-        $user : RegisteredUser( $actions : action );
-        Number(intValue > 0, $discount: intValue) from accumulate(
-        	Discount ( $amount : getAmountInteger(), discountOffers contains $offer ) from $actions,
-        	sum($amount));
+        $purchase : Purchase( $offer : offer ) and
+        Discount ( $discount : amount, discountOffers contains $offer ) and
+        $user : RegisteredUser( );
     then
-    	System.out.println("Purchase with discount FIRED");
-    	DecimalFormat df = new DecimalFormat("#.##");
         $purchase.setDiscount($discount);
-        $purchase.setPriceDouble(Double.valueOf(df.format($offer.getPrice()-$offer.getPrice()*($discount / 100.0))) );
+        $purchase.setPrice($offer.getPrice() - Math.round($offer.getPrice()*($discount / 100.0)) );
         $user.setAvailableMinutes($user.getAvailableMinutes() + $offer.getMinutes());
         $user.setImmunityPoints($user.getImmunityPoints() + (int)$offer.getPrice());
+        update($purchase);
+        update($user);
+
 end
 
 rule "Purchase without discount"
     when
-        $purchase : Purchase( $offer : offer );
-        $user : RegisteredUser( $actions : action );
-        Number( intValue == 0, $discount: intValue ) from accumulate(
-        	Discount ( $amount : getAmountInteger(), discountOffers contains $offer ) from $actions,
-        	sum($amount));
+        $purchase : Purchase( $offer : offer ) and
+        $user : RegisteredUser( ) and not
+        Discount ( discountOffers contains $offer );
     then
-    	System.out.println("Purchase without discount FIRED");
     	$purchase.setDiscount(0);
         $purchase.setPrice($offer.getPrice());
         $user.setAvailableMinutes($user.getAvailableMinutes() + $offer.getMinutes());
         $user.setImmunityPoints($user.getImmunityPoints() + (int)$offer.getPrice());
+        update($purchase);
+        update($user);
 end

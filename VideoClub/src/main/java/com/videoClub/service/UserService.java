@@ -1,6 +1,8 @@
 package com.videoClub.service;
 
 import java.util.List;
+
+import com.videoClub.model.RegisteredUser;
 import com.videoClub.model.User;
 
 public interface UserService {
@@ -17,5 +19,7 @@ public interface UserService {
 	User save(User user);
 	
 	public List<User> save(List<User> users);
+	
+	public List<RegisteredUser> getAllRegisteredUsers();
 	
 }

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.videoClub.exception.EntityNotFound;
+import com.videoClub.model.RegisteredUser;
 import com.videoClub.model.User;
 import com.videoClub.repository.UserRepository;
 import com.videoClub.service.UserService;
@@ -21,12 +22,12 @@ public class UserServiceImpl implements UserService {
 		return userRepository.findByToken(token);
 	}
 
-	//@Transactional(readOnly = false)
+	// @Transactional(readOnly = false)
 	public User save(User user) {
 		return userRepository.save(user);
 	}
 
-	//@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+	// @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	public String editProfile(User user) {
 		User userToEdit = userRepository.findByUsername(user.getUsername());
 		if (userToEdit == null) {
@@ -45,10 +46,9 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User findById(Long id) {
 		Optional<User> user = userRepository.findById(id);
-		if(user.isPresent()){
+		if (user.isPresent()) {
 			return user.get();
-		}
-		else{
+		} else {
 			throw new EntityNotFound(id);
 		}
 	}
@@ -66,6 +66,11 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public List<User> save(List<User> users) {
 		return userRepository.saveAll(users);
+	}
+
+	@Override
+	public List<RegisteredUser> getAllRegisteredUsers() {
+		return userRepository.findAllRegisteredUsers();
 	}
 
 }
