@@ -4,11 +4,36 @@ package com.videoClub.rules.action
 import com.videoClub.model.*;
 import com.videoClub.exception.InvalidDiscount;
 import com.videoClub.exception.EmptyGenreList;
+import com.videoClub.exception.InvalidFreeMinutes;
 import com.videoClub.service.ActionEventService;
 import java.time.LocalDate;
 
 global ActionEventService actionEventService;
 global LocalDate now;
+
+rule "Invalid Discount"
+	salience 20
+    when
+        Discount( amount > 75 || amount < 10 || discountOffers.isEmpty() );
+    then
+    	throw new InvalidDiscount();
+end
+
+rule "Invalid FreeMinutes"
+	salience 20
+    when
+        FreeMinutes( amount > 1000 || amount < 30 );
+    then
+    	throw new InvalidFreeMinutes();
+end
+
+rule "Invalid FreeContent"
+	salience 20
+    when
+        FreeContent( freeGenres.isEmpty() );
+    then
+    	throw new EmptyGenreList();
+end
 
 rule "New Discount action"
     when
@@ -24,13 +49,6 @@ rule "New Discount action"
     	};
 end
 
-rule "Invalid Discount"
-    when
-        Discount( amount > 75 || amount < 10 || discountOffers.isEmpty() );
-    then
-    	throw new InvalidDiscount();
-end
-
 rule "New FreeMinutes action"
     when
         $fm : FreeMinutes( $rank : titleRank );
@@ -42,13 +60,6 @@ rule "New FreeMinutes action"
     			"You are rewarded with "+$fm.getAmount()+"minutes!",
     			false, $user));
     	update($user);
-end
-
-rule "Invalid FreeMinutes"
-    when
-        FreeMinutes( amount > 1000 || amount < 30 );
-    then
-    	throw new InvalidDiscount();
 end
 
 rule "New FreeContent action"
@@ -64,20 +75,9 @@ rule "New FreeContent action"
     	};
 end
 
-rule "Invalid FreeContent"
-    when
-        FreeContent( freeGenres.isEmpty() );
-    then
-    	throw new EmptyGenreList();
-end
-
 rule "Delete expired action events"
 	when
 		$ae: ActionEvent(  endDate.isBefore(now), $id: id );
 	then
 		actionEventService.delete($id);
 end
-
-
-
-	
