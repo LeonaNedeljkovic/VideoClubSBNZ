@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.videoClub.exception.EntityNotFound;
-import com.videoClub.model.Action;
 import com.videoClub.model.Offer;
 import com.videoClub.model.Purchase;
 import com.videoClub.model.RegisteredUser;
@@ -52,11 +51,6 @@ public class PurchaseServiceImpl implements PurchaseService{
 		purchase.setPurchasedMinutes(offer.getMinutes());
 		kieSession.insert(purchase);
 		kieSession.insert(user);
-		for(Action a : user.getAction()){
-			kieSession.insert(a);
-			System.out.println("aaa");
-		}
-		System.out.println("bbb");
 		kieSession.fireAllRules();
 		kieSession.dispose();
 		userService.save(user);

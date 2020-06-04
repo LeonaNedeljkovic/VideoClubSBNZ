@@ -92,6 +92,10 @@ public class Purchase {
 	public void setPrice(double price) {
 		this.price = price;
 	}
+	
+	public void setPriceDouble(Double price) {
+		this.price = price;
+	}
 
 	public Integer getPurchasedMinutes() {
 		return purchasedMinutes;

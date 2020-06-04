@@ -17,10 +17,15 @@ end
 rule "Review with FreeContent action that matches content genre"
 	no-loop
     when
-        TimeInterval( $review : review ) and
-        FreeContent( freeGenres contains $review.getFilm().getGenre() );
+        $ti:TimeInterval( $review : review);
+        RegisteredUser( $actions : action );
+        Number(intValue > 0) from accumulate(
+        	$fc:FreeContent( freeGenres contains $review.getFilm().getGenre() ) from $actions,
+        	count($fc)
+        );
     then
 		System.out.println("Review with FreeContent action that matches content genre FIRED");
+		delete($ti);
 		insert($review);
 end
 
@@ -37,13 +42,17 @@ end
 rule "Review without FreeContent when user have enough minutes"
 	no-loop
     when
-        TimeInterval( $review : review, $end:endMinute, $start:startMinute,
-        	 review.getUser().getAvailableMinutes() >= (endMinute - startMinute) ) and not
-        FreeContent( freeGenres contains $review.getFilm().getGenre() );
-        $user : RegisteredUser( this == $review.getUser() );
+    	$ti:TimeInterval( $review : review, $end:endMinute, $start:startMinute,
+        	 review.getUser().getAvailableMinutes() >= (endMinute - startMinute) );
+        $user : RegisteredUser( $actions : action );
+        Number(intValue == 0) from accumulate(
+        	$fc:FreeContent( freeGenres contains $review.getFilm().getGenre() ) from $actions,
+        	count($fc)
+        );
     then
 		System.out.println("Review without FreeContent when user have enough minutes FIRED");
 		$user.setAvailableMinutes($user.getAvailableMinutes() - ($end-$start));
+		delete($ti);
 		insert($review);
 end
 
@@ -72,6 +81,7 @@ rule "Film rated but not watched"
 end
 
 rule "Film added to favourites but not watched"
+	salience 20
     when
         Review( watched == false, film memberOf user.getFavouriteFilms() );
     then
@@ -79,6 +89,7 @@ rule "Film added to favourites but not watched"
 end
 
 rule "Film added to favourites without rate 5"
+	salience 10
     when
         $review : Review( watched == true, rate != 5, film memberOf user.getFavouriteFilms() );
     then
