@@ -68,6 +68,10 @@ public class Offer {
 	public double getPrice() {
 		return price;
 	}
+	
+	public Double getPriceDouble() {
+		return price;
+	}
 
 	public void setPrice(double price) {
 		this.price = price;
