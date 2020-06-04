@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.videoClub.comparator.RecommendedFilmComparator;
 import com.videoClub.dto.FilmDTO;
+import com.videoClub.dto.MessageDto;
 import com.videoClub.exception.EntityNotFound;
 import com.videoClub.exception.FilmNotReviewed;
 import com.videoClub.model.Artist;
@@ -20,6 +21,7 @@ import com.videoClub.model.Film;
 import com.videoClub.model.RegisteredUser;
 import com.videoClub.model.Review;
 import com.videoClub.model.User;
+import com.videoClub.model.drl.Badge;
 import com.videoClub.model.drl.RecommendedFilm;
 import com.videoClub.model.drl.UserConclusion;
 import com.videoClub.model.enumeration.Genre;
@@ -62,6 +64,22 @@ public class FilmServiceImpl implements FilmService{
 		film.setYear(filmDTO.getYear());
 		film.setGenre(Genre.valueOf(filmDTO.getGenre()));
 		film.setRating(0);
+		List<RegisteredUser> users = userService.getAllRegisteredUsers();
+		KieSession kieSession = kieContainer.newKieSession("adminRecommendationRulesSession");
+		kieSession.setGlobal("usersNumber", users.size());
+		MessageDto messageDto = new MessageDto();
+		kieSession.insert(film);
+		kieSession.insert(messageDto);
+		for(RegisteredUser u: users) {
+			UserConclusion userConclusion = reviewService.fireRulesForNewReview(u);
+			for(Badge b: userConclusion.getBadges()) {
+				kieSession.insert(b);
+			}
+		}
+		kieSession.fireAllRules();
+
+		System.out.println(messageDto.getMessage());
+		kieSession.dispose();
 		return filmRepository.save(film);
 	}
 

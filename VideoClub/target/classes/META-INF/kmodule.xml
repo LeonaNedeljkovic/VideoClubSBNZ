@@ -24,11 +24,11 @@
     <kbase name="artistRecommendation" packages="com.videoClub.rules.artist">
         <ksession name="artistRulesSession"/>
     </kbase>
-    <kbase name="logging" eventProcessingMode="stream" packages="com.videoClub.rules.cep">
+    <kbase name="cepLogging" eventProcessingMode="stream" packages="com.videoClub.rules.cep">
         <ksession name="cepRulesSession"/>
     </kbase>
-    <kbase name="cepConfigKbase" eventProcessingMode="stream" packages="com.videoClub.rules">
-        <ksession name="cepConfigKsessionPseudoClock" clockType="pseudo"/>
+   <kbase name="cepPurchase" eventProcessingMode="stream" packages="com.videoClub.rules.cepPurchase">
+        <ksession name="cepPurchaseSession"/>
     </kbase>
     <kbase name="adminRecommendation" packages="com.videoClub.rules.adminRecommendation">
         <ksession name="adminRecommendationRulesSession"/>

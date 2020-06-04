@@ -1,0 +1,21 @@
+package com.videoClub.rules.cepPurchase
+
+import com.videoClub.event.*;
+import com.videoClub.model.*;
+
+
+rule "More than 10 purchases in 1 hour from same user"
+	lock-on-active
+    when
+        $t1: PurchaseEvent($userId: user.id, $user : user)
+        Number(intValue >= 10) from accumulate(
+            $t2: PurchaseEvent(
+                this != $t1, 
+                user.id == $userId, 
+                this meets[1h] $t1
+            ),
+            count($t2)
+        )
+    then
+    	System.out.println("Too many purchases from same user");
+end
