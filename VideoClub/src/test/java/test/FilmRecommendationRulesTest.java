@@ -25,6 +25,7 @@ import com.videoClub.model.TimeInterval;
 import com.videoClub.model.drl.Badge;
 import com.videoClub.model.drl.RecommendedFilm;
 import com.videoClub.model.drl.UserConclusion;
+import com.videoClub.model.enumeration.AgeCategory;
 import com.videoClub.model.enumeration.Genre;
 import com.videoClub.model.enumeration.Rank;
 
@@ -489,7 +490,9 @@ public class FilmRecommendationRulesTest {
 				new ArrayList<Review>(),
 				new ArrayList<Notification>(),
 				new ArrayList<Film>(),
-				new ArrayList<Purchase>());
+				new ArrayList<Purchase>(),
+				30,
+				null);
 		return user;
 	}
 	
@@ -605,7 +608,8 @@ public class FilmRecommendationRulesTest {
 				actors, 
 				director,
 				scenarist, 
-				new ArrayList<Review>());
+				new ArrayList<Review>(),
+				new ArrayList<AgeCategory>());
 		return film;
 	}
 	

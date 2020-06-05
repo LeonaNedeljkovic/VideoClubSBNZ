@@ -15,7 +15,6 @@ import com.videoClub.model.Action;
 import com.videoClub.model.ActionEvent;
 import com.videoClub.model.Discount;
 import com.videoClub.model.FreeContent;
-import com.videoClub.model.FreeMinutes;
 import com.videoClub.model.enumeration.ActionType;
 import com.videoClub.model.enumeration.Genre;
 import com.videoClub.model.enumeration.Rank;
@@ -79,15 +78,6 @@ public class ActionServiceImpl implements ActionService{
 			freeContent.setActionEvent(action.getActionEvent());
 			freeContent.setId(action.getId());
 			action = freeContent;
-		}
-		else if(type.equals(ActionType.FREE_MINUTES)){
-			FreeMinutes freeMinutes = new FreeMinutes();
-			freeMinutes.setDescription(actionDTO.getDescription());
-			freeMinutes.setTitleRank(Rank.valueOf(actionDTO.getRank()));
-			freeMinutes.setAmount(actionDTO.getAmount());
-			freeMinutes.setActionEvent(action.getActionEvent());
-			freeMinutes.setId(action.getId());
-			action = freeMinutes;
 		}
 		Action newAction = actionRepository.save(action);
 		return newAction;

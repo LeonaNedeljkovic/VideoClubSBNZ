@@ -22,7 +22,6 @@ import com.videoClub.model.Action;
 import com.videoClub.model.ActionEvent;
 import com.videoClub.model.Discount;
 import com.videoClub.model.FreeContent;
-import com.videoClub.model.FreeMinutes;
 import com.videoClub.model.RegisteredUser;
 import com.videoClub.model.User;
 import com.videoClub.model.enumeration.ActionType;
@@ -94,15 +93,6 @@ public class ActionEventServiceImpl implements ActionEventService{
 				}
 				actionEvent.getActions().add(freeContent);
 				kieSession.insert(freeContent);
-			}
-			else if(type.equals(ActionType.FREE_MINUTES)){
-				FreeMinutes freeMinutes = new FreeMinutes();
-				freeMinutes.setDescription(action.getDescription());
-				freeMinutes.setTitleRank(Rank.valueOf(action.getRank()));
-				freeMinutes.setAmount(action.getAmount());
-				freeMinutes.setActionEvent(actionEvent);
-				actionEvent.getActions().add(freeMinutes);
-				kieSession.insert(freeMinutes);
 			}
 		}
 		for(User user : userService.findAll()){

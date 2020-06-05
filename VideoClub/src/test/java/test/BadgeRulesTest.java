@@ -26,6 +26,7 @@ import com.videoClub.model.drl.ArtistRateBadge;
 import com.videoClub.model.drl.ArtistReviewBadge;
 import com.videoClub.model.drl.Badge;
 import com.videoClub.model.drl.UserConclusion;
+import com.videoClub.model.enumeration.AgeCategory;
 import com.videoClub.model.enumeration.Genre;
 import com.videoClub.model.enumeration.Rank;
 
@@ -486,7 +487,9 @@ public class BadgeRulesTest {
 				new ArrayList<Review>(),
 				new ArrayList<Notification>(),
 				new ArrayList<Film>(),
-				new ArrayList<Purchase>());
+				new ArrayList<Purchase>(),
+				30,
+				null);
 		return user;
 	}
 	
@@ -602,7 +605,8 @@ public class BadgeRulesTest {
 				actors, 
 				director,
 				scenarist, 
-				new ArrayList<Review>());
+				new ArrayList<Review>(),
+				new ArrayList<AgeCategory>());
 		return film;
 	}
 	

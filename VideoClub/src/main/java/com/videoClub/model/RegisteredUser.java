@@ -13,6 +13,7 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
+import com.videoClub.model.enumeration.AgeCategory;
 import com.videoClub.model.enumeration.Rank;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -24,6 +25,13 @@ public class RegisteredUser extends User{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	@Column(name = "age")
+	private int age;
+	
+	@Enumerated(EnumType.STRING)
+	@Column(name = "age_category")
+	private AgeCategory ageCategory;
 
 	@Column(name = "registry_date")
 	private LocalDateTime registryDate;
@@ -67,7 +75,7 @@ public class RegisteredUser extends User{
 
 	public RegisteredUser(LocalDateTime registryDate, int immunityPoints, int availableMinutes, Rank title,
 			Rank immunity, List<Action> action, List<Review> reviews, List<Notification> notificationa,
-			List<Film> favouriteFilms, List<Purchase> purchases) {
+			List<Film> favouriteFilms, List<Purchase> purchases, int age, AgeCategory ageCategory) {
 		super();
 		this.registryDate = registryDate;
 		this.immunityPoints = immunityPoints;
@@ -79,12 +87,14 @@ public class RegisteredUser extends User{
 		this.notifications = notificationa;
 		this.favouriteFilms = favouriteFilms;
 		this.purchases = purchases;
+		this.age = age;
+		this.ageCategory = ageCategory;
 	}
 	
 	public RegisteredUser(Long id, String username, String password, String email, LocalDateTime registryDate,
 			int immunityPoints, int availableMinutes, Rank title, Rank immunity, List<Action> action,
 			List<Review> reviews, List<Notification> notificationa, List<Film> favouriteFilms,
-			List<Purchase> purchases) {
+			List<Purchase> purchases, int age, AgeCategory ageCategory) {
 		super(id, username, password, email,true);
 		this.registryDate = registryDate;
 		this.immunityPoints = immunityPoints;
@@ -96,6 +106,8 @@ public class RegisteredUser extends User{
 		this.notifications = notificationa;
 		this.favouriteFilms = favouriteFilms;
 		this.purchases = purchases;
+		this.age = age;
+		this.ageCategory = ageCategory;
 	}
 
 	public LocalDateTime getRegistryDate() {
@@ -182,6 +194,22 @@ public class RegisteredUser extends User{
 		this.notifications = notifications;
 	}
 
+	public int getAge() {
+		return age;
+	}
+
+	public void setAge(int age) {
+		this.age = age;
+	}
+
+	public AgeCategory getAgeCategory() {
+		return ageCategory;
+	}
+
+	public void setAgeCategory(AgeCategory ageCategory) {
+		this.ageCategory = ageCategory;
+	}
+
 	public boolean containsDiscount(){
 		for(Action a : action){
 			if(a instanceof Discount){
@@ -199,14 +227,4 @@ public class RegisteredUser extends User{
 		}
 		return false;
 	}
-	
-	public boolean containsFreeMinutes(){
-		for(Action a : action){
-			if(a instanceof FreeMinutes){
-				return true;
-			}
-		}
-		return false;
-	}
-	
 }

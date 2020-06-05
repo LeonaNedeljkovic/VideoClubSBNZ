@@ -14,6 +14,15 @@ rule "Invalid TimeInterval"
 		throw new InvalidParameters();
 end
 
+rule "Film restricted"
+	salience 20
+    when
+    	RegisteredUser( $ageCategory : ageCategory );
+        TimeInterval( review.getFilm().getRestrictedAgeCategories() contains $ageCategory );
+    then
+		throw new RestrictedAgeCategory();
+end
+
 rule "Review with FreeContent action that matches content genre"
 	no-loop
     when

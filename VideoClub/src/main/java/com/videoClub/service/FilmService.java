@@ -19,4 +19,5 @@ public interface FilmService {
 	public Film rateFilm(Long filmId, Integer rate, RegisteredUser user);
 	public List<Film> saveFilmToFavourites(Long filmId, User user);
 	public List<RecommendedFilm> getRecommendedFilms(RegisteredUser user);
+	public List<Film> save(List<Film> films);
 }
