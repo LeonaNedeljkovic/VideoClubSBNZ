@@ -5,7 +5,7 @@ import com.videoClub.model.*;
 import com.videoClub.model.drl.*;
 import com.videoClub.model.enumeration.*;
 
-rule "ArtistReviewBadge acquirement rule"
+rule "Artist - collect informations about reviews"
 	lock-on-active
     when
     	$artist : Artist( $id : id );
@@ -26,7 +26,7 @@ rule "ArtistReviewBadge acquirement rule"
     	update($artist);
 end
 
-rule "ArtistRateBadge badge acquirement rule"
+rule "Artist - collect informations about rate"
 	lock-on-active
     when
     	$artist : Artist( $id : id );
@@ -44,5 +44,27 @@ rule "ArtistRateBadge badge acquirement rule"
     	$conclusion.getBadges().add(new ArtistRateBadge($artist, $rating, $favourites));
     	update($conclusion);
     	update($artist);
+end
+
+rule "Genre - collect informations about reviews and rate"
+	lock-on-active
+    when
+    	$genre : Genre(  );
+    	$conclusion : UserConclusion( $user : user, $reviews : user.getReviews() );
+    	Number( $rating : doubleValue ) from accumulate(
+         	$review : Review( this memberOf $reviews, rate > 0, $rate : rate, film.getGenre() == $genre ),
+         	average( $rate ) );
+    	Number( $watchedNum : intValue ) from accumulate(
+         	$review : Review( this memberOf $reviews, watched == true, rate == 0, film.getGenre() == $genre ),
+         	count( $review ) );
+     	Number( $unwatchedNum : intValue ) from accumulate(
+         	$review : Review( this memberOf $reviews, watched == false, rate == 0, film.getGenre() == $genre ),
+         	count( $review ) );
+    then
+    	$conclusion.getBadges().add(new GenreBadge($genre, $watchedNum, $unwatchedNum, $rating));
+    	System.out.println("User acquired GenreBadge for: " + $genre
+    	+ ". Watched films: " + $watchedNum + ", Unwatched films: " + $unwatchedNum + ", Avg rate: " + $rating);
+    	
+    	update($conclusion);
 end
 
