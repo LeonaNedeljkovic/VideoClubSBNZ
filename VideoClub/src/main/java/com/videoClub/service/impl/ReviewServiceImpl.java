@@ -22,6 +22,7 @@ import com.videoClub.model.Review;
 import com.videoClub.model.TimeInterval;
 import com.videoClub.model.drl.Badge;
 import com.videoClub.model.drl.UserConclusion;
+import com.videoClub.model.enumeration.Genre;
 import com.videoClub.repository.ReviewRepository;
 import com.videoClub.service.ReviewService;
 import com.videoClub.service.ArtistService;
@@ -118,6 +119,7 @@ public class ReviewServiceImpl implements ReviewService{
 		UserConclusion conclusion = new UserConclusion(user, new ArrayList<Badge>());
 		KieSession kieSession = kieContainer.newKieSession("badgeRulesSession");
 		kieSession.insert(conclusion);
+		insertGenres(kieSession);
 		for(Review r : getLastReviews(user.getId())){
 			kieSession.insert(r);
 		}
@@ -130,5 +132,21 @@ public class ReviewServiceImpl implements ReviewService{
 		kieSession.fireAllRules();
 		kieSession.dispose();
 		return conclusion;
+	}
+	
+	public void insertGenres(KieSession kieSession){
+		kieSession.insert(Genre.ACTION);
+		kieSession.insert(Genre.ADVENTURE);
+		kieSession.insert(Genre.ANIMATED);
+		kieSession.insert(Genre.COMEDY);
+		kieSession.insert(Genre.DOCUMENTARY);
+		kieSession.insert(Genre.DRAMA);
+		kieSession.insert(Genre.HISTORICAL);
+		kieSession.insert(Genre.HORROR);
+		kieSession.insert(Genre.MUSIC);
+		kieSession.insert(Genre.SCIFI);
+		kieSession.insert(Genre.THRILLER);
+		kieSession.insert(Genre.WESTERN);
+		kieSession.insert(Genre.FAMILY);
 	}
 }

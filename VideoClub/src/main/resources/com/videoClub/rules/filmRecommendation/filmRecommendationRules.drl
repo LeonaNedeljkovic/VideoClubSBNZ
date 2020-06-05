@@ -311,3 +311,85 @@ rule "Punish badly rated scenarist"
         update($recommendation);
 end
 
+rule "Reward highly rated genre"
+	lock-on-active
+    when
+        $recommendation : RecommendedFilm( $points : recommendPoints, $film : film );
+        $conclusion : UserConclusion( $badges : badges );
+        Number( doubleValue >= 4, $averageRate : doubleValue ) from accumulate(
+        	GenreBadge(genre == $film.getGenre(), $rate: getAverageRateDouble() ) from $badges,
+        	average($rate) );
+    then
+        $recommendation.setRecommendPoints($points+5*($film.getRating()+$averageRate));
+        System.out.println("Film: "+ $film.getName() + " acquired " + 
+        20*$averageRate+ " points for highly rated genre");
+        update($conclusion);
+        update($recommendation);
+end
+
+rule "Reward watched genre"
+	lock-on-active
+    when
+        $recommendation : RecommendedFilm( $points : recommendPoints, $film : film );
+        $conclusion : UserConclusion( $badges : badges );
+        GenreBadge(watchedTime > 0, $watchedNum : watchedTime, genre == $film.getGenre() )
+        	from $badges;
+    then
+        $recommendation.setRecommendPoints($points+5*$film.getRating()+$watchedNum);
+        System.out.println("Film: "+ $film.getName() + " acquired "+
+        20*$watchedNum+" points for watched films");
+        update($conclusion);
+        update($recommendation);
+end
+
+rule "Reward average rated genre"
+	lock-on-active
+    when
+        $recommendation : RecommendedFilm( $points : recommendPoints, $film : film );
+        $conclusion : UserConclusion( $badges : badges );
+        Number( doubleValue > 3, doubleValue < 4, $averageRate : doubleValue ) from accumulate(
+        	GenreBadge(genre == $film.getGenre(), $rate: getAverageRateDouble() ) from $badges,
+        	average($rate) );
+    then
+        $recommendation.setRecommendPoints($points+$film.getRating()+$averageRate);
+        System.out.println("Film: "+ $film.getName() + " acquired " + 
+        5*$averageRate+ " points for average rated genre");
+        update($conclusion);
+        update($recommendation);
+end
+
+rule "Punish unwwatched genre"
+	lock-on-active
+    when
+        $recommendation : RecommendedFilm( $points : recommendPoints, $film : film );
+        $conclusion : UserConclusion( $badges : badges );
+        GenreBadge(unwatchedTime == 0, watchedTime == 0, averageRate == 0, genre == $film.getGenre() ) 
+        	from $badges
+        or
+        GenreBadge(unwatchedTime > watchedTime, genre == $film.getGenre() ) 
+        	from $badges;
+    then
+        $recommendation.setRecommendPoints($points-100);
+        System.out.println("Film: "+ $film.getName() + " lost 100"+
+        " points for unwwatched genre");
+        update($conclusion);
+        update($recommendation);
+end
+
+rule "Punish badly rated genre"
+	lock-on-active
+    when
+        $recommendation : RecommendedFilm( $points : recommendPoints, $film : film );
+        $conclusion : UserConclusion( $badges : badges );
+        Number( doubleValue < 3 && doubleValue > 0, $averageRate : doubleValue ) from accumulate(
+        	GenreBadge(genre == $film.getGenre(), $rate: getAverageRateDouble() ) from $badges,
+        	average($rate) );
+    then
+        $recommendation.setRecommendPoints($points-15*(10-$averageRate));
+        System.out.println("Film: "+ $film.getName() + " lost " + 
+        15*(10-$averageRate)+ " points for highly rated genre");
+        update($conclusion);
+        update($recommendation);
+end
+
+

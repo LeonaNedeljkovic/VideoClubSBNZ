@@ -51,6 +51,7 @@ public class FilmRecommendationRulesTest {
 		for(Artist a : createListOfArtists()){
 			kieSession1.insert(a);
 		}
+		insertGenres(kieSession1);
 		kieSession1.fireAllRules();
 		kieSession1.dispose();
 		
@@ -65,7 +66,7 @@ public class FilmRecommendationRulesTest {
 		kieSession2.fireAllRules();
 		kieSession2.dispose();
 		for(RecommendedFilm rf : recommendedFilms){
-			assertEquals(0, rf.getRecommendPoints(), 0.001);
+			assertTrue(0 > rf.getRecommendPoints());
 		}
 	}
 	
@@ -82,6 +83,7 @@ public class FilmRecommendationRulesTest {
 		for(Artist a : films.get(0).getActors()){
 			kieSession.insert(a);
 		}
+		insertGenres(kieSession);
 		kieSession.insert(review.getFilm().getDirector());
 		kieSession.insert(review.getFilm().getWrittenBy());
 		kieSession.insert(review);
@@ -113,7 +115,7 @@ public class FilmRecommendationRulesTest {
 				assertTrue(0 > rf.getRecommendPoints());
 			}
 			else{
-				assertEquals(0, rf.getRecommendPoints(), 0.001);
+				assertTrue(0 > rf.getRecommendPoints());
 			}
 		}
 	}
@@ -637,5 +639,21 @@ public class FilmRecommendationRulesTest {
 				0);
 		review.getTimeIntervals().add(new TimeInterval(id, 0, 50, review));
 		return review;
+	}
+	
+	public void insertGenres(KieSession kieSession){
+		kieSession.insert(Genre.ACTION);
+		kieSession.insert(Genre.ADVENTURE);
+		kieSession.insert(Genre.ANIMATED);
+		kieSession.insert(Genre.COMEDY);
+		kieSession.insert(Genre.DOCUMENTARY);
+		kieSession.insert(Genre.DRAMA);
+		kieSession.insert(Genre.HISTORICAL);
+		kieSession.insert(Genre.HORROR);
+		kieSession.insert(Genre.MUSIC);
+		kieSession.insert(Genre.SCIFI);
+		kieSession.insert(Genre.THRILLER);
+		kieSession.insert(Genre.WESTERN);
+		kieSession.insert(Genre.FAMILY);
 	}
 }

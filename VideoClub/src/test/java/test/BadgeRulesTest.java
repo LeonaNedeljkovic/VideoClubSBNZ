@@ -25,6 +25,7 @@ import com.videoClub.model.TimeInterval;
 import com.videoClub.model.drl.ArtistRateBadge;
 import com.videoClub.model.drl.ArtistReviewBadge;
 import com.videoClub.model.drl.Badge;
+import com.videoClub.model.drl.GenreBadge;
 import com.videoClub.model.drl.UserConclusion;
 import com.videoClub.model.enumeration.AgeCategory;
 import com.videoClub.model.enumeration.Genre;
@@ -119,14 +120,17 @@ public class BadgeRulesTest {
 			kieSession.insert(a);
 			artistsNum++;
 		}
+		insertGenres(kieSession);
+		
 		kieSession.insert(review.getFilm().getDirector());
 		kieSession.insert(review.getFilm().getWrittenBy());
 		kieSession.insert(review);
 		kieSession.fireAllRules();
 		kieSession.dispose();
 		
-		assertEquals(artistsNum+1, conclusion.getBadges().size()); //+1 za umetnika koji je rezirao film i pisao scenario
+		assertEquals(17, conclusion.getBadges().size()); //+1 za umetnika koji je rezirao film i pisao scenario
 		int artistReviewBadges = 0;
+		int genreBadges = 0;
 		int otherBadges = 0;
 		for(Badge badge : conclusion.getBadges()){
 			if(badge instanceof ArtistReviewBadge){
@@ -134,12 +138,26 @@ public class BadgeRulesTest {
 				assertEquals(0, ((ArtistReviewBadge) badge).getUnwatchedNumber());
 				assertEquals(1, ((ArtistReviewBadge) badge).getWatchedNumber());
 			}
+			else if(badge instanceof GenreBadge){
+				genreBadges++;
+				if(((GenreBadge) badge).getGenre().equals(Genre.ACTION)){
+					assertEquals(0, ((GenreBadge) badge).getUnwatchedTime());
+					assertEquals(1, ((GenreBadge) badge).getWatchedTime());
+					assertEquals(0, ((GenreBadge) badge).getAverageRate(), 0.001);
+				}
+				else{
+					assertEquals(0, ((GenreBadge) badge).getUnwatchedTime());
+					assertEquals(0, ((GenreBadge) badge).getWatchedTime());
+					assertEquals(0, ((GenreBadge) badge).getAverageRate(), 0.001);
+				}
+			}
 			else{
 				otherBadges++;
 			}
 		}
 		assertEquals(artistsNum+1, artistReviewBadges);
 		assertEquals(otherBadges, 0);
+		assertEquals(13, genreBadges);
 	}
 	
 	
@@ -634,5 +652,21 @@ public class BadgeRulesTest {
 				0);
 		review.getTimeIntervals().add(new TimeInterval(id, 0, 50, review));
 		return review;
+	}
+	
+	public void insertGenres(KieSession kieSession){
+		kieSession.insert(Genre.ACTION);
+		kieSession.insert(Genre.ADVENTURE);
+		kieSession.insert(Genre.ANIMATED);
+		kieSession.insert(Genre.COMEDY);
+		kieSession.insert(Genre.DOCUMENTARY);
+		kieSession.insert(Genre.DRAMA);
+		kieSession.insert(Genre.HISTORICAL);
+		kieSession.insert(Genre.HORROR);
+		kieSession.insert(Genre.MUSIC);
+		kieSession.insert(Genre.SCIFI);
+		kieSession.insert(Genre.THRILLER);
+		kieSession.insert(Genre.WESTERN);
+		kieSession.insert(Genre.FAMILY);
 	}
 }
