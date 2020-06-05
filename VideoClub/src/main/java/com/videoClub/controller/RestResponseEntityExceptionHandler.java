@@ -101,4 +101,9 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
     protected ResponseEntity<MessageDto> handleTooManyPurchasesFromUser(TooManyPurchasesFromUser e) {
 		return new ResponseEntity<>(new MessageDto("Too many purchases from user", e.getMessage()), HttpStatus.OK);
     }
+    
+    @ExceptionHandler(value = RestrictedAgeCategory.class)
+    protected ResponseEntity<MessageDto> handleRestrictedAgeCategory(RestrictedAgeCategory e) {
+		return new ResponseEntity<>(new MessageDto("Restricted Age Category", e.getMessage()), HttpStatus.OK);
+    }
 }

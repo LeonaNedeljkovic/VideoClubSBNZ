@@ -128,7 +128,9 @@ public class PurchaseRulesTest {
 				new ArrayList<Review>(),
 				new ArrayList<Notification>(),
 				new ArrayList<Film>(),
-				new ArrayList<Purchase>());
+				new ArrayList<Purchase>(),
+				30,
+				null);
 		return user;
 	}
 	

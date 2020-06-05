@@ -18,14 +18,12 @@ import org.kie.api.runtime.KieSession;
 
 import com.videoClub.exception.EmptyGenreList;
 import com.videoClub.exception.InvalidDiscount;
-import com.videoClub.exception.InvalidFreeMinutes;
 import com.videoClub.model.Action;
 import com.videoClub.model.ActionEvent;
 import com.videoClub.model.Administrator;
 import com.videoClub.model.Discount;
 import com.videoClub.model.Film;
 import com.videoClub.model.FreeContent;
-import com.videoClub.model.FreeMinutes;
 import com.videoClub.model.Notification;
 import com.videoClub.model.Offer;
 import com.videoClub.model.Purchase;
@@ -45,10 +43,6 @@ public class ActionRulesTest {
 	
 	private static List<Offer> offers = generateOffers();
 	
-	private static int FREE_MINUTES_AMOUNT_VALID = 300;
-	private static int FREE_MINUTES_AMOUNT_LOW = 10;
-	private static int FREE_MINUTES_AMOUNT_HIGH = 1001;
-	
 	private static int DISCOUNT_VALID = 50;
 	private static int DISCOUNT_INVALID_LOW = 80;
 	private static int DISCOUNT_INVALID_HIGH = 5;
@@ -59,8 +53,6 @@ public class ActionRulesTest {
 		ActionEvent actionEvent =  generateActionEvent();
 		actionEvent.getActions().add(generateDiscount(
 				Rank.BRONZE, actionEvent, DISCOUNT_VALID));
-		actionEvent.getActions().add(generateFreeMinutes(
-				Rank.SILVER, actionEvent, FREE_MINUTES_AMOUNT_VALID));
 		actionEvent.getActions().add(generateFreeContent(
 				Rank.GOLD, actionEvent));
 		
@@ -78,20 +70,16 @@ public class ActionRulesTest {
 		
 		RegisteredUser userNone = (RegisteredUser) users.get(0);
 		RegisteredUser userBronze = (RegisteredUser) users.get(1);
-		RegisteredUser userSilver = (RegisteredUser) users.get(2);
-		RegisteredUser userGold = (RegisteredUser) users.get(3);
+		RegisteredUser userGold = (RegisteredUser) users.get(2);
 		
 		assertEquals(0, userNone.getAction().size());
 		assertEquals(1, userBronze.getAction().size());
-		assertEquals(1, userSilver.getAction().size());
 		assertEquals(1, userGold.getAction().size());
 		
 		assertTrue(userBronze.getAction().get(0) instanceof Discount);
-		assertTrue(userSilver.getAction().get(0) instanceof FreeMinutes);
 		assertTrue(userGold.getAction().get(0) instanceof FreeContent);
 		
 		assertTrue(((Discount)userBronze.getAction().get(0)).getAmount() == DISCOUNT_VALID);
-		assertTrue(((FreeMinutes)userSilver.getAction().get(0)).getAmount() == FREE_MINUTES_AMOUNT_VALID);
 		assertTrue(((FreeContent)userGold.getAction().get(0)).getFreeGenres().size() == 3);
 		
 		assertTrue(((FreeContent)userGold.getAction().get(0)).getFreeGenres().contains(Genre.ACTION));
@@ -105,16 +93,12 @@ public class ActionRulesTest {
 		ActionEvent actionEvent1 =  generateActionEvent();
 		actionEvent1.getActions().add(generateDiscount(
 				Rank.BRONZE, actionEvent1, DISCOUNT_VALID));
-		actionEvent1.getActions().add(generateFreeMinutes(
-				Rank.SILVER, actionEvent1, FREE_MINUTES_AMOUNT_VALID));
 		actionEvent1.getActions().add(generateFreeContent(
 				Rank.GOLD, actionEvent1));
 		
 		ActionEvent actionEvent2 =  generateActionEvent();
 		actionEvent2.getActions().add(generateDiscount(
 				Rank.BRONZE, actionEvent2, DISCOUNT_VALID));
-		actionEvent2.getActions().add(generateFreeMinutes(
-				Rank.SILVER, actionEvent2, FREE_MINUTES_AMOUNT_VALID));
 		actionEvent2.getActions().add(generateFreeContent(
 				Rank.GOLD, actionEvent2));
 		
@@ -142,20 +126,16 @@ public class ActionRulesTest {
 		
 		RegisteredUser userNone = (RegisteredUser) users.get(0);
 		RegisteredUser userBronze = (RegisteredUser) users.get(1);
-		RegisteredUser userSilver = (RegisteredUser) users.get(2);
-		RegisteredUser userGold = (RegisteredUser) users.get(3);
+		RegisteredUser userGold = (RegisteredUser) users.get(2);
 		
 		assertEquals(0, userNone.getAction().size());
 		assertEquals(1, userBronze.getAction().size());
-		assertEquals(1, userSilver.getAction().size());
 		assertEquals(1, userGold.getAction().size());
 		
 		assertTrue(userBronze.getAction().get(0) instanceof Discount);
-		assertTrue(userSilver.getAction().get(0) instanceof FreeMinutes);
 		assertTrue(userGold.getAction().get(0) instanceof FreeContent);
 		
 		assertTrue(((Discount)userBronze.getAction().get(0)).getAmount() == DISCOUNT_VALID);
-		assertTrue(((FreeMinutes)userSilver.getAction().get(0)).getAmount() == FREE_MINUTES_AMOUNT_VALID);
 		assertTrue(((FreeContent)userGold.getAction().get(0)).getFreeGenres().size() == 3);
 		
 		assertTrue(((FreeContent)userGold.getAction().get(0)).getFreeGenres().contains(Genre.ACTION));
@@ -169,8 +149,6 @@ public class ActionRulesTest {
 		ActionEvent actionEvent =  generateActionEvent();
 		actionEvent.getActions().add(generateInvalidDiscount(
 				Rank.BRONZE, actionEvent));
-		actionEvent.getActions().add(generateFreeMinutes(
-				Rank.SILVER, actionEvent, FREE_MINUTES_AMOUNT_VALID));
 		actionEvent.getActions().add(generateFreeContent(
 				Rank.GOLD, actionEvent));
 		
@@ -200,8 +178,6 @@ public class ActionRulesTest {
 		ActionEvent actionEvent =  generateActionEvent();
 		actionEvent.getActions().add(generateDiscount(
 				Rank.BRONZE, actionEvent, DISCOUNT_INVALID_LOW));
-		actionEvent.getActions().add(generateFreeMinutes(
-				Rank.SILVER, actionEvent, FREE_MINUTES_AMOUNT_VALID));
 		actionEvent.getActions().add(generateFreeContent(
 				Rank.GOLD, actionEvent));
 		
@@ -231,8 +207,6 @@ public class ActionRulesTest {
 		ActionEvent actionEvent =  generateActionEvent();
 		actionEvent.getActions().add(generateDiscount(
 				Rank.BRONZE, actionEvent, DISCOUNT_INVALID_HIGH));
-		actionEvent.getActions().add(generateFreeMinutes(
-				Rank.SILVER, actionEvent, FREE_MINUTES_AMOUNT_VALID));
 		actionEvent.getActions().add(generateFreeContent(
 				Rank.GOLD, actionEvent));
 		
@@ -256,76 +230,12 @@ public class ActionRulesTest {
 		assertTrue(exceptionOccured);
 	}
 	
-	/*Test adding action event with invalid free minutes*/
-	@Test
-	public void test6(){
-		ActionEvent actionEvent =  generateActionEvent();
-		actionEvent.getActions().add(generateDiscount(
-				Rank.BRONZE, actionEvent, DISCOUNT_VALID));
-		actionEvent.getActions().add(generateFreeMinutes(
-				Rank.SILVER, actionEvent, FREE_MINUTES_AMOUNT_LOW));
-		actionEvent.getActions().add(generateFreeContent(
-				Rank.GOLD, actionEvent));
-		
-		KieContainer kieContainer = KieServices.Factory.get().getKieClasspathContainer();
-		KieSession kieSession = kieContainer.newKieSession("actionRulesSession");
-		List<User> users = generateUsers();
-		for(User u : users){
-			kieSession.insert(u);
-		}
-		for(Action a : actionEvent.getActions()){
-			kieSession.insert(a);
-		}
-		boolean exceptionOccured = false;
-		try {
-			kieSession.fireAllRules();
-			kieSession.dispose();
-		} catch (Exception e) {
-			exceptionOccured = true;
-			assertTrue(e.getMessage().contains(new InvalidFreeMinutes().getMessage()));
-		}
-		assertTrue(exceptionOccured);
-	}
-	
-	/*Test adding action event with invalid free minutes*/
-	@Test
-	public void test7(){
-		ActionEvent actionEvent =  generateActionEvent();
-		actionEvent.getActions().add(generateDiscount(
-				Rank.BRONZE, actionEvent, DISCOUNT_VALID));
-		actionEvent.getActions().add(generateFreeMinutes(
-				Rank.SILVER, actionEvent, FREE_MINUTES_AMOUNT_HIGH));
-		actionEvent.getActions().add(generateFreeContent(
-				Rank.GOLD, actionEvent));
-		
-		KieContainer kieContainer = KieServices.Factory.get().getKieClasspathContainer();
-		KieSession kieSession = kieContainer.newKieSession("actionRulesSession");
-		List<User> users = generateUsers();
-		for(User u : users){
-			kieSession.insert(u);
-		}
-		for(Action a : actionEvent.getActions()){
-			kieSession.insert(a);
-		}
-		boolean exceptionOccured = false;
-		try {
-			kieSession.fireAllRules();
-			kieSession.dispose();
-		} catch (Exception e) {
-			exceptionOccured = true;
-			assertTrue(e.getMessage().contains(new InvalidFreeMinutes().getMessage()));
-		}
-		assertTrue(exceptionOccured);
-	}
-	
 	/*Test adding action event with invalid free content*/
 	@Test
 	public void test8(){
 		ActionEvent actionEvent =  generateActionEvent();
 		actionEvent.getActions().add(generateDiscount(
 				Rank.BRONZE, actionEvent, DISCOUNT_VALID));
-		actionEvent.getActions().add(generateFreeMinutes(
-				Rank.SILVER, actionEvent, FREE_MINUTES_AMOUNT_VALID));
 		actionEvent.getActions().add(generateInvalidFreeContent(
 				Rank.GOLD, actionEvent));
 		
@@ -382,7 +292,9 @@ public class ActionRulesTest {
 				new ArrayList<Review>(),
 				new ArrayList<Notification>(),
 				new ArrayList<Film>(),
-				new ArrayList<Purchase>());
+				new ArrayList<Purchase>(),
+				30,
+				null);
 		return user;
 	}
 	
@@ -413,15 +325,6 @@ public class ActionRulesTest {
 		actionEvent.setEndDate(LocalDate.parse(sdf.format(new Date(System.currentTimeMillis()-1000)),df));
 		actionEvent.setName("Action Event");
 		return actionEvent;
-	}
-	
-	public FreeMinutes generateFreeMinutes(Rank rank, ActionEvent event, int amount){
-		FreeMinutes freeMinutes = new FreeMinutes();
-		freeMinutes.setDescription("FreeMinutes action");
-		freeMinutes.setTitleRank(rank);
-		freeMinutes.setAmount(amount);
-		freeMinutes.setActionEvent(event);
-		return freeMinutes;
 	}
 	
 	public Discount generateDiscount(Rank rank, ActionEvent event, int amount){

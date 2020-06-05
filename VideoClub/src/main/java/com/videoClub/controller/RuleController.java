@@ -1,5 +1,6 @@
 package com.videoClub.controller;
 
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -7,8 +8,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.drools.template.ObjectDataCompiler;
+import org.kie.api.builder.Message;
+import org.kie.api.builder.Results;
+import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.kie.internal.utils.KieHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -29,13 +35,18 @@ import com.videoClub.bean.GoldTitle;
 import com.videoClub.bean.SilverImmunity;
 import com.videoClub.bean.SilverTitle;
 import com.videoClub.dto.PointsDTO;
+import com.videoClub.model.Film;
 import com.videoClub.model.Purchase;
 import com.videoClub.model.RegisteredUser;
 import com.videoClub.model.User;
 import com.videoClub.model.enumeration.Rank;
+import com.videoClub.service.FilmService;
 import com.videoClub.service.PurchaseService;
 import com.videoClub.service.RuleService;
 import com.videoClub.service.UserService;
+import com.videoClub.template.FreeMinutes;
+import com.videoClub.template.GenreAgeRestrictionTemplate;
+import com.videoClub.template.UserAgeCategoryTemplate;
 
 @RestController
 @RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -64,6 +75,9 @@ public class RuleController {
 	private RuleService ruleService;
 	
 	@Autowired
+	private FilmService filmService;
+	
+	@Autowired
 	private UserService userService;
 	
 	@Autowired
@@ -74,6 +88,94 @@ public class RuleController {
 	
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	private DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+	
+	@PutMapping(value = "/classify_user/age", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public ResponseEntity<List<User>> classifyUserByAge(@RequestBody List<UserAgeCategoryTemplate> freeMinutes) {
+		InputStream template = RuleController.class.getResourceAsStream("/templates/classifyUserByAge.drt");
+		ObjectDataCompiler converter = new ObjectDataCompiler();
+	    String drl = converter.compile(freeMinutes, template);
+	    KieSession ksession = initializeKieSessionFromDRL(drl);
+	    List<User> users = userService.findAll();
+	    for(User user : users){
+			if(user instanceof RegisteredUser){
+				ksession.insert(user);
+			}		
+		}
+	    ksession.fireAllRules();
+        ksession.dispose();
+        return new ResponseEntity<>(userService.save(users), HttpStatus.OK);
+	}
+	
+	@PutMapping(value = "/restrict_genre/age", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public ResponseEntity<List<Film>> restrictGenreByAge(@RequestBody List<GenreAgeRestrictionTemplate> freeMinutes) {
+		InputStream template = RuleController.class.getResourceAsStream("/templates/genreRestrictionByAge.drt");
+		ObjectDataCompiler converter = new ObjectDataCompiler();
+	    String drl = converter.compile(freeMinutes, template);
+	    KieSession ksession = initializeKieSessionFromDRL(drl);
+	    List<Film> films = filmService.getAll();
+	    for(Film film : films){
+			ksession.insert(film);		
+		}
+	    ksession.fireAllRules();
+        ksession.dispose();
+        return new ResponseEntity<>(filmService.save(films), HttpStatus.OK);
+	}
+	
+	@PutMapping(value = "/free_minutes/age", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public ResponseEntity<List<User>> freeMinutesByAge(@RequestBody List<FreeMinutes> freeMinutes) {
+		InputStream template = RuleController.class.getResourceAsStream("/templates/freeMinutesByAge.drt");
+		ObjectDataCompiler converter = new ObjectDataCompiler();
+	    String drl = converter.compile(freeMinutes, template);
+	    KieSession ksession = initializeKieSessionFromDRL(drl);
+	    List<User> users = userService.findAll();
+	    for(User user : users){
+			if(user instanceof RegisteredUser){
+				ksession.insert(user);
+			}		
+		}
+	    ksession.fireAllRules();
+        ksession.dispose();
+        return new ResponseEntity<>(userService.save(users), HttpStatus.OK);
+	}
+	
+	@PutMapping(value = "/free_minutes/title", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public ResponseEntity<List<User>> freeMinutesByTitle(@RequestBody List<FreeMinutes> freeMinutes) {
+		InputStream template = RuleController.class.getResourceAsStream("/templates/freeMinutesByTitle.drt");
+		ObjectDataCompiler converter = new ObjectDataCompiler();
+	    String drl = converter.compile(freeMinutes, template);
+	    KieSession ksession = initializeKieSessionFromDRL(drl);
+	    List<User> users = userService.findAll();
+	    for(User user : users){
+			if(user instanceof RegisteredUser){
+				ksession.insert(user);
+			}		
+		}
+	    ksession.fireAllRules();
+        ksession.dispose();
+        return new ResponseEntity<>(userService.save(users), HttpStatus.OK);
+	}
+	
+	@PutMapping(value = "/free_minutes/age/title", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public ResponseEntity<List<User>> freeMinutesByAgeAndTitle(@RequestBody List<FreeMinutes> freeMinutes) {
+		InputStream template = RuleController.class.getResourceAsStream("/templates/freeMinutesByAgeAndTitle.drt");
+		ObjectDataCompiler converter = new ObjectDataCompiler();
+	    String drl = converter.compile(freeMinutes, template);
+	    KieSession ksession = initializeKieSessionFromDRL(drl);
+	    List<User> users = userService.findAll();
+	    for(User user : users){
+			if(user instanceof RegisteredUser){
+				ksession.insert(user);
+			}		
+		}
+	    ksession.fireAllRules();
+        ksession.dispose();
+        return new ResponseEntity<>(userService.save(users), HttpStatus.OK);
+	}
 	
 	@GetMapping(value = "/bronze_immunity_points", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<PointsDTO> getBronzeImmunity() {
@@ -325,5 +427,23 @@ public class RuleController {
 		kieSession.setGlobal("goldTitle", goldTitle);
 		return kieSession;
 	}
+	
+	private KieSession initializeKieSessionFromDRL(String drl){
+        KieHelper kieHelper = new KieHelper();
+        kieHelper.addContent(drl, ResourceType.DRL);
+        
+        Results results = kieHelper.verify();
+        
+        if (results.hasMessages(Message.Level.WARNING, Message.Level.ERROR)){
+            List<Message> messages = results.getMessages(Message.Level.WARNING, Message.Level.ERROR);
+            for (Message message : messages) {
+                System.out.println("Error: "+message.getText());
+            }
+            
+            throw new IllegalStateException("Compilation errors were found. Check the logs.");
+        }
+        
+        return kieHelper.build().newKieSession();
+    }
 	
 }
