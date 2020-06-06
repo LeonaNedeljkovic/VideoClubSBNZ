@@ -53,6 +53,9 @@ public class RegisteredUser extends User{
 	@ManyToMany
 	private List<Action> action = new ArrayList<Action>();
 	
+	@Column(name="allowed_to_purchase")
+	private Boolean allowedToPurchase;
+	
 	@JsonIgnore
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Review> reviews = new ArrayList<Review>();
@@ -75,7 +78,7 @@ public class RegisteredUser extends User{
 
 	public RegisteredUser(LocalDateTime registryDate, int immunityPoints, int availableMinutes, Rank title,
 			Rank immunity, List<Action> action, List<Review> reviews, List<Notification> notificationa,
-			List<Film> favouriteFilms, List<Purchase> purchases, int age, AgeCategory ageCategory) {
+			List<Film> favouriteFilms, List<Purchase> purchases, int age, AgeCategory ageCategory, Boolean allowedToPurchase) {
 		super();
 		this.registryDate = registryDate;
 		this.immunityPoints = immunityPoints;
@@ -89,12 +92,13 @@ public class RegisteredUser extends User{
 		this.purchases = purchases;
 		this.age = age;
 		this.ageCategory = ageCategory;
+		this.allowedToPurchase = allowedToPurchase;
 	}
 	
 	public RegisteredUser(Long id, String username, String password, String email, LocalDateTime registryDate,
 			int immunityPoints, int availableMinutes, Rank title, Rank immunity, List<Action> action,
 			List<Review> reviews, List<Notification> notificationa, List<Film> favouriteFilms,
-			List<Purchase> purchases, int age, AgeCategory ageCategory) {
+			List<Purchase> purchases, int age, AgeCategory ageCategory, Boolean allowedToPurchase) {
 		super(id, username, password, email,true);
 		this.registryDate = registryDate;
 		this.immunityPoints = immunityPoints;
@@ -108,6 +112,7 @@ public class RegisteredUser extends User{
 		this.purchases = purchases;
 		this.age = age;
 		this.ageCategory = ageCategory;
+		this.allowedToPurchase = allowedToPurchase;
 	}
 
 	public LocalDateTime getRegistryDate() {
@@ -132,6 +137,16 @@ public class RegisteredUser extends User{
 
 	public void setAvailableMinutes(int availableMinutes) {
 		this.availableMinutes = availableMinutes;
+	}
+	
+	
+
+	public Boolean getAllowedToPurchase() {
+		return allowedToPurchase;
+	}
+
+	public void setAllowedToPurchase(Boolean allowedToPurchase) {
+		this.allowedToPurchase = allowedToPurchase;
 	}
 
 	public Rank getTitle() {

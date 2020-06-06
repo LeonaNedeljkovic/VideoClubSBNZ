@@ -7,7 +7,6 @@ import com.videoClub.model.*;
 import java.util.List;
 import java.util.Collections;
 
-
 global Integer usersNumber;
 
 query actorsRateIsRelevant()
@@ -16,12 +15,16 @@ query actorsRateIsRelevant()
 	$film : Film();
 	$artistRateBadges : List() from collect(ArtistRateBadge());
 	$artistReviewBadges : List() from collect(ArtistReviewBadge());
-	Number($numActorsBadges : intValue) from accumulate(
-		$artistRateBadge : ArtistRateBadge(this memberOf $artistRateBadges, artist memberOf $film.getActors()),
-		count($artistRateBadge));
-	Number($numUnwatched : intValue, $numActorsBadges > $numUnwatched) from accumulate(
-		$artistReviewBadge : ArtistReviewBadge(this memberOf $artistReviewBadges, artist memberOf $film.getActors()),
-		count($artistReviewBadge.getUnwatchedNumber()));
+	Number($numActorBadges : intValue) from accumulate(
+		$artistRateBadge : ArtistRateBadge(artist memberOf $film.getActors()) from $artistRateBadges,
+		init(int count = 0;),
+        action(count += 1;),
+        result(count));
+	Number($numUnwatched : intValue, $numActorBadges > $numUnwatched) from accumulate(
+		$artistReviewBadge : ArtistReviewBadge(artist memberOf $film.getActors()) from $artistReviewBadges,
+		init(int count = 0;),
+        action(count += $artistReviewBadge.getUnwatchedNumber();),
+        result(count));
 end
 
 query highlyRatedActors()
@@ -41,11 +44,15 @@ query watchedActors()
 	$film : Film();
 	$artistReviewBadges : List() from collect(ArtistReviewBadge());
 	Number($numWatched : intValue) from accumulate(
-		$artistReviewBadge : ArtistReviewBadge(this memberOf $artistReviewBadges, artist memberOf $film.getActors()),
-		count($artistReviewBadge.getWatchedNumber()));
+		$artistReviewBadge : ArtistReviewBadge( artist memberOf $film.getActors()) from $artistReviewBadges,
+		init(int count = 0;),
+        action(count += $artistReviewBadge.getWatchedNumber();),
+        result(count));
 	Number($numUnwatched : intValue, $numWatched > $numUnwatched) from accumulate(
-		$artistReviewBadge : ArtistReviewBadge(this memberOf $artistReviewBadges, artist memberOf $film.getActors()),
-		count($artistReviewBadge.getUnwatchedNumber()));
+		$artistReviewBadge : ArtistReviewBadge( artist memberOf $film.getActors()) from $artistReviewBadges,
+		init(int count = 0;),
+        action(count += $artistReviewBadge.getUnwatchedNumber();),
+        result(count));
 	// gleda se watchedNumber i unwatchedNumber svih ArtistReviewBadge u radnoj memoriji
 	// koji se odnose na listu glumaca filma
 	// watchedNumber mora biti veci od unwatchedNumber
@@ -55,9 +62,11 @@ query popularActors()
 	watchedActors();
 	$film : Film();
 	$artistReviewBadges : List() from collect(ArtistReviewBadge());
-	Number($numUnwatched : intValue, $numUnwatched >= usersNumber/2) from accumulate(
-		$artistReviewBadge : ArtistReviewBadge(this memberOf $artistReviewBadges, artist memberOf $film.getActors()),
-		count($artistReviewBadge));
+	Number($numArtistReviewBadges : intValue, $numArtistReviewBadges >= usersNumber/2) from accumulate(
+		$artistReviewBadge : ArtistReviewBadge(artist memberOf $film.getActors()) from $artistReviewBadges,
+		init(int count = 0;),
+        action(count += 1;),
+        result(count));
 	// sabiraju se svi ArtistReviewBadge objekti koji se odnose na listu glumaca iz filma
 	// da bi se uslov zadovoljio, mora biti barem 50% ArtistReviewBadge objekata od ukupnog
 	// broja korisnika (ukupan broj korisnika predstavljen globalnom prom)
@@ -78,11 +87,15 @@ query scenaristRateIsRelevant()
 	$artistRateBadges : List() from collect(ArtistRateBadge());
 	$artistReviewBadges : List() from collect(ArtistReviewBadge());
 	Number($numScenaristBadges : intValue) from accumulate(
-		$artistRateBadge : ArtistRateBadge(this memberOf $artistRateBadges, artist == $film.getWrittenBy()),
-		count(1));
+		$artistRateBadge : ArtistRateBadge(artist == $film.getWrittenBy()) from $artistRateBadges,
+		init(int count = 0;),
+        action(count += 1;),
+        result(count));
 	Number($numUnwatched : intValue, $numScenaristBadges > $numUnwatched) from accumulate(
-		$artistReviewBadge : ArtistReviewBadge(this memberOf $artistReviewBadges, artist == $film.getWrittenBy()),
-		count($artistReviewBadge.getUnwatchedNumber()));
+		$artistReviewBadge : ArtistReviewBadge(artist == $film.getWrittenBy()) from $artistReviewBadges,
+		init(int count = 0;),
+        action(count += $artistReviewBadge.getUnwatchedNumber();),
+        result(count));
 end
 
 query highlyRatedScenarist()
@@ -103,20 +116,27 @@ query watchedScenarist()
 	$film : Film();
 	$artistReviewBadges : List() from collect(ArtistReviewBadge());
 	Number($numWatched : intValue) from accumulate(
-		$artistReviewBadge : ArtistReviewBadge(this memberOf $artistReviewBadges, artist == $film.getWrittenBy()),
-		count($artistReviewBadge.getWatchedNumber()));
+		$artistReviewBadge : ArtistReviewBadge( artist == $film.getWrittenBy()) from $artistReviewBadges,
+		init(int count = 0;),
+        action(count += $artistReviewBadge.getWatchedNumber();),
+        result(count));
 	Number($numUnwatched : intValue, $numWatched > $numUnwatched) from accumulate(
-		$artistReviewBadge : ArtistReviewBadge(this memberOf $artistReviewBadges, artist == $film.getWrittenBy()),
-		count($artistReviewBadge.getUnwatchedNumber()));
+		$artistReviewBadge : ArtistReviewBadge( artist == $film.getWrittenBy()) from $artistReviewBadges,
+		init(int count = 0;),
+        action(count += $artistReviewBadge.getUnwatchedNumber();),
+        result(count));
 end
 
 query popularScenarist()
 	watchedScenarist();
 	$film : Film();
 	$artistReviewBadges : List() from collect(ArtistReviewBadge());
-	Number($numUnwatched : intValue, $numUnwatched >= usersNumber/2) from accumulate(
-		$artistReviewBadge : ArtistReviewBadge(this memberOf $artistReviewBadges,  artist == $film.getWrittenBy()),
-		count($artistReviewBadge));
+	Number($numArtistReviewBadges : intValue, $numArtistReviewBadges >= usersNumber/2) from accumulate(
+		$artistReviewBadge : ArtistReviewBadge(artist == $film.getWrittenBy()) from $artistReviewBadges,
+		init(int count = 0;),
+        action(count += 1;),
+        result(count));
+	
 	// sabiraju se svi ArtistReviewBadge objekti koji se odnose na writtenBy filma
 	// da bi se uslov zadovoljio, mora biti barem 50% ArtistReviewBadge objekata od ukupnog
 	// broja korisnika (ukupan broj korisnika predstavljen globalnom prom)
@@ -137,11 +157,15 @@ query directorRateIsRelevant()
 	$artistRateBadges : List() from collect(ArtistRateBadge());
 	$artistReviewBadges : List() from collect(ArtistReviewBadge());
 	Number($numDirectorBadges : intValue) from accumulate(
-		$artistRateBadge : ArtistRateBadge(this memberOf $artistRateBadges, artist == $film.getDirector()),
-		count(1));
+		$artistRateBadge : ArtistRateBadge(artist == $film.getDirector()) from $artistRateBadges,
+		init(int count = 0;),
+        action(count += 1;),
+        result(count));
 	Number($numUnwatched : intValue, $numDirectorBadges > $numUnwatched) from accumulate(
-		$artistReviewBadge : ArtistReviewBadge(this memberOf $artistReviewBadges, artist == $film.getDirector()),
-		count($artistReviewBadge.getUnwatchedNumber()));
+		$artistReviewBadge : ArtistReviewBadge(artist == $film.getDirector()) from $artistReviewBadges,
+		init(int count = 0;),
+        action(count += $artistReviewBadge.getUnwatchedNumber();),
+        result(count));
 end
 
 
@@ -152,7 +176,7 @@ query highlyRatedDirector()
 	$film : Film();
 	$artistRateBadges : List() from collect(ArtistRateBadge());
 	Number( doubleValue >= 4, $averageRate : doubleValue ) from accumulate(
-        	ArtistRateBadge(artist == $film.getDirector(),
+        	ArtistRateBadge(artist== $film.getDirector(),
         			$rate: getAverageDoubleRate() ) from $artistRateBadges,
         	average($rate) )
 end
@@ -166,11 +190,15 @@ query watchedDirector()
 	$film : Film();
 	$artistReviewBadges : List() from collect(ArtistReviewBadge());
 	Number($numWatched : intValue) from accumulate(
-		$artistReviewBadge : ArtistReviewBadge(this memberOf $artistReviewBadges, artist == $film.getDirector()),
-		count($artistReviewBadge.getWatchedNumber()));
+		$artistReviewBadge : ArtistReviewBadge( artist == $film.getDirector()) from $artistReviewBadges,
+		init(int count = 0;),
+        action(count += $artistReviewBadge.getWatchedNumber();),
+        result(count));
 	Number($numUnwatched : intValue, $numWatched > $numUnwatched) from accumulate(
-		$artistReviewBadge : ArtistReviewBadge(this memberOf $artistReviewBadges, artist == $film.getDirector()),
-		count($artistReviewBadge.getUnwatchedNumber()));
+		$artistReviewBadge : ArtistReviewBadge( artist == $film.getDirector()) from $artistReviewBadges,
+		init(int count = 0;),
+        action(count += $artistReviewBadge.getUnwatchedNumber();),
+        result(count));
 	
 end
 
@@ -184,9 +212,11 @@ query popularDirector()
 	watchedDirector();
 	$film : Film();
 	$artistReviewBadges : List() from collect(ArtistReviewBadge());
-	Number($numUnwatched : intValue, $numUnwatched >= usersNumber/2) from accumulate(
-		$artistReviewBadge : ArtistReviewBadge(this memberOf $artistReviewBadges,  artist == $film.getDirector()),
-		count($artistReviewBadge));
+	Number($numArtistReviewBadges : intValue, $numArtistReviewBadges >= usersNumber/2) from accumulate(
+		$artistReviewBadge : ArtistReviewBadge(artist == $film.getDirector()) from $artistReviewBadges,
+		init(int count = 0;),
+        action(count += 1;),
+        result(count));
 end
 
 query goodDirector()
@@ -202,14 +232,61 @@ rule "Film will be successfull"
     	$m.setResult("Film will be successfull");
 end
 
-rule "Film might be successfull"
+rule "Film might be successfull 1"
     when
     	$m : MessageDto (  );
-        goodDirector() or goodScenarist() or goodActors()
+        not goodDirector() and goodScenarist() and goodActors()
     then
     	$m.setMessage("Film might be successfull");
     	$m.setResult("Users like watching some artists in this film, so, this film may be popular.");
 end
+
+rule "Film might be successfull 2"
+    when
+    	$m : MessageDto (  );
+        goodDirector() and not goodScenarist() and goodActors()
+    then
+    	$m.setMessage("Film might be successfull");
+    	$m.setResult("Users like watching some artists in this film, so, this film may be popular.");
+end
+
+rule "Film might be successfull 3"
+    when
+    	$m : MessageDto (  );
+        goodDirector() and goodScenarist() and not goodActors()
+    then
+    	$m.setMessage("Film might be successfull");
+    	$m.setResult("Users like watching some artists in this film, so, this film may be popular.");
+end
+
+rule "Film might be successfull 4"
+    when
+    	$m : MessageDto (  );
+        not goodDirector() and goodScenarist() and not goodActors()
+    then
+    	$m.setMessage("Film might be successfull");
+    	$m.setResult("Users like watching some artists in this film, so, this film may be popular.");
+end
+
+rule "Film might be successfull 5"
+    when
+    	$m : MessageDto (  );
+        not goodDirector() and not goodScenarist() and goodActors()
+    then
+    	$m.setMessage("Film might be successfull");
+    	$m.setResult("Users like watching some artists in this film, so, this film may be popular.");
+end
+
+rule "Film might be successfull 6"
+    when
+    	$m : MessageDto (  );
+        goodDirector() and not goodScenarist() and not goodActors()
+    then
+    	$m.setMessage("Film might be successfull");
+    	$m.setResult("Users like watching some artists in this film, so, this film may be popular.");
+end
+
+
 
 rule "Film wont be successfull"
     when
