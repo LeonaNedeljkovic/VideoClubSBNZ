@@ -58,9 +58,10 @@ public class PurchaseServiceImpl implements PurchaseService{
 		purchase.setPrice(offer.getPrice());
 		purchase.setPurchasedMinutes(offer.getMinutes());
 		cepPurchaseSession.insert(new PurchaseEvent(purchase, user));
-		System.out.println(user.getUsername());
-		int numFired = cepPurchaseSession.fireAllRules();
-		if (numFired == 0) {
+		cepPurchaseSession.fireAllRules();
+		userService.save(user);
+		System.out.println("IS user allowed to purchase  "+ user.getAllowedToPurchase());
+		if (user.getAllowedToPurchase() == true) {
 			kieSession.insert(purchase);
 			kieSession.insert(user);
 			for (Action a : user.getAction()) {
@@ -68,7 +69,6 @@ public class PurchaseServiceImpl implements PurchaseService{
 			}
 			kieSession.fireAllRules();
 			kieSession.dispose();
-			userService.save(user);
 			return purchaseRepository.save(purchase);
 		}
 		throw new TooManyPurchasesFromUser();

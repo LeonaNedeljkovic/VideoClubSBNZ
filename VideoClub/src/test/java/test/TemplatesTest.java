@@ -247,7 +247,8 @@ public class TemplatesTest {
 				new ArrayList<Film>(),
 				new ArrayList<Purchase>(),
 				age,
-				null);
+				null,
+				true);
 		return user;
 	}
 	

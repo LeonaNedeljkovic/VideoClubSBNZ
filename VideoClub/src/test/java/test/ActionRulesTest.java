@@ -294,7 +294,8 @@ public class ActionRulesTest {
 				new ArrayList<Film>(),
 				new ArrayList<Purchase>(),
 				30,
-				null);
+				null,
+				true);
 		return user;
 	}
 	
