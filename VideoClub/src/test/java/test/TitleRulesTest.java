@@ -126,7 +126,8 @@ public class TitleRulesTest {
 				new ArrayList<Purchase>(),
 				30,
 				null,
-				true);
+				true,
+				null);
 		return user;
 	}
 	

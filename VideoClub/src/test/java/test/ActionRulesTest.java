@@ -70,7 +70,7 @@ public class ActionRulesTest {
 		
 		RegisteredUser userNone = (RegisteredUser) users.get(0);
 		RegisteredUser userBronze = (RegisteredUser) users.get(1);
-		RegisteredUser userGold = (RegisteredUser) users.get(2);
+		RegisteredUser userGold = (RegisteredUser) users.get(3);
 		
 		assertEquals(0, userNone.getAction().size());
 		assertEquals(1, userBronze.getAction().size());
@@ -126,7 +126,7 @@ public class ActionRulesTest {
 		
 		RegisteredUser userNone = (RegisteredUser) users.get(0);
 		RegisteredUser userBronze = (RegisteredUser) users.get(1);
-		RegisteredUser userGold = (RegisteredUser) users.get(2);
+		RegisteredUser userGold = (RegisteredUser) users.get(3);
 		
 		assertEquals(0, userNone.getAction().size());
 		assertEquals(1, userBronze.getAction().size());
@@ -295,7 +295,8 @@ public class ActionRulesTest {
 				new ArrayList<Purchase>(),
 				30,
 				null,
-				true);
+				true,
+				null);
 		return user;
 	}
 	

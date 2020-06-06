@@ -248,7 +248,8 @@ public class TemplatesTest {
 				new ArrayList<Purchase>(),
 				age,
 				null,
-				true);
+				true,
+				null);
 		return user;
 	}
 	

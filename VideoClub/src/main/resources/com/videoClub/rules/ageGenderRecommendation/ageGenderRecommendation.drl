@@ -1,0 +1,64 @@
+//created on: Jun 6, 2020
+package com.videoClub.rules.ageGenderRecommendation
+
+import com.videoClub.model.*;
+import com.videoClub.model.drl.*;
+import com.videoClub.model.enumeration.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+rule "Points for favourite films by users of same age and gender"
+	lock-on-active
+    when
+        $recommendation : RecommendedFilm( $points : recommendPoints, $film : film, $reviews : film.getReviews() );
+        $user : RegisteredUser( $ageCategory : ageCategory, $gender : gender );
+        Number( intValue > 0, $favourites : intValue ) from accumulate(
+        	$review: Review( user.getAgeCategory() == $ageCategory,
+        					 user.getGender() == $gender,
+        					 $film memberOf user.getFavouriteFilms()) from $reviews,
+        	count($review) );
+    then
+       $recommendation.setRecommendPoints($points+5*$favourites);
+        System.out.println("Film: "+ $film.getName() + " acquired " + 
+        5*$favourites+ " points for being favourite film of users of same age and gender");
+        update($user);
+        update($recommendation);
+end
+
+rule "Points for highly rated films by users of same age and gender"
+	lock-on-active
+    when
+        $recommendation : RecommendedFilm( $points : recommendPoints, $film : film, $reviews : film.getReviews() );
+        $user : RegisteredUser( $ageCategory : ageCategory, $gender : gender );
+        Number( doubleValue >= 4, $rating : doubleValue ) from accumulate(
+        	Review( rate > 0, $rate : rate,
+        	user.getAgeCategory() == $ageCategory,user.getGender() == $gender ) from $reviews,
+        	average($rate) );
+        Number( intValue > 0, $watchedNum : intValue ) from accumulate(
+        	$review:Review( rate > 0, user.getAgeCategory() == $ageCategory,user.getGender() == $gender ) from $reviews,
+        	count($review) );
+    then
+        $recommendation.setRecommendPoints($points+$watchedNum*$rating);
+        System.out.println("Film: "+ $film.getName() + " acquired " + 
+        $watchedNum*$rating+ " points for being highly rated by users of same age and gender");
+        update($user);
+        update($recommendation);
+end
+
+rule "Points for watched films by users of same age and gender"
+	lock-on-active
+    when
+        $recommendation : RecommendedFilm( $points : recommendPoints, $film : film, $reviews : film.getReviews() );
+        $user : RegisteredUser( $ageCategory : ageCategory, $gender : gender );
+        Number( intValue > 0, $watchedNum : intValue ) from accumulate(
+        	$review: Review( watched == true, rate == 0,
+        	user.getAgeCategory() == $ageCategory,user.getGender() == $gender ) from $reviews,
+        	count($review) );
+    then
+        $recommendation.setRecommendPoints($points+$watchedNum);
+        System.out.println("Film: "+ $film.getName() + " acquired " + 
+        $watchedNum+ " points for being watched by users of same age and gender");
+        update($user);
+        update($recommendation);
+end
