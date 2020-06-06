@@ -3,6 +3,12 @@ package com.videoClub.rules.cepPurchase
 import com.videoClub.event.*;
 import com.videoClub.model.*;
 
+declare SuspiciousUserEvent
+    @role(event)
+    user: User
+    reason: String
+end
+
 
 rule "More than 10 purchases in 1 hour from same user"
 	lock-on-active
@@ -16,6 +22,40 @@ rule "More than 10 purchases in 1 hour from same user"
             ),
             count($t2)
         )
+        not (SuspiciousUserEvent(user.id == $userId, reason == "Many purchases in 1 hour from same user"))
     then
-    	System.out.println("Too many purchases from same user");
+    	System.out.println("Many purchases in 1 hour from same user");
+    	$user.setAllowedToPurchase(false);
+        insert(new SuspiciousUserEvent($user, "Many purchases in 1 hour from same user"));
+end
+
+rule "Less than 10 purchases in 1 hour from same user"
+	lock-on-active
+    when
+        $t1: PurchaseEvent($userId: user.id, $user : user)
+        Number(intValue < 10) from accumulate(
+            $t2: PurchaseEvent(
+                this != $t1, 
+                user.id == $userId, 
+                this meets[1h] $t1
+            ),
+            count($t2)
+        )
+        $sp : SuspiciousUserEvent(user.id == $userId, reason == "Many purchases in 1 hour from same user")
+    then
+    	System.out.println("User fine");
+    	$user.setAllowedToPurchase(true);
+        delete($sp);
+        
+end
+
+rule "No previous purchase information about user, user is allowed to purchase"
+	lock-on-active
+    when
+        $t1: PurchaseEvent($userId: user.id, $user : user)
+        not (SuspiciousUserEvent(user.id == $userId, reason == "Many purchases in 1 hour from same user"))
+    then
+    	System.out.println("User fine");
+    	$user.setAllowedToPurchase(true);
+    	delete($t1);
 end

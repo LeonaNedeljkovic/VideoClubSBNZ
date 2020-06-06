@@ -58,7 +58,6 @@ public class PurchaseServiceImpl implements PurchaseService{
 		purchase.setPrice(offer.getPrice());
 		purchase.setPurchasedMinutes(offer.getMinutes());
 		cepPurchaseSession.insert(new PurchaseEvent(purchase, user));
-		System.out.println(user.getUsername());
 		int numFired = cepPurchaseSession.fireAllRules();
 		if (numFired == 0) {
 			kieSession.insert(purchase);

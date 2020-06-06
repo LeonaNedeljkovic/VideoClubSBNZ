@@ -42,6 +42,9 @@ public class RegisteredUser extends User{
 	@Column(name = "immunity")
 	private Rank immunity;
 	
+	@Column(name="allowed_to_purchase")
+	private Boolean allowedToPurchase;
+	
 	@ManyToMany
 	private List<Action> action = new ArrayList<Action>();
 	
@@ -208,5 +211,15 @@ public class RegisteredUser extends User{
 		}
 		return false;
 	}
+
+	public Boolean getAllowedToPurchase() {
+		return allowedToPurchase;
+	}
+
+	public void setAllowedToPurchase(Boolean allowedToPurchase) {
+		this.allowedToPurchase = allowedToPurchase;
+	}
+	
+	
 	
 }

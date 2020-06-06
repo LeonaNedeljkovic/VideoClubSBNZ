@@ -72,5 +72,7 @@ public class UserServiceImpl implements UserService {
 	public List<RegisteredUser> getAllRegisteredUsers() {
 		return userRepository.findAllRegisteredUsers();
 	}
+	
+	
 
 }
