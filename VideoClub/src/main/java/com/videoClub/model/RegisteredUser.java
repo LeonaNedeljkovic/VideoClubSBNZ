@@ -14,6 +14,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
 import com.videoClub.model.enumeration.AgeCategory;
+import com.videoClub.model.enumeration.Gender;
 import com.videoClub.model.enumeration.Rank;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -32,6 +33,9 @@ public class RegisteredUser extends User{
 	@Enumerated(EnumType.STRING)
 	@Column(name = "age_category")
 	private AgeCategory ageCategory;
+	
+	@Column(name = "gender")
+	private Gender gender;
 
 	@Column(name = "registry_date")
 	private LocalDateTime registryDate;
@@ -78,7 +82,7 @@ public class RegisteredUser extends User{
 
 	public RegisteredUser(LocalDateTime registryDate, int immunityPoints, int availableMinutes, Rank title,
 			Rank immunity, List<Action> action, List<Review> reviews, List<Notification> notificationa,
-			List<Film> favouriteFilms, List<Purchase> purchases, int age, AgeCategory ageCategory, Boolean allowedToPurchase) {
+			List<Film> favouriteFilms, List<Purchase> purchases, int age, AgeCategory ageCategory, Boolean allowedToPurchase, Gender gender) {
 		super();
 		this.registryDate = registryDate;
 		this.immunityPoints = immunityPoints;
@@ -93,12 +97,13 @@ public class RegisteredUser extends User{
 		this.age = age;
 		this.ageCategory = ageCategory;
 		this.allowedToPurchase = allowedToPurchase;
+		this.gender = gender;
 	}
 	
 	public RegisteredUser(Long id, String username, String password, String email, LocalDateTime registryDate,
 			int immunityPoints, int availableMinutes, Rank title, Rank immunity, List<Action> action,
 			List<Review> reviews, List<Notification> notificationa, List<Film> favouriteFilms,
-			List<Purchase> purchases, int age, AgeCategory ageCategory, Boolean allowedToPurchase) {
+			List<Purchase> purchases, int age, AgeCategory ageCategory, Boolean allowedToPurchase, Gender gender) {
 		super(id, username, password, email,true);
 		this.registryDate = registryDate;
 		this.immunityPoints = immunityPoints;
@@ -113,6 +118,7 @@ public class RegisteredUser extends User{
 		this.age = age;
 		this.ageCategory = ageCategory;
 		this.allowedToPurchase = allowedToPurchase;
+		this.gender = gender;
 	}
 
 	public LocalDateTime getRegistryDate() {
@@ -145,7 +151,7 @@ public class RegisteredUser extends User{
 		return allowedToPurchase;
 	}
 
-	public void setAllowedToPurchase(Boolean allowedToPurchase) {
+	public void setAllowedToPurchase(boolean allowedToPurchase) {
 		this.allowedToPurchase = allowedToPurchase;
 	}
 
@@ -223,6 +229,14 @@ public class RegisteredUser extends User{
 
 	public void setAgeCategory(AgeCategory ageCategory) {
 		this.ageCategory = ageCategory;
+	}
+
+	public Gender getGender() {
+		return gender;
+	}
+
+	public void setGender(Gender gender) {
+		this.gender = gender;
 	}
 
 	public boolean containsDiscount(){

@@ -111,7 +111,8 @@ public class CepRulesTest {
 		RegisteredUser user = new RegisteredUser(1L, "user1", "123", "e@gmail.com",
 				LocalDateTime.parse(sdf.format(new Date()), df), 0, 0, Rank.SILVER, Rank.SILVER,
 				new ArrayList<Action>(), new ArrayList<Review>(), new ArrayList<Notification>(), new ArrayList<Film>(),
-				new ArrayList<Purchase>(), 30, null, true);
+				new ArrayList<Purchase>(), 30, null, true,
+				null);
 		user.setAllowedToPurchase(true);
 		Purchase purchase = new Purchase();
 		ksession.insert(new PurchaseEvent(purchase, user));
@@ -144,7 +145,8 @@ public class CepRulesTest {
 		RegisteredUser user = new RegisteredUser(1L, "user1", "123", "e@gmail.com",
 				LocalDateTime.parse(sdf.format(new Date()), df), 0, 0, Rank.SILVER, Rank.SILVER,
 				new ArrayList<Action>(), new ArrayList<Review>(), new ArrayList<Notification>(), new ArrayList<Film>(),
-				new ArrayList<Purchase>(), 30, null, true);
+				new ArrayList<Purchase>(), 30, null, true,
+				null);
 		user.setAllowedToPurchase(false);
 		Purchase purchase = new Purchase();
 		ksession.insert(new PurchaseEvent(purchase, user));
@@ -166,7 +168,8 @@ public class CepRulesTest {
 		RegisteredUser user = new RegisteredUser(1L, "user1", "123", "e@gmail.com",
 				LocalDateTime.parse(sdf.format(new Date()), df), 0, 0, Rank.SILVER, Rank.SILVER,
 				new ArrayList<Action>(), new ArrayList<Review>(), new ArrayList<Notification>(), new ArrayList<Film>(),
-				new ArrayList<Purchase>(), 30, null, true);
+				new ArrayList<Purchase>(), 30, null, true,
+				null);
 		user.setAllowedToPurchase(true);
 		Purchase purchase = new Purchase();
 		FactHandle factHandle = ksession.insert(new PurchaseEvent(purchase, user));
