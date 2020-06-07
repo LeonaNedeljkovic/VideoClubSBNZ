@@ -33,7 +33,4 @@
     <kbase name="adminRecommendation" packages="com.videoClub.rules.adminRecommendation">
         <ksession name="adminRecommendationRulesSession"/>
     </kbase>
-    <kbase name="ageGenderRecommendation" packages="com.videoClub.rules.ageGenderRecommendation">
-        <ksession name="ageGenderRecommendationRulesSession"/>
-    </kbase>
 </kmodule>

@@ -34,6 +34,7 @@ public class RegisteredUser extends User{
 	@Column(name = "age_category")
 	private AgeCategory ageCategory;
 	
+	@Enumerated(EnumType.STRING)
 	@Column(name = "gender")
 	private Gender gender;
 
