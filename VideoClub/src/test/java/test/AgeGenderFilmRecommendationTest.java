@@ -22,7 +22,9 @@ import com.videoClub.model.Purchase;
 import com.videoClub.model.RegisteredUser;
 import com.videoClub.model.Review;
 import com.videoClub.model.TimeInterval;
+import com.videoClub.model.drl.Badge;
 import com.videoClub.model.drl.RecommendedFilm;
+import com.videoClub.model.drl.UserConclusion;
 import com.videoClub.model.enumeration.AgeCategory;
 import com.videoClub.model.enumeration.Gender;
 import com.videoClub.model.enumeration.Genre;
@@ -46,8 +48,9 @@ public class AgeGenderFilmRecommendationTest {
 		expectedFilmIds.add(2L);
 		expectedFilmIds.add(10L);
 		KieContainer kieContainer = KieServices.Factory.get().getKieClasspathContainer();
-		KieSession kieSession = kieContainer.newKieSession("ageGenderRecommendationRulesSession");
-		kieSession.insert(user);
+		KieSession kieSession = kieContainer.newKieSession("filmRecommendationRulesSession");
+		UserConclusion conclusion = new UserConclusion(user, new ArrayList<Badge>());
+		kieSession.insert(conclusion);
 		List<RecommendedFilm> recommended = new ArrayList<RecommendedFilm>();
 		for(Film f : films){
 			RecommendedFilm rf = new RecommendedFilm(0.0,f);
@@ -76,8 +79,9 @@ public class AgeGenderFilmRecommendationTest {
 		expectedFilmIds.add(8L);
 		expectedFilmIds.add(9L);
 		KieContainer kieContainer = KieServices.Factory.get().getKieClasspathContainer();
-		KieSession kieSession = kieContainer.newKieSession("ageGenderRecommendationRulesSession");
-		kieSession.insert(user);
+		KieSession kieSession = kieContainer.newKieSession("filmRecommendationRulesSession");
+		UserConclusion conclusion = new UserConclusion(user, new ArrayList<Badge>());
+		kieSession.insert(conclusion);
 		List<RecommendedFilm> recommended = new ArrayList<RecommendedFilm>();
 		for(Film f : films){
 			RecommendedFilm rf = new RecommendedFilm(0.0,f);

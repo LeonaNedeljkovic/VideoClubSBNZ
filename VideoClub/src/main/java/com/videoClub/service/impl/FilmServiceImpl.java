@@ -149,19 +149,6 @@ public class FilmServiceImpl implements FilmService{
 		if(recommendedFilms.size() > 15) {
 			recommendedFilms = recommendedFilms.subList(0, 14);
 		}
-		else if(recommendedFilms.size() == 0) {
-			KieSession kieSession2 = kieContainer.newKieSession("ageGenderRecommendationRulesSession");
-			kieSession2.insert(user);
-			List<RecommendedFilm> recommended = new ArrayList<RecommendedFilm>();
-			for(Film f : unwatched){
-				RecommendedFilm rf = new RecommendedFilm(0.0,f);
-				recommended.add(rf);
-				kieSession2.insert(rf);
-			}
-			kieSession2.fireAllRules();
-			kieSession2.dispose();
-			recommendedFilms = recommended;
-		}
 		return recommendedFilms;
 	}
 
