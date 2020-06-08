@@ -82,10 +82,6 @@ public class AuthenticationController {
 	public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtAuthenticationRequest authenticationRequest,
 			HttpServletResponse response) throws AuthenticationException, IOException {
 		final Authentication authentication;
-		User reguser = (User) this.userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
-		if(reguser.getAllowedToLogIn() == false){
-			return new ResponseEntity<>(new MessageDto("Not allowed to login.", "You can not login after three failed attempts. Try again later."), HttpStatus.FORBIDDEN);
-		}
 		try {
 			authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
 					authenticationRequest.getUsername(), authenticationRequest.getPassword()));
@@ -97,7 +93,7 @@ public class AuthenticationController {
 				kieSession.fireAllRules();
 				userService.save(loggingEvent.getUser());
 				if(loggingEvent.getUser().getAllowedToLogIn() == false) {
-					return new ResponseEntity<>(new MessageDto("Not allowed to login.", "You can not login after three failed attempts. Try again later."), HttpStatus.FORBIDDEN);
+					return new ResponseEntity<>(new MessageDto("Not allowed to login.", "You can not login after three failed attempts. Try again after 3 minutes."), HttpStatus.FORBIDDEN);
 				}
 			}
 			return new ResponseEntity<>(new MessageDto("Wrong username or password.", "Error"), HttpStatus.NOT_FOUND);
@@ -132,7 +128,7 @@ public class AuthenticationController {
 			// Vrati token kao odgovor na uspesno autentifikaciju
 			return new ResponseEntity<>(new UserTokenState(jwt, expiresIn, userType), HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>(new MessageDto("Not allowed to login.", "You can not login after three failed attempts. Try again later."), HttpStatus.FORBIDDEN);
+			return new ResponseEntity<>(new MessageDto("Not allowed to login.", "You can not login after three failed attempts. Try again after 3 minutes."), HttpStatus.FORBIDDEN);
 		}
 	}
 

@@ -44,6 +44,10 @@ public class PurchaseServiceImpl implements PurchaseService{
 	@Qualifier("cepPurchaseSession")
 	private KieSession cepPurchaseSession;
 	
+	@Autowired
+	@Qualifier(value = "cepConfigKsessionRealtimeClock")
+	private KieSession cepConfigKsessionRealtimeClock;
+	
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	private DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
@@ -60,7 +64,6 @@ public class PurchaseServiceImpl implements PurchaseService{
 		cepPurchaseSession.insert(new PurchaseEvent(purchase, user));
 		cepPurchaseSession.fireAllRules();
 		userService.save(user);
-		System.out.println("IS user allowed to purchase  "+ user.getAllowedToPurchase());
 		if (user.getAllowedToPurchase() == true) {
 			kieSession.insert(purchase);
 			kieSession.insert(user);
@@ -69,6 +72,7 @@ public class PurchaseServiceImpl implements PurchaseService{
 			}
 			kieSession.fireAllRules();
 			kieSession.dispose();
+			cepConfigKsessionRealtimeClock.insert(new PurchaseEvent(purchase,user));
 			return purchaseRepository.save(purchase);
 		}
 		throw new TooManyPurchasesFromUser();

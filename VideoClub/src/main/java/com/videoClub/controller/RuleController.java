@@ -2,6 +2,7 @@ package com.videoClub.controller;
 
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
@@ -16,6 +17,7 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +37,7 @@ import com.videoClub.bean.GoldTitle;
 import com.videoClub.bean.SilverImmunity;
 import com.videoClub.bean.SilverTitle;
 import com.videoClub.dto.PointsDTO;
+import com.videoClub.dto.ReportDTO;
 import com.videoClub.model.Film;
 import com.videoClub.model.Purchase;
 import com.videoClub.model.RegisteredUser;
@@ -85,6 +88,10 @@ public class RuleController {
 	
 	@Autowired
 	private KieContainer kieContainer;
+	
+	@Autowired
+	@Qualifier(value = "cepConfigKsessionRealtimeClock")
+	private KieSession cepConfigKsessionRealtimeClock;
 	
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	private DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
@@ -415,6 +422,18 @@ public class RuleController {
 		kieSession.fireAllRules();
 		kieSession.dispose();
 		userService.save(users);
+	}
+	
+	@Scheduled(cron="0 0 * * * *")
+	public void fireReportRules() {
+		ReportDTO reportDTO = new ReportDTO(0.0,LocalDate.now(),null,0L);
+		cepConfigKsessionRealtimeClock.insert(reportDTO);
+		cepConfigKsessionRealtimeClock.fireAllRules();
+		System.out.println("Earned in last 24h "+reportDTO.getEarned());
+		if(reportDTO.getFilm() != null) {
+			System.out.println("Most watched film is "+ reportDTO.getFilm().getName());
+		}
+		System.out.println("Number of views in the last 24h "+reportDTO.getNumberOfViews());
 	}
 	
 	private KieSession initializeKieSession(String sessionName){
