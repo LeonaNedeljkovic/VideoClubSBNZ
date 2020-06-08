@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -13,6 +14,7 @@ import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.ObjectFilter;
 
 import com.videoClub.model.Action;
 import com.videoClub.model.Artist;
@@ -22,9 +24,7 @@ import com.videoClub.model.Purchase;
 import com.videoClub.model.RegisteredUser;
 import com.videoClub.model.Review;
 import com.videoClub.model.TimeInterval;
-import com.videoClub.model.drl.Badge;
 import com.videoClub.model.drl.RecommendedFilm;
-import com.videoClub.model.drl.UserConclusion;
 import com.videoClub.model.enumeration.AgeCategory;
 import com.videoClub.model.enumeration.Gender;
 import com.videoClub.model.enumeration.Genre;
@@ -49,15 +49,23 @@ public class AgeGenderFilmRecommendationTest {
 		expectedFilmIds.add(10L);
 		KieContainer kieContainer = KieServices.Factory.get().getKieClasspathContainer();
 		KieSession kieSession = kieContainer.newKieSession("filmRecommendationRulesSession");
-		UserConclusion conclusion = new UserConclusion(user, new ArrayList<Badge>());
-		kieSession.insert(conclusion);
+		kieSession.insert(user);
 		List<RecommendedFilm> recommended = new ArrayList<RecommendedFilm>();
 		for(Film f : films){
-			RecommendedFilm rf = new RecommendedFilm(0.0,f);
-			recommended.add(rf);
-			kieSession.insert(rf);
+			kieSession.insert(f);
 		}
+		for(Film f : films){
+			for(Review r : f.getReviews()){
+				kieSession.insert(r);
+			}
+		}
+		kieSession.getAgenda().getAgendaGroup("flags-recommendation").setFocus();
 		kieSession.fireAllRules();
+		Collection<?> output = kieSession.getObjects(new RecommendedFilmObjectFilter());
+		for(Object o : output){
+			RecommendedFilm rf = (RecommendedFilm) o; 
+			recommended.add(rf);
+		}
 		kieSession.dispose();
 		for(RecommendedFilm rf : recommended){
 			if(expectedFilmIds.contains(rf.getFilm().getId())){
@@ -80,15 +88,23 @@ public class AgeGenderFilmRecommendationTest {
 		expectedFilmIds.add(9L);
 		KieContainer kieContainer = KieServices.Factory.get().getKieClasspathContainer();
 		KieSession kieSession = kieContainer.newKieSession("filmRecommendationRulesSession");
-		UserConclusion conclusion = new UserConclusion(user, new ArrayList<Badge>());
-		kieSession.insert(conclusion);
+		kieSession.insert(user);
 		List<RecommendedFilm> recommended = new ArrayList<RecommendedFilm>();
 		for(Film f : films){
-			RecommendedFilm rf = new RecommendedFilm(0.0,f);
-			recommended.add(rf);
-			kieSession.insert(rf);
+			for(Review r : f.getReviews()){
+				kieSession.insert(r);
+			}
 		}
+		for(Film f : films){
+			kieSession.insert(f);
+		}
+		kieSession.getAgenda().getAgendaGroup("flags-recommendation").setFocus();
 		kieSession.fireAllRules();
+		Collection<?> output = kieSession.getObjects(new RecommendedFilmObjectFilter());
+		for(Object o : output){
+			RecommendedFilm rf = (RecommendedFilm) o; 
+			recommended.add(rf);
+		}
 		kieSession.dispose();
 		for(RecommendedFilm rf : recommended){
 			if(expectedFilmIds.contains(rf.getFilm().getId())){
@@ -312,4 +328,12 @@ public class AgeGenderFilmRecommendationTest {
 		review.getTimeIntervals().add(new TimeInterval(id, 0, 100, review));
 		return review;
 	}
+	
+	class RecommendedFilmObjectFilter implements ObjectFilter {
+        @Override
+        public boolean accept(Object object) {
+            String className = object.getClass().getName();
+            return className.contains("RecommendedFilm");
+        }
+    }
 }

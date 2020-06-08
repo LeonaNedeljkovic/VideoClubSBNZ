@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -13,6 +14,7 @@ import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.ObjectFilter;
 
 import com.videoClub.model.Action;
 import com.videoClub.model.Artist;
@@ -22,9 +24,7 @@ import com.videoClub.model.Purchase;
 import com.videoClub.model.RegisteredUser;
 import com.videoClub.model.Review;
 import com.videoClub.model.TimeInterval;
-import com.videoClub.model.drl.Badge;
 import com.videoClub.model.drl.RecommendedFilm;
-import com.videoClub.model.drl.UserConclusion;
 import com.videoClub.model.enumeration.AgeCategory;
 import com.videoClub.model.enumeration.Genre;
 import com.videoClub.model.enumeration.Rank;
@@ -43,51 +43,63 @@ public class FilmRecommendationRulesTest {
 	@Test
 	public void test1(){
 		System.out.println("\nNo reviews test:");
+		List<RecommendedFilm> recommendations = new ArrayList<RecommendedFilm>();
 		RegisteredUser user = createRegisteredUser(1L);
-		UserConclusion conclusion = new UserConclusion(user, new ArrayList<Badge>());
 		KieContainer kieContainer = KieServices.Factory.get().getKieClasspathContainer();
-		KieSession kieSession1 = kieContainer.newKieSession("badgeRulesSession");
-		kieSession1.insert(conclusion);
+		KieSession kieSession = kieContainer.newKieSession("filmRecommendationRulesSession");
+		kieSession.insert(user);
 		for(Artist a : createListOfArtists()){
-			kieSession1.insert(a);
+			kieSession.insert(a);
 		}
-		insertGenres(kieSession1);
-		kieSession1.fireAllRules();
-		kieSession1.dispose();
-		
-		KieSession kieSession2 = kieContainer.newKieSession("filmRecommendationRulesSession");
-		kieSession2.insert(conclusion);
-		List<RecommendedFilm> recommendedFilms = new ArrayList<RecommendedFilm>();
+		insertGenres(kieSession);
+		kieSession.getAgenda().getAgendaGroup("user-flags").setFocus();
+		kieSession.fireAllRules();
 		for(Film f : films){
-			RecommendedFilm rf = new RecommendedFilm(0.0,f);
-			recommendedFilms.add(rf);
-			kieSession2.insert(rf);
+			kieSession.insert(f);
 		}
-		kieSession2.fireAllRules();
-		kieSession2.dispose();
-		for(RecommendedFilm rf : recommendedFilms){
-			assertTrue(0 > rf.getRecommendPoints());
+		kieSession.getAgenda().getAgendaGroup("flags-recommendation").setFocus();
+		kieSession.fireAllRules();
+		Collection<?> output = kieSession.getObjects(new RecommendedFilmObjectFilter());
+		for(Object o : output){
+			RecommendedFilm rf = (RecommendedFilm) o; 
+			recommendations.add(rf);
+		}
+		kieSession.dispose();
+		for(RecommendedFilm rf : recommendations){
+			assertTrue(0 >= rf.getRecommendPoints());
 		}
 	}
 	
 	@Test
 	public void test2(){
 		System.out.println("\n1 unwatched film test:");
+		List<RecommendedFilm> recommendedFilms = new ArrayList<RecommendedFilm>();
 		RegisteredUser user = createRegisteredUser(1L);
 		Review review = createUnwatchedReview(1L, user, films.get(0));
 		user.getReviews().add(review);
-		UserConclusion conclusion = new UserConclusion(user, new ArrayList<Badge>());
 		KieContainer kieContainer = KieServices.Factory.get().getKieClasspathContainer();
-		KieSession kieSession = kieContainer.newKieSession("badgeRulesSession");
-		kieSession.insert(conclusion);
+		KieSession kieSession = kieContainer.newKieSession("filmRecommendationRulesSession");
+		kieSession.insert(user);
 		for(Artist a : films.get(0).getActors()){
 			kieSession.insert(a);
 		}
 		insertGenres(kieSession);
 		kieSession.insert(review.getFilm().getDirector());
 		kieSession.insert(review.getFilm().getWrittenBy());
-		kieSession.insert(review);
+		kieSession.getAgenda().getAgendaGroup("user-flags").setFocus();
 		kieSession.fireAllRules();
+		for(Film f : films){
+			if(f.getId() != 1L){
+				kieSession.insert(f);
+			}
+		}
+		kieSession.getAgenda().getAgendaGroup("flags-recommendation").setFocus();
+		kieSession.fireAllRules();
+		Collection<?> output = kieSession.getObjects(new RecommendedFilmObjectFilter());
+		for(Object o : output){
+			RecommendedFilm rf = (RecommendedFilm) o; 
+			recommendedFilms.add(rf);
+		}
 		kieSession.dispose();
 		
 		List<Long> notRecommendedFilms = new ArrayList<Long>();
@@ -96,19 +108,6 @@ public class FilmRecommendationRulesTest {
 		notRecommendedFilms.add(3L);
 		notRecommendedFilms.add(7L);
 		notRecommendedFilms.add(9L);
-		
-		KieSession kieSession2 = kieContainer.newKieSession("filmRecommendationRulesSession");
-		kieSession2.insert(conclusion);
-		List<RecommendedFilm> recommendedFilms = new ArrayList<RecommendedFilm>();
-		for(Film f : films){
-			if(f.getId() != 1L){
-				RecommendedFilm rf = new RecommendedFilm(0.0,f);
-				recommendedFilms.add(rf);
-				kieSession2.insert(rf);
-			}
-		}
-		kieSession2.fireAllRules();
-		kieSession2.dispose();
 		
 		for(RecommendedFilm rf : recommendedFilms){
 			if(notRecommendedFilms.contains(rf.getFilm().getId())){
@@ -127,18 +126,16 @@ public class FilmRecommendationRulesTest {
 		RegisteredUser user = createRegisteredUser(1L);
 		Review review = createWatchedReview(1L, user, films.get(0));
 		user.getReviews().add(review);
-		UserConclusion conclusion = new UserConclusion(user, new ArrayList<Badge>());
 		KieContainer kieContainer = KieServices.Factory.get().getKieClasspathContainer();
-		KieSession kieSession = kieContainer.newKieSession("badgeRulesSession");
-		kieSession.insert(conclusion);
+		KieSession kieSession = kieContainer.newKieSession("filmRecommendationRulesSession");
+		kieSession.insert(user);
 		for(Artist a : films.get(0).getActors()){
 			kieSession.insert(a);
 		}
 		kieSession.insert(review.getFilm().getDirector());
 		kieSession.insert(review.getFilm().getWrittenBy());
-		kieSession.insert(review);
+		kieSession.getAgenda().getAgendaGroup("user-flags").setFocus();
 		kieSession.fireAllRules();
-		kieSession.dispose();
 		
 		List<Long> recommendedFilms = new ArrayList<Long>();
 		recommendedFilms.add(2L);
@@ -146,18 +143,20 @@ public class FilmRecommendationRulesTest {
 		recommendedFilms.add(7L);
 		recommendedFilms.add(9L);
 		
-		KieSession kieSession2 = kieContainer.newKieSession("filmRecommendationRulesSession");
-		kieSession2.insert(conclusion);
 		List<RecommendedFilm> recommendations = new ArrayList<RecommendedFilm>();
 		for(Film f : films){
 			if(f.getId() != 1L){
-				RecommendedFilm rf = new RecommendedFilm(0.0,f);
-				recommendations.add(rf);
-				kieSession2.insert(rf);
+				kieSession.insert(f);
 			}
 		}
-		kieSession2.fireAllRules();
-		kieSession2.dispose();
+		kieSession.getAgenda().getAgendaGroup("flags-recommendation").setFocus();
+		kieSession.fireAllRules();
+		Collection<?> output = kieSession.getObjects(new RecommendedFilmObjectFilter());
+		for(Object o : output){
+			RecommendedFilm rf = (RecommendedFilm) o; 
+			recommendations.add(rf);
+		}
+		kieSession.dispose();
 		
 		for(RecommendedFilm rf : recommendations){
 			if(recommendedFilms.contains(rf.getFilm().getId())){
@@ -178,18 +177,16 @@ public class FilmRecommendationRulesTest {
 		review.setRate(5);
 		user.getReviews().add(review);
 		user.getFavouriteFilms().add(review.getFilm());
-		UserConclusion conclusion = new UserConclusion(user, new ArrayList<Badge>());
 		KieContainer kieContainer = KieServices.Factory.get().getKieClasspathContainer();
-		KieSession kieSession = kieContainer.newKieSession("badgeRulesSession");
-		kieSession.insert(conclusion);
+		KieSession kieSession = kieContainer.newKieSession("filmRecommendationRulesSession");
+		kieSession.insert(user);
 		for(Artist a : films.get(0).getActors()){
 			kieSession.insert(a);
 		}
 		kieSession.insert(review.getFilm().getDirector());
 		kieSession.insert(review.getFilm().getWrittenBy());
-		kieSession.insert(review);
+		kieSession.getAgenda().getAgendaGroup("user-flags").setFocus();
 		kieSession.fireAllRules();
-		kieSession.dispose();
 		
 		List<Long> recommendedFilms = new ArrayList<Long>();
 		recommendedFilms.add(2L);
@@ -197,18 +194,20 @@ public class FilmRecommendationRulesTest {
 		recommendedFilms.add(7L);
 		recommendedFilms.add(9L);
 		
-		KieSession kieSession2 = kieContainer.newKieSession("filmRecommendationRulesSession");
-		kieSession2.insert(conclusion);
 		List<RecommendedFilm> recommendations = new ArrayList<RecommendedFilm>();
 		for(Film f : films){
 			if(f.getId() != 1L){
-				RecommendedFilm rf = new RecommendedFilm(0.0,f);
-				recommendations.add(rf);
-				kieSession2.insert(rf);
+				kieSession.insert(f);
 			}
 		}
-		kieSession2.fireAllRules();
-		kieSession2.dispose();
+		kieSession.getAgenda().getAgendaGroup("flags-recommendation").setFocus();
+		kieSession.fireAllRules();
+		Collection<?> output = kieSession.getObjects(new RecommendedFilmObjectFilter());
+		for(Object o : output){
+			RecommendedFilm rf = (RecommendedFilm) o; 
+			recommendations.add(rf);
+		}
+		kieSession.dispose();
 		
 		for(RecommendedFilm rf : recommendations){
 			if(recommendedFilms.contains(rf.getFilm().getId())){
@@ -228,18 +227,16 @@ public class FilmRecommendationRulesTest {
 		Review review = createWatchedReview(1L, user, films.get(0));
 		review.setRate(4);
 		user.getReviews().add(review);
-		UserConclusion conclusion = new UserConclusion(user, new ArrayList<Badge>());
 		KieContainer kieContainer = KieServices.Factory.get().getKieClasspathContainer();
-		KieSession kieSession = kieContainer.newKieSession("badgeRulesSession");
-		kieSession.insert(conclusion);
+		KieSession kieSession = kieContainer.newKieSession("filmRecommendationRulesSession");
 		for(Artist a : films.get(0).getActors()){
 			kieSession.insert(a);
 		}
+		kieSession.insert(user);
 		kieSession.insert(review.getFilm().getDirector());
 		kieSession.insert(review.getFilm().getWrittenBy());
-		kieSession.insert(review);
+		kieSession.getAgenda().getAgendaGroup("user-flags").setFocus();
 		kieSession.fireAllRules();
-		kieSession.dispose();
 		
 		List<Long> recommendedFilms = new ArrayList<Long>();
 		recommendedFilms.add(2L);
@@ -247,18 +244,21 @@ public class FilmRecommendationRulesTest {
 		recommendedFilms.add(7L);
 		recommendedFilms.add(9L);
 		
-		KieSession kieSession2 = kieContainer.newKieSession("filmRecommendationRulesSession");
-		kieSession2.insert(conclusion);
 		List<RecommendedFilm> recommendations = new ArrayList<RecommendedFilm>();
 		for(Film f : films){
 			if(f.getId() != 1L){
-				RecommendedFilm rf = new RecommendedFilm(0.0,f);
-				recommendations.add(rf);
-				kieSession2.insert(rf);
+				kieSession.insert(f);
 			}
 		}
-		kieSession2.fireAllRules();
-		kieSession2.dispose();
+		kieSession.getAgenda().getAgendaGroup("flags-recommendation").setFocus();
+		kieSession.fireAllRules();
+		
+		Collection<?> output = kieSession.getObjects(new RecommendedFilmObjectFilter());
+		for(Object o : output){
+			RecommendedFilm rf = (RecommendedFilm) o; 
+			recommendations.add(rf);
+		}
+		kieSession.dispose();
 		
 		for(RecommendedFilm rf : recommendations){
 			if(recommendedFilms.contains(rf.getFilm().getId())){
@@ -278,18 +278,16 @@ public class FilmRecommendationRulesTest {
 		Review review = createWatchedReview(1L, user, films.get(0));
 		review.setRate(3);
 		user.getReviews().add(review);
-		UserConclusion conclusion = new UserConclusion(user, new ArrayList<Badge>());
 		KieContainer kieContainer = KieServices.Factory.get().getKieClasspathContainer();
-		KieSession kieSession = kieContainer.newKieSession("badgeRulesSession");
-		kieSession.insert(conclusion);
+		KieSession kieSession = kieContainer.newKieSession("filmRecommendationRulesSession");
+		kieSession.insert(user);
 		for(Artist a : films.get(0).getActors()){
 			kieSession.insert(a);
 		}
 		kieSession.insert(review.getFilm().getDirector());
 		kieSession.insert(review.getFilm().getWrittenBy());
-		kieSession.insert(review);
+		kieSession.getAgenda().getAgendaGroup("user-flags").setFocus();
 		kieSession.fireAllRules();
-		kieSession.dispose();
 		
 		List<Long> recommendedFilms = new ArrayList<Long>();
 		recommendedFilms.add(2L);
@@ -297,18 +295,20 @@ public class FilmRecommendationRulesTest {
 		recommendedFilms.add(7L);
 		recommendedFilms.add(9L);
 		
-		KieSession kieSession2 = kieContainer.newKieSession("filmRecommendationRulesSession");
-		kieSession2.insert(conclusion);
 		List<RecommendedFilm> recommendations = new ArrayList<RecommendedFilm>();
 		for(Film f : films){
 			if(f.getId() != 1L){
-				RecommendedFilm rf = new RecommendedFilm(0.0,f);
-				recommendations.add(rf);
-				kieSession2.insert(rf);
+				kieSession.insert(f);
 			}
 		}
-		kieSession2.fireAllRules();
-		kieSession2.dispose();
+		kieSession.getAgenda().getAgendaGroup("flags-recommendation").setFocus();
+		kieSession.fireAllRules();
+		Collection<?> output = kieSession.getObjects(new RecommendedFilmObjectFilter());
+		for(Object o : output){
+			RecommendedFilm rf = (RecommendedFilm) o; 
+			recommendations.add(rf);
+		}
+		kieSession.dispose();
 		
 		for(RecommendedFilm rf : recommendations){
 			if(recommendedFilms.contains(rf.getFilm().getId())){
@@ -328,18 +328,16 @@ public class FilmRecommendationRulesTest {
 		Review review = createWatchedReview(1L, user, films.get(0));
 		review.setRate(2);
 		user.getReviews().add(review);
-		UserConclusion conclusion = new UserConclusion(user, new ArrayList<Badge>());
 		KieContainer kieContainer = KieServices.Factory.get().getKieClasspathContainer();
-		KieSession kieSession = kieContainer.newKieSession("badgeRulesSession");
-		kieSession.insert(conclusion);
+		KieSession kieSession = kieContainer.newKieSession("filmRecommendationRulesSession");
+		kieSession.insert(user);
 		for(Artist a : films.get(0).getActors()){
 			kieSession.insert(a);
 		}
 		kieSession.insert(review.getFilm().getDirector());
 		kieSession.insert(review.getFilm().getWrittenBy());
-		kieSession.insert(review);
+		kieSession.getAgenda().getAgendaGroup("user-flags").setFocus();
 		kieSession.fireAllRules();
-		kieSession.dispose();
 		
 		List<Long> recommendedFilms = new ArrayList<Long>();
 		recommendedFilms.add(2L);
@@ -347,18 +345,20 @@ public class FilmRecommendationRulesTest {
 		recommendedFilms.add(7L);
 		recommendedFilms.add(9L);
 		
-		KieSession kieSession2 = kieContainer.newKieSession("filmRecommendationRulesSession");
-		kieSession2.insert(conclusion);
 		List<RecommendedFilm> recommendations = new ArrayList<RecommendedFilm>();
 		for(Film f : films){
 			if(f.getId() != 1L){
-				RecommendedFilm rf = new RecommendedFilm(0.0,f);
-				recommendations.add(rf);
-				kieSession2.insert(rf);
+				kieSession.insert(f);
 			}
 		}
-		kieSession2.fireAllRules();
-		kieSession2.dispose();
+		kieSession.getAgenda().getAgendaGroup("flags-recommendation").setFocus();
+		kieSession.fireAllRules();
+		Collection<?> output = kieSession.getObjects(new RecommendedFilmObjectFilter());
+		for(Object o : output){
+			RecommendedFilm rf = (RecommendedFilm) o; 
+			recommendations.add(rf);
+		}
+		kieSession.dispose();
 		
 		for(RecommendedFilm rf : recommendations){
 			if(recommendedFilms.contains(rf.getFilm().getId())){
@@ -378,18 +378,16 @@ public class FilmRecommendationRulesTest {
 		Review review = createWatchedReview(1L, user, films.get(0));
 		review.setRate(1);
 		user.getReviews().add(review);
-		UserConclusion conclusion = new UserConclusion(user, new ArrayList<Badge>());
 		KieContainer kieContainer = KieServices.Factory.get().getKieClasspathContainer();
-		KieSession kieSession = kieContainer.newKieSession("badgeRulesSession");
-		kieSession.insert(conclusion);
+		KieSession kieSession = kieContainer.newKieSession("filmRecommendationRulesSession");
+		kieSession.insert(user);
 		for(Artist a : films.get(0).getActors()){
 			kieSession.insert(a);
 		}
 		kieSession.insert(review.getFilm().getDirector());
 		kieSession.insert(review.getFilm().getWrittenBy());
-		kieSession.insert(review);
+		kieSession.getAgenda().getAgendaGroup("user-flags").setFocus();
 		kieSession.fireAllRules();
-		kieSession.dispose();
 		
 		List<Long> recommendedFilms = new ArrayList<Long>();
 		recommendedFilms.add(2L);
@@ -397,18 +395,20 @@ public class FilmRecommendationRulesTest {
 		recommendedFilms.add(7L);
 		recommendedFilms.add(9L);
 		
-		KieSession kieSession2 = kieContainer.newKieSession("filmRecommendationRulesSession");
-		kieSession2.insert(conclusion);
 		List<RecommendedFilm> recommendations = new ArrayList<RecommendedFilm>();
 		for(Film f : films){
 			if(f.getId() != 1L){
-				RecommendedFilm rf = new RecommendedFilm(0.0,f);
-				recommendations.add(rf);
-				kieSession2.insert(rf);
+				kieSession.insert(f);
 			}
 		}
-		kieSession2.fireAllRules();
-		kieSession2.dispose();
+		kieSession.getAgenda().getAgendaGroup("flags-recommendation").setFocus();
+		kieSession.fireAllRules();
+		Collection<?> output = kieSession.getObjects(new RecommendedFilmObjectFilter());
+		for(Object o : output){
+			RecommendedFilm rf = (RecommendedFilm) o; 
+			recommendations.add(rf);
+		}
+		kieSession.dispose();
 		
 		for(RecommendedFilm rf : recommendations){
 			if(recommendedFilms.contains(rf.getFilm().getId())){
@@ -431,21 +431,18 @@ public class FilmRecommendationRulesTest {
 		review2.setRate(4);
 		user.getReviews().add(review1);
 		user.getReviews().add(review2);
-		UserConclusion conclusion = new UserConclusion(user, new ArrayList<Badge>());
 		KieContainer kieContainer = KieServices.Factory.get().getKieClasspathContainer();
-		KieSession kieSession = kieContainer.newKieSession("badgeRulesSession");
-		kieSession.insert(conclusion);
+		KieSession kieSession = kieContainer.newKieSession("filmRecommendationRulesSession");
+		kieSession.insert(user);
 		for(Artist a : films.get(0).getActors()){
 			kieSession.insert(a);
 		}
 		kieSession.insert(review1.getFilm().getDirector());
 		kieSession.insert(review1.getFilm().getWrittenBy());
-		kieSession.insert(review1);
 		kieSession.insert(review2.getFilm().getDirector());
 		kieSession.insert(review2.getFilm().getWrittenBy());
-		kieSession.insert(review2);
+		kieSession.getAgenda().getAgendaGroup("user-flags").setFocus();
 		kieSession.fireAllRules();
-		kieSession.dispose();
 		
 		List<Long> recommendedFilms = new ArrayList<Long>();
 		recommendedFilms.add(2L);
@@ -453,18 +450,20 @@ public class FilmRecommendationRulesTest {
 		recommendedFilms.add(7L);
 		recommendedFilms.add(9L);
 		
-		KieSession kieSession2 = kieContainer.newKieSession("filmRecommendationRulesSession");
-		kieSession2.insert(conclusion);
 		List<RecommendedFilm> recommendations = new ArrayList<RecommendedFilm>();
 		for(Film f : films){
 			if(f.getId() != 1L){
-				RecommendedFilm rf = new RecommendedFilm(0.0,f);
-				recommendations.add(rf);
-				kieSession2.insert(rf);
+				kieSession.insert(f);
 			}
 		}
-		kieSession2.fireAllRules();
-		kieSession2.dispose();
+		kieSession.getAgenda().getAgendaGroup("flags-recommendation").setFocus();
+		kieSession.fireAllRules();
+		Collection<?> output = kieSession.getObjects(new RecommendedFilmObjectFilter());
+		for(Object o : output){
+			RecommendedFilm rf = (RecommendedFilm) o; 
+			recommendations.add(rf);
+		}
+		kieSession.dispose();
 		
 		for(RecommendedFilm rf : recommendations){
 			if(recommendedFilms.contains(rf.getFilm().getId())){
@@ -658,4 +657,12 @@ public class FilmRecommendationRulesTest {
 		kieSession.insert(Genre.WESTERN);
 		kieSession.insert(Genre.FAMILY);
 	}
+	
+	class RecommendedFilmObjectFilter implements ObjectFilter {
+        @Override
+        public boolean accept(Object object) {
+            String className = object.getClass().getName();
+            return className.contains("RecommendedFilm");
+        }
+    }
 }
