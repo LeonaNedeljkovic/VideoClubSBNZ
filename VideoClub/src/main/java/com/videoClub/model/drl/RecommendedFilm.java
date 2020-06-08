@@ -22,6 +22,10 @@ public class RecommendedFilm {
 	public double getRecommendPoints() {
 		return recommendPoints;
 	}
+	
+	public Double getRecommendPointsDouble() {
+		return recommendPoints;
+	}
 
 	public void setRecommendPoints(double recommendPoints) {
 		this.recommendPoints = recommendPoints;

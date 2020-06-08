@@ -1,6 +1,7 @@
 package com.videoClub.service.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -8,6 +9,7 @@ import java.util.stream.Collectors;
 
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.ObjectFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -148,11 +150,14 @@ public class FilmServiceImpl implements FilmService{
 		}
 		List<RecommendedFilm> recommendedFilms = new ArrayList<RecommendedFilm>();
 		for(Film f : unwatched){
-			RecommendedFilm rf = new RecommendedFilm(0.0,f);
-			recommendedFilms.add(rf);
-			kieSession.insert(rf);
+			kieSession.insert(f);
 		}
 		kieSession.fireAllRules();
+		Collection<?> output = kieSession.getObjects(new RecommendedFilmObjectFilter());
+		for(Object o : output){
+			RecommendedFilm rf = (RecommendedFilm) o; 
+			recommendedFilms.add(rf);
+		}
 		kieSession.dispose();
 		Collections.sort(recommendedFilms, new RecommendedFilmComparator());
 		recommendedFilms = recommendedFilms.stream().filter(recommendedFilm -> recommendedFilm.getRecommendPoints() > 0)
@@ -183,4 +188,12 @@ public class FilmServiceImpl implements FilmService{
 		kieSession.insert(Genre.WESTERN);
 		kieSession.insert(Genre.FAMILY);
 	}
+	
+	class RecommendedFilmObjectFilter implements ObjectFilter {
+        @Override
+        public boolean accept(Object object) {
+            String className = object.getClass().getName();
+            return className.contains("RecommendedFilm");
+        }
+    }
 }
