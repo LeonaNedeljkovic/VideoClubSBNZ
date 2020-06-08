@@ -5,21 +5,20 @@ import com.videoClub.model.*;
 
 declare SuspiciousUserEvent
     @role(event)
+    @expires(3m)
     user: User
     reason: String
 end
 
-
-rule "More than 3 logging in unsuccessfully in 10 minutes from one user"
-	lock-on-active
+rule "More than 3 logging in unsuccessfully in 1 minute from one user"
     when
-        $t1: LoggingEvent($userId: user.id, $user : user)
+        $t1: LoggingEvent($userId: user.id, $user : user, successful == false)
         Number(intValue >= 3) from accumulate(
             $t2: LoggingEvent(
                 this != $t1, 
                 successful == false,
                 user.id == $userId, 
-                this meets[10m] $t1
+                this meets[1m] $t1
             ),
             count($t2)
         )
@@ -30,36 +29,13 @@ rule "More than 3 logging in unsuccessfully in 10 minutes from one user"
         insert(new SuspiciousUserEvent($user, "Many unsuccessful logging in from same username"));
         
 end
- 
-rule "Less than 3 logging in unsuccessfully in 10 minutes from one user"
-	lock-on-active
-    when
-        $t1: LoggingEvent($userId: user.id, $user : user)
-        Number(intValue < 3) from accumulate(
-            $t2: LoggingEvent(
-                this != $t1, 
-                user.id == $userId,
-                successful == false, 
-                this meets[10m] $t1
-            ),
-            count($t2)
-        )
-        $sp: SuspiciousUserEvent(user.id == $userId, reason == "Many unsuccessful logging in from same username")
-    then
-    	System.out.println("User fine");
-    	$user.setAllowedToLogIn(true);
-        delete($sp);
-        
-end
 
-rule "No previous logging information about user, user is allowed to log in"
-	lock-on-active
+rule "Successful logging in"
     when
         $t1: LoggingEvent($userId: user.id, $user : user, successful == true)
         not (SuspiciousUserEvent(user.id == $userId, reason == "Many unsuccessful logging in from same username"))
     then
-    	System.out.println("User fine");
+    	System.out.println("User fine 1");
     	$user.setAllowedToLogIn(true);
-    	delete($t1);
         
 end

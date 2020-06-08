@@ -11,8 +11,7 @@ import com.videoClub.model.Purchase;
 import com.videoClub.model.RegisteredUser;
 
 @Role(Role.Type.EVENT)
-@Timestamp("executionTime")
-@Expires("1h")
+@Expires("30h")
 public class PurchaseEvent implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private RegisteredUser user;

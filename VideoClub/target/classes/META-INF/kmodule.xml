@@ -29,8 +29,15 @@
     </kbase>
    <kbase name="cepPurchase" eventProcessingMode="stream" packages="com.videoClub.rules.cepPurchase">
         <ksession name="cepPurchaseSession"/>
+        <ksession name="cepPurchaseKsessionPseudoClock" clockType="pseudo"/>
     </kbase>
     <kbase name="adminRecommendation" packages="com.videoClub.rules.adminRecommendation">
         <ksession name="adminRecommendationRulesSession"/>
     </kbase>
+    <kbase name="cepReport" eventProcessingMode="stream" packages="com.videoClub.rules.cepReport">
+        <ksession name="cepConfigKsessionRealtimeClock" clockType="realtime"/>
+        <ksession name="cepConfigKsessionPseudoClock" clockType="pseudo"/>
+    </kbase>
+    
+    
 </kmodule>

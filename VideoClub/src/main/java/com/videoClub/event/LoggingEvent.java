@@ -11,15 +11,15 @@ import com.videoClub.model.User;
 
 @Role(Role.Type.EVENT)
 @Timestamp("executionTime")
-@Expires("10m")
+@Expires("5m")
 public class LoggingEvent implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private Date executionTime;
 	private User user;
-	private Boolean successful;
+	private boolean successful;
 
-	public LoggingEvent(User user,Boolean successful) {
+	public LoggingEvent(User user,boolean successful) {
 		super();
 		this.executionTime = new Date();
 		this.user = user;
@@ -46,11 +46,11 @@ public class LoggingEvent implements Serializable {
 		this.user = user;
 	}
 
-	public Boolean getSuccessful() {
+	public boolean getSuccessful() {
 		return successful;
 	}
 
-	public void setSuccessful(Boolean successful) {
+	public void setSuccessful(boolean successful) {
 		this.successful = successful;
 	}
 	

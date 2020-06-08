@@ -11,7 +11,6 @@ end
 
 
 rule "More than 10 purchases in 1 hour from same user"
-	lock-on-active
     when
         $t1: PurchaseEvent($userId: user.id, $user : user)
         Number(intValue >= 10) from accumulate(
@@ -24,13 +23,10 @@ rule "More than 10 purchases in 1 hour from same user"
         )
         not (SuspiciousUserEvent(user.id == $userId, reason == "Many purchases in 1 hour from same user"))
     then
-    	System.out.println("Many purchases in 1 hour from same user");
     	$user.setAllowedToPurchase(false);
-        insert(new SuspiciousUserEvent($user, "Many purchases in 1 hour from same user"));
 end
 
 rule "Less than 10 purchases in 1 hour from same user"
-	lock-on-active
     when
         $t1: PurchaseEvent($userId: user.id, $user : user)
         Number(intValue < 10) from accumulate(
@@ -43,18 +39,22 @@ rule "Less than 10 purchases in 1 hour from same user"
         )
         $sp : SuspiciousUserEvent(user.id == $userId, reason == "Many purchases in 1 hour from same user")
     then
-    	System.out.println("User fine 1");
     	$user.setAllowedToPurchase(true);
-        delete($sp);
-        
+        delete($sp);   
 end
 
-rule "No previous purchase information about user, user is allowed to purchase"
-	lock-on-active
+rule "No suspicious user event and less than 10 purchase events in 1 hour"
     when
         $t1: PurchaseEvent($userId: user.id, $user : user)
+        Number(intValue < 10) from accumulate(
+            $t2: PurchaseEvent(
+                this != $t1, 
+                user.id == $userId, 
+                this meets[1h] $t1
+            ),
+            count($t2)
+        )
         not (SuspiciousUserEvent(user.id == $userId, reason == "Many purchases in 1 hour from same user"))
     then
-    	System.out.println("User fine 2");
     	$user.setAllowedToPurchase(true);
 end
