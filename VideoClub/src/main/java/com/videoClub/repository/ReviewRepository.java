@@ -10,6 +10,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.videoClub.model.Review;
+import com.videoClub.model.enumeration.AgeCategory;
+import com.videoClub.model.enumeration.Gender;
 import com.videoClub.model.enumeration.Genre;
 
 @Repository
@@ -35,4 +37,8 @@ public interface ReviewRepository extends JpaRepository<Review, Long>{
 	@Query("SELECT r.film.genre from Review r where r.user.id = ?1 and r.watched = 1 "+
 	"GROUP BY r.film.genre ORDER BY count(r.film.genre) DESC")
 	public Page<Genre> topThreeUserGenre(Long userId,Pageable pageable);
+	
+	@Query("SELECT r FROM Review r " +
+		    "WHERE r.user.id != ?1 AND r.user.ageCategory = ?2 AND r.user.gender = ?3")
+	public List<Review> getReviewsByAgeAndGender(Long userId, AgeCategory category, Gender gender);
 }
