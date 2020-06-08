@@ -21,7 +21,6 @@ import com.videoClub.model.RegisteredUser;
 import com.videoClub.model.Review;
 import com.videoClub.model.User;
 import com.videoClub.model.drl.RecommendedFilm;
-import com.videoClub.model.drl.UserConclusion;
 import com.videoClub.model.enumeration.Genre;
 import com.videoClub.repository.FilmRepository;
 import com.videoClub.service.ArtistService;
@@ -131,10 +130,22 @@ public class FilmServiceImpl implements FilmService{
 
 	@Override
 	public List<RecommendedFilm> getRecommendedFilms(RegisteredUser user) {
-		UserConclusion conclusion = reviewService.fireRulesForNewReview(user);
 		List<Film> unwatched = filmRepository.getUnwatchedFilms(user.getId());
 		KieSession kieSession = kieContainer.newKieSession("filmRecommendationRulesSession");
-		kieSession.insert(conclusion);
+		kieSession.getAgenda().getAgendaGroup("user-flags").setFocus();
+		kieSession.insert(user);
+		for(Artist a : artistService.getWatchedArtists(user.getId())){
+			kieSession.insert(a);
+		}
+		insertGenres(kieSession);
+		
+		kieSession.getAgenda().getAgendaGroup("user-flags").setFocus();
+		kieSession.fireAllRules();
+		
+		kieSession.getAgenda().getAgendaGroup("flags-recommendation").setFocus();
+		for(Review r : reviewService.getReviewsByAgeAndGender(user.getId(), user.getAgeCategory(), user.getGender())){
+			kieSession.insert(r);
+		}
 		List<RecommendedFilm> recommendedFilms = new ArrayList<RecommendedFilm>();
 		for(Film f : unwatched){
 			RecommendedFilm rf = new RecommendedFilm(0.0,f);
@@ -155,5 +166,21 @@ public class FilmServiceImpl implements FilmService{
 	@Override
 	public List<Film> save(List<Film> films) {
 		return filmRepository.saveAll(films);
+	}
+	
+	public void insertGenres(KieSession kieSession){
+		kieSession.insert(Genre.ACTION);
+		kieSession.insert(Genre.ADVENTURE);
+		kieSession.insert(Genre.ANIMATED);
+		kieSession.insert(Genre.COMEDY);
+		kieSession.insert(Genre.DOCUMENTARY);
+		kieSession.insert(Genre.DRAMA);
+		kieSession.insert(Genre.HISTORICAL);
+		kieSession.insert(Genre.HORROR);
+		kieSession.insert(Genre.MUSIC);
+		kieSession.insert(Genre.SCIFI);
+		kieSession.insert(Genre.THRILLER);
+		kieSession.insert(Genre.WESTERN);
+		kieSession.insert(Genre.FAMILY);
 	}
 }

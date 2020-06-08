@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import org.junit.Test;
 import org.kie.api.KieServices;
@@ -15,8 +14,7 @@ import com.videoClub.dto.MessageDto;
 import com.videoClub.model.Artist;
 import com.videoClub.model.Film;
 import com.videoClub.model.Review;
-import com.videoClub.model.drl.ArtistRateBadge;
-import com.videoClub.model.drl.ArtistReviewBadge;
+import com.videoClub.model.drl.ArtistFlag;
 import com.videoClub.model.enumeration.AgeCategory;
 import com.videoClub.model.enumeration.Genre;
 
@@ -68,9 +66,9 @@ public class AdminRecommendationTest {
 		MessageDto messageDto = new MessageDto();
 		Film film = new Film(new Long(1), "New movie", "Best movie ever", Genre.ACTION, 100, 2020, 0.0, "poster",
 				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>(), new ArrayList<AgeCategory>());
-		ArtistReviewBadge actorReviewBadge = new ArtistReviewBadge(actor, 1, 1);
-		ArtistReviewBadge scenaristReviewBadge = new ArtistReviewBadge(scenarist, 1, 1);
-		ArtistReviewBadge directorReviewBadge = new ArtistReviewBadge(director, 1, 1);
+		ArtistFlag actorReviewBadge = new ArtistFlag(actor, 1, 1);
+		ArtistFlag scenaristReviewBadge = new ArtistFlag(scenarist, 1, 1);
+		ArtistFlag directorReviewBadge = new ArtistFlag(director, 1, 1);
 		actor.getRoles().add(film);
 		scenarist.getWritten().add(film);
 		director.getDirected().add(film);
@@ -108,13 +106,13 @@ public class AdminRecommendationTest {
 		kieSession.setGlobal("usersNumber", 2);
 		kieSession.insert(film);
 		kieSession.insert(messageDto);
-		kieSession.insert(new ArtistReviewBadge(director,2,0));
-		kieSession.insert(new ArtistReviewBadge(director,2,0));
-		kieSession.insert(new ArtistReviewBadge(director,2,0));
-		kieSession.insert(new ArtistRateBadge(director,5,0));
-		kieSession.insert(new ArtistRateBadge(director,5,0));
-		kieSession.insert(new ArtistRateBadge(director,5,0));
-		kieSession.insert(new ArtistRateBadge(director,5,0));
+		kieSession.insert(new ArtistFlag(director,2,0));
+		kieSession.insert(new ArtistFlag(director,2,0));
+		kieSession.insert(new ArtistFlag(director,2,0));
+		kieSession.insert(new ArtistFlag(director,5,0));
+		kieSession.insert(new ArtistFlag(director,5,0));
+		kieSession.insert(new ArtistFlag(director,5,0));
+		kieSession.insert(new ArtistFlag(director,5,0));
 		kieSession.fireAllRules();
 		assertEquals("Film might be successfull",messageDto.getMessage());
 		assertEquals("Users like watching some artists in this film, so, this film may be popular.", messageDto.getResult());
@@ -140,13 +138,13 @@ public class AdminRecommendationTest {
 		kieSession.setGlobal("usersNumber", 2);
 		kieSession.insert(film);
 		kieSession.insert(messageDto);
-		kieSession.insert(new ArtistReviewBadge(scenarist,2,0));
-		kieSession.insert(new ArtistReviewBadge(scenarist,2,0));
-		kieSession.insert(new ArtistReviewBadge(scenarist,2,0));
-		kieSession.insert(new ArtistRateBadge(scenarist,5,0));
-		kieSession.insert(new ArtistRateBadge(scenarist,5,0));
-		kieSession.insert(new ArtistRateBadge(scenarist,5,0));
-		kieSession.insert(new ArtistRateBadge(scenarist,5,0));
+		kieSession.insert(new ArtistFlag(scenarist,2,0));
+		kieSession.insert(new ArtistFlag(scenarist,2,0));
+		kieSession.insert(new ArtistFlag(scenarist,2,0));
+		kieSession.insert(new ArtistFlag(scenarist,5,0));
+		kieSession.insert(new ArtistFlag(scenarist,5,0));
+		kieSession.insert(new ArtistFlag(scenarist,5,0));
+		kieSession.insert(new ArtistFlag(scenarist,5,0));
 		kieSession.fireAllRules();
 		assertEquals("Film might be successfull",messageDto.getMessage());
 		assertEquals("Users like watching some artists in this film, so, this film may be popular.", messageDto.getResult());
@@ -172,13 +170,13 @@ public class AdminRecommendationTest {
 		kieSession.setGlobal("usersNumber", 2);
 		kieSession.insert(film);
 		kieSession.insert(messageDto);
-		kieSession.insert(new ArtistReviewBadge(actor,2,0));
-		kieSession.insert(new ArtistReviewBadge(actor,2,0));
-		kieSession.insert(new ArtistReviewBadge(actor,2,0));
-		kieSession.insert(new ArtistRateBadge(actor,5,0));
-		kieSession.insert(new ArtistRateBadge(actor,5,0));
-		kieSession.insert(new ArtistRateBadge(actor,5,0));
-		kieSession.insert(new ArtistRateBadge(actor,5,0));
+		kieSession.insert(new ArtistFlag(actor,2,0));
+		kieSession.insert(new ArtistFlag(actor,2,0));
+		kieSession.insert(new ArtistFlag(actor,2,0));
+		kieSession.insert(new ArtistFlag(actor,5,0));
+		kieSession.insert(new ArtistFlag(actor,5,0));
+		kieSession.insert(new ArtistFlag(actor,5,0));
+		kieSession.insert(new ArtistFlag(actor,5,0));
 		kieSession.fireAllRules();
 		assertEquals("Film might be successfull",messageDto.getMessage());
 		assertEquals("Users like watching some artists in this film, so, this film may be popular.", messageDto.getResult());
@@ -204,31 +202,31 @@ public class AdminRecommendationTest {
 		kieSession.setGlobal("usersNumber", 2);
 		kieSession.insert(film);
 		kieSession.insert(messageDto);
-		kieSession.insert(new ArtistReviewBadge(actor,2,0));
-		kieSession.insert(new ArtistReviewBadge(actor,2,0));
-		kieSession.insert(new ArtistReviewBadge(actor,2,0));
-		kieSession.insert(new ArtistRateBadge(actor,5,0));
-		kieSession.insert(new ArtistRateBadge(actor,5,0));
-		kieSession.insert(new ArtistRateBadge(actor,5,0));
-		kieSession.insert(new ArtistRateBadge(actor,5,0));
+		kieSession.insert(new ArtistFlag(actor,2,0));
+		kieSession.insert(new ArtistFlag(actor,2,0));
+		kieSession.insert(new ArtistFlag(actor,2,0));
+		kieSession.insert(new ArtistFlag(actor,5,0));
+		kieSession.insert(new ArtistFlag(actor,5,0));
+		kieSession.insert(new ArtistFlag(actor,5,0));
+		kieSession.insert(new ArtistFlag(actor,5,0));
 		
 		
-		kieSession.insert(new ArtistReviewBadge(scenarist,2,0));
-		kieSession.insert(new ArtistReviewBadge(scenarist,2,0));
-		kieSession.insert(new ArtistReviewBadge(scenarist,2,0));
-		kieSession.insert(new ArtistRateBadge(scenarist,5,0));
-		kieSession.insert(new ArtistRateBadge(scenarist,5,0));
-		kieSession.insert(new ArtistRateBadge(scenarist,5,0));
-		kieSession.insert(new ArtistRateBadge(scenarist,5,0));
+		kieSession.insert(new ArtistFlag(scenarist,2,0));
+		kieSession.insert(new ArtistFlag(scenarist,2,0));
+		kieSession.insert(new ArtistFlag(scenarist,2,0));
+		kieSession.insert(new ArtistFlag(scenarist,5,0));
+		kieSession.insert(new ArtistFlag(scenarist,5,0));
+		kieSession.insert(new ArtistFlag(scenarist,5,0));
+		kieSession.insert(new ArtistFlag(scenarist,5,0));
 		
 		
-		kieSession.insert(new ArtistReviewBadge(director,2,0));
-		kieSession.insert(new ArtistReviewBadge(director,2,0));
-		kieSession.insert(new ArtistReviewBadge(director,2,0));
-		kieSession.insert(new ArtistRateBadge(director,5,0));
-		kieSession.insert(new ArtistRateBadge(director,5,0));
-		kieSession.insert(new ArtistRateBadge(director,5,0));
-		kieSession.insert(new ArtistRateBadge(director,5,0));
+		kieSession.insert(new ArtistFlag(director,2,0));
+		kieSession.insert(new ArtistFlag(director,2,0));
+		kieSession.insert(new ArtistFlag(director,2,0));
+		kieSession.insert(new ArtistFlag(director,5,0));
+		kieSession.insert(new ArtistFlag(director,5,0));
+		kieSession.insert(new ArtistFlag(director,5,0));
+		kieSession.insert(new ArtistFlag(director,5,0));
 
 		kieSession.fireAllRules();
 		assertEquals("Film will be successfull",messageDto.getMessage());

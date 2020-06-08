@@ -8,411 +8,495 @@ import com.videoClub.model.enumeration.*;
 import java.util.ArrayList;
 import java.util.List;
 
+declare ActivatedAgeGenderRecommendation
+	activated:boolean
+end
+
+rule "Artist - collect informations about reviews and rate"
+	agenda-group "user-flags"
+	lock-on-active
+    when
+    	$artist : Artist( $id : id );
+    	$user : RegisteredUser( $reviews : reviews, $favouriteFilms : favouriteFilms );
+    	Number( $watchedNum : intValue ) from accumulate(
+         	$review : Review( watched == true, rate == 0, $artist memberOf film.getActors() 
+         	|| $artist.getId() == film.getDirector().getId() || $artist.getId() == film.getWrittenBy().getId()) from $reviews,
+         	count( $review ) );
+     	Number( $unwatchedNum : intValue ) from accumulate(
+         	$review : Review( watched == false, $artist memberOf film.getActors()
+         	|| $artist.getId() == film.getDirector().getId() || $artist.getId() == film.getWrittenBy().getId()) from $reviews,
+         	count( $review ) );
+         Number( $rating : doubleValue ) from accumulate(
+         	$review : Review( this memberOf $reviews, $rate : rate, rate > 0, $artist memberOf film.getActors()
+         	|| $artist.getId() == film.getDirector().getId() || $artist.getId() == film.getWrittenBy().getId()) from $reviews,
+         	average( $rate ) );
+        Number( $favourites : intValue, $favourites+$rating+$unwatchedNum+$watchedNum>0 )
+        from accumulate(
+         	$review : Review( film memberOf $favouriteFilms, $artist memberOf film.getActors()
+         	|| $artist.getId() == film.getDirector().getId() || $artist.getId() == film.getWrittenBy().getId()) from $reviews,
+         	count( $review ) );
+    then
+    	System.out.println("User acquired ArtistFlag for: " + $artist.getName() + " " + $artist.getSurname()
+    	+ ". Watched films: " + $watchedNum + ", Unwatched films: " + $unwatchedNum);
+    	insert(new ArtistFlag($artist, $rating, $favourites, $watchedNum, $unwatchedNum));
+end
+
+rule "Genre - collect informations about reviews and rate"
+	agenda-group "user-flags"
+	lock-on-active
+    when
+    	$genre : Genre(  );
+    	$user : RegisteredUser( $reviews : reviews );
+    	Number( $rating : doubleValue ) from accumulate(
+         	$review : Review( rate > 0, $rate : rate, film.getGenre() == $genre ) from $reviews,
+         	average( $rate ) );
+    	Number( $watchedNum : intValue ) from accumulate(
+         	$review : Review( watched == true, rate == 0, film.getGenre() == $genre )from $reviews,
+         	count( $review ) );
+     	Number( $unwatchedNum : intValue ) from accumulate(
+         	$review : Review( watched == false, rate == 0, film.getGenre() == $genre )from $reviews,
+         	count( $review ) );
+    then
+    	System.out.println("User acquired GenreBadge for: " + $genre
+    	+ ". Watched films: " + $watchedNum + ", Unwatched films: " + $unwatchedNum + ", Avg rate: " + $rating);
+    	insert(new GenreFlag($genre, $watchedNum, $unwatchedNum, $rating));
+end
+
+rule "Delete forbidden films from memory"
+	salience 10
+	agenda-group "flags-recommendation"
+	lock-on-active
+    when
+    	RegisteredUser( $ageCategory : ageCategory );
+        $recommendation : RecommendedFilm( film.getRestrictedAgeCategories() contains $ageCategory );
+    then
+    	delete($recommendation);
+end
 
 rule "Reward director for favourite films"
+	agenda-group "flags-recommendation"
 	lock-on-active
     when
         $recommendation : RecommendedFilm( $points : recommendPoints, $film : film );
-        $conclusion : UserConclusion( $badges : badges );
+        $badges : List() from collect(ArtistFlag());
         Number( intValue > 0, $favouriteNum : intValue ) from accumulate(
-        	ArtistRateBadge(artist.getId() == $film.getDirector().getId(),
+        	ArtistFlag(artist.getId() == $film.getDirector().getId(),
         			favourites > 0, $fav : favourites ) from $badges,
         	sum($fav) );
     then
     	$recommendation.setRecommendPoints($points+30*$favouriteNum);
         System.out.println("Film: "+ $film.getName() + " acquired " + 
-        30*$favouriteNum+ " points for favourite director");
-        update($conclusion);
+        30*$favouriteNum+" points for favourite director");
         update($recommendation);
 end
 
 rule "Reward scenarist for favourite films"
+	agenda-group "flags-recommendation"
 	lock-on-active
     when
         $recommendation : RecommendedFilm( $points : recommendPoints, $film : film );
-        $conclusion : UserConclusion( $badges : badges );
+        $badges : List() from collect(ArtistFlag());
         Number( intValue > 0, $favouriteNum : intValue ) from accumulate(
-        	ArtistRateBadge(artist.getId() == $film.getWrittenBy().getId(),
+        	ArtistFlag(artist.getId() == $film.getWrittenBy().getId(),
         			favourites > 0, $fav : favourites ) from $badges,
         	sum($fav) );
     then
     	$recommendation.setRecommendPoints($points+20*$favouriteNum);
         System.out.println("Film: "+ $film.getName() + " acquired " + 
         20*$favouriteNum+ " points for favourite scenarist");
-        update($conclusion);
         update($recommendation);
 end
 
 rule "Reward actors for favourite films"
+	agenda-group "flags-recommendation"
 	lock-on-active
     when
         $recommendation : RecommendedFilm( $points : recommendPoints, 
         	$actors : film.getActors(), $film : film );
-        $conclusion : UserConclusion( $badges : badges );
+        $badges : List() from collect(ArtistFlag());
         Number( intValue > 0, $favouriteNum : intValue ) from accumulate(
-        	ArtistRateBadge(artist memberOf $actors,
+        	ArtistFlag(artist memberOf $actors,
         			favourites > 0, $fav : favourites ) from $badges,
         	sum($fav) );
     then
     	$recommendation.setRecommendPoints($points+10*$favouriteNum);
         System.out.println("Film: "+ $film.getName() + " acquired " + 
         10*$favouriteNum+ " points for favourite actors");
-        update($conclusion);
         update($recommendation);
 end
 
 rule "Reward highly rated director"
+	agenda-group "flags-recommendation"
 	lock-on-active
     when
         $recommendation : RecommendedFilm( $points : recommendPoints, 
         	$actors : film.getActors(), $film : film );
-        $conclusion : UserConclusion( $badges : badges );
-        ArtistRateBadge(artist.getId() == $film.getDirector().getId(),
+        $badges : List() from collect(ArtistFlag());
+        ArtistFlag(artist.getId() == $film.getDirector().getId(),
         		averageRate >= 4, $averageRate : averageRate ) from $badges;
     then
         $recommendation.setRecommendPoints($points+30.0*$averageRate);
         System.out.println("Film: "+ $film.getName() + " acquired "+
         30.0*$averageRate+" points for highly rated director");
-        update($conclusion);
         update($recommendation);
 end
 
 rule "Reward highly rated actors"
+	agenda-group "flags-recommendation"
 	lock-on-active
     when
         $recommendation : RecommendedFilm( $points : recommendPoints, 
         	$actors : film.getActors(), $film : film );
-        $conclusion : UserConclusion( $badges : badges );
+        $badges : List() from collect(ArtistFlag());
         Number( doubleValue >= 4, $averageRate : doubleValue ) from accumulate(
-        	ArtistRateBadge(artist memberOf $actors,
+        	ArtistFlag(artist memberOf $actors,
         			$rate: getAverageDoubleRate() ) from $badges,
         	average($rate) );
     then
         $recommendation.setRecommendPoints($points+30*$averageRate);
         System.out.println("Film: "+ $film.getName() + " acquired " + 
         30*$averageRate+ " points for highly rated actors");
-        update($conclusion);
         update($recommendation);
 end
 
 rule "Reward highly rated scenarist"
+	agenda-group "flags-recommendation"
 	lock-on-active
     when
         $recommendation : RecommendedFilm( $points : recommendPoints, 
         	$actors : film.getActors(), $film : film );
-        $conclusion : UserConclusion( $badges : badges );
-        ArtistRateBadge(artist.getId() == $film.getWrittenBy().getId(),
+        $badges : List() from collect(ArtistFlag());
+        ArtistFlag(artist.getId() == $film.getWrittenBy().getId(),
         		averageRate >= 4, $averageRate : averageRate ) from $badges;
     then
         $recommendation.setRecommendPoints($points+$averageRate*20);
         System.out.println("Film: "+ $film.getName() + " acquired "+
         20*$averageRate+" points for highly rated scenarist");
-        update($conclusion);
         update($recommendation);
 end
 
 rule "Reward watched director"
+	agenda-group "flags-recommendation"
 	lock-on-active
     when
         $recommendation : RecommendedFilm( $points : recommendPoints, 
         	$actors : film.getActors(), $film : film );
-        $conclusion : UserConclusion( $badges : badges );
-        ArtistReviewBadge(artist.getId() == $film.getDirector().getId(),
+        $badges : List() from collect(ArtistFlag());
+        ArtistFlag(artist.getId() == $film.getDirector().getId(),
         		watchedNumber > 0, $watchedNum : watchedNumber ) from $badges;
     then
         $recommendation.setRecommendPoints($points+15*$watchedNum);
         System.out.println("Film: "+ $film.getName() + " acquired "+
         15*$watchedNum+" points for watched films of director");
-        update($conclusion);
         update($recommendation);
 end
 
 rule "Reward watched actors"
+	agenda-group "flags-recommendation"
 	lock-on-active
     when
         $recommendation : RecommendedFilm( $points : recommendPoints, 
         	$actors : film.getActors(), $film : film );
-        $conclusion : UserConclusion( $badges : badges );
+        $badges : List() from collect(ArtistFlag());
         Number( intValue > 0, $watchedNum : intValue ) from accumulate(
-        	ArtistReviewBadge(artist memberOf $actors,
+        	ArtistFlag(artist memberOf $actors,
         			watchedNumber > 0, $watched : getWatchedNumberInteger() ) from $badges,
         	average($watched) );
     then
         $recommendation.setRecommendPoints($points+15*$watchedNum);
         System.out.println("Film: "+ $film.getName() + " acquired "+
         15*$watchedNum+" points for watched films of actors");
-        update($conclusion);
         update($recommendation);
 end
 
 rule "Reward watched scenarist"
+	agenda-group "flags-recommendation"
 	lock-on-active
     when
         $recommendation : RecommendedFilm( $points : recommendPoints, 
         	$actors : film.getActors(), $film : film );
-        $conclusion : UserConclusion( $badges : badges );
-        ArtistReviewBadge(artist.getId() == $film.getWrittenBy().getId(),
+        $badges : List() from collect(ArtistFlag());
+        ArtistFlag(artist.getId() == $film.getWrittenBy().getId(),
         		watchedNumber > 0, $watchedNum : watchedNumber ) from $badges;
     then
         $recommendation.setRecommendPoints($points+10*$watchedNum);
         System.out.println("Film: "+ $film.getName() + " acquired "+
         10*$watchedNum+" points for watched films of scenarist");
-        update($conclusion);
         update($recommendation);
 end
 
 rule "Reward average rated director"
+	agenda-group "flags-recommendation"
 	lock-on-active
     when
         $recommendation : RecommendedFilm( $points : recommendPoints, 
         	$actors : film.getActors(), $film : film );
-        $conclusion : UserConclusion( $badges : badges );
-        ArtistRateBadge(artist.getId() == $film.getDirector().getId(),
+        $badges : List() from collect(ArtistFlag());
+        ArtistFlag(artist.getId() == $film.getDirector().getId(),
         		averageRate < 4 && averageRate > 3, $averageRate : averageRate ) from $badges;
     then
         $recommendation.setRecommendPoints($points+5*$averageRate);
         System.out.println("Film: "+ $film.getName() + " acquired "+
         5*$averageRate+" points for average rated director");
-        update($conclusion);
         update($recommendation);
 end
 
 rule "Reward average rated actors"
+	agenda-group "flags-recommendation"
 	lock-on-active
     when
         $recommendation : RecommendedFilm( $points : recommendPoints, 
         	$actors : film.getActors(), $film : film );
-        $conclusion : UserConclusion( $badges : badges );
+        $badges : List() from collect(ArtistFlag());
         Number( doubleValue < 4 && doubleValue > 3, $averageRate : doubleValue ) from accumulate(
-        	ArtistRateBadge(artist memberOf $actors,
+        	ArtistFlag(artist memberOf $actors,
         			$rate: getAverageDoubleRate() ) from $badges,
         	average($rate) );
     then
         $recommendation.setRecommendPoints($points+5*$averageRate);
         System.out.println("Film: "+ $film.getName() + " acquired " + 
         5*$averageRate+ " points for average rated actors");
-        update($conclusion);
         update($recommendation);
 end
 
 rule "Reward average rated scenarist"
+	agenda-group "flags-recommendation"
 	lock-on-active
     when
         $recommendation : RecommendedFilm( $points : recommendPoints, 
         	$actors : film.getActors(), $film : film );
-        $conclusion : UserConclusion( $badges : badges );
-        ArtistRateBadge(artist.getId() == $film.getWrittenBy().getId(),
+        $badges : List() from collect(ArtistFlag());
+        ArtistFlag(artist.getId() == $film.getWrittenBy().getId(),
         		averageRate < 4 && averageRate > 3, $averageRate : averageRate ) from $badges;
     then
         $recommendation.setRecommendPoints($points+$averageRate*3);
         System.out.println("Film: "+ $film.getName() + " acquired "+
         3*$averageRate+" points for average rated scenarist");
-        update($conclusion);
         update($recommendation);
 end
 
 rule "Punish unwatched director"
+	agenda-group "flags-recommendation"
 	lock-on-active
     when
         $recommendation : RecommendedFilm( $points : recommendPoints, 
         	$actors : film.getActors(), $film : film );
-        $conclusion : UserConclusion( $badges : badges );
-        ArtistReviewBadge(artist.getId() == $film.getDirector().getId(),
+        $badges : List() from collect(ArtistFlag());
+        ArtistFlag(artist.getId() == $film.getDirector().getId(),
         		unwatchedNumber > 0, $unwatchedNum : unwatchedNumber ) from $badges;
     then
         $recommendation.setRecommendPoints($points-15*$unwatchedNum);
         System.out.println("Film: "+ $film.getName() + " lost "+
         15*$unwatchedNum+" points for unwatched films of director");
-        update($conclusion);
         update($recommendation);
 end
 
 rule "Punish unwatched actors"
+	agenda-group "flags-recommendation"
 	lock-on-active
     when
         $recommendation : RecommendedFilm( $points : recommendPoints, 
         	$actors : film.getActors(), $film : film );
-        $conclusion : UserConclusion( $badges : badges );
+        $badges : List() from collect(ArtistFlag());
         Number( intValue > 0, $unwatchedNum : intValue ) from accumulate(
-        	ArtistReviewBadge(artist memberOf $actors,
+        	ArtistFlag(artist memberOf $actors,
         			unwatchedNumber > 0, $unwatched : getUnwatchedNumberInteger() ) from $badges,
         	average($unwatched) );
     then
         $recommendation.setRecommendPoints($points-15*$unwatchedNum);
         System.out.println("Film: "+ $film.getName() + " lost "+
         15*$unwatchedNum+" points for unwatched films of actors");
-        update($conclusion);
         update($recommendation);
 end
 
 rule "Punish unwatched scenarist"
+	agenda-group "flags-recommendation"
 	lock-on-active
     when
         $recommendation : RecommendedFilm( $points : recommendPoints, 
         	$actors : film.getActors(), $film : film );
-        $conclusion : UserConclusion( $badges : badges );
-        ArtistReviewBadge(artist.getId() == $film.getWrittenBy().getId(),
+        $badges : List() from collect(ArtistFlag());
+        ArtistFlag(artist.getId() == $film.getWrittenBy().getId(),
         		unwatchedNumber > 0, $unwatchedNum : unwatchedNumber ) from $badges;
     then
         $recommendation.setRecommendPoints($points-10*$unwatchedNum);
         System.out.println("Film: "+ $film.getName() + " lost "+
         10*$unwatchedNum+" points for unwatched films of scenarist");
-        update($conclusion);
         update($recommendation);
 end
 
 rule "Punish badly rated director"
+	agenda-group "flags-recommendation"
 	lock-on-active
     when
         $recommendation : RecommendedFilm( $points : recommendPoints, 
         	$actors : film.getActors(), $film : film );
-        $conclusion : UserConclusion( $badges : badges );
-        ArtistRateBadge(artist.getId() == $film.getDirector().getId(),
+        $badges : List() from collect(ArtistFlag());
+        ArtistFlag(artist.getId() == $film.getDirector().getId(),
         		averageRate <= 3 && averageRate > 0, $averageRate : averageRate ) from $badges;
     then
         $recommendation.setRecommendPoints($points-10*(10-$averageRate));
         System.out.println("Film: "+ $film.getName() + " lost "+
         10*(10-$averageRate)+" points for badly rated director");
-        update($conclusion);
         update($recommendation);
 end
 
 rule "Punish badly rated actors"
+	agenda-group "flags-recommendation"
 	lock-on-active
     when
         $recommendation : RecommendedFilm( $points : recommendPoints, 
         	$actors : film.getActors(), $film : film );
-        $conclusion : UserConclusion( $badges : badges );
+        $badges : List() from collect(ArtistFlag());
         Number( doubleValue <= 3 && doubleValue > 0, $averageRate : doubleValue ) from accumulate(
-        	ArtistRateBadge(artist memberOf $actors,
+        	ArtistFlag(artist memberOf $actors,
         			$rate: getAverageDoubleRate() ) from $badges,
         	average($rate) );
     then
         $recommendation.setRecommendPoints($points-10*(10-$averageRate));
         System.out.println("Film: "+ $film.getName() + " lost "+
         10*(10-$averageRate)+" points for badly rated actors");
-        update($conclusion);
         update($recommendation);
 end
 
 rule "Punish badly rated scenarist"
+	agenda-group "flags-recommendation"
 	lock-on-active
     when
         $recommendation : RecommendedFilm( $points : recommendPoints, 
         	$actors : film.getActors(), $film : film );
-        $conclusion : UserConclusion( $badges : badges );
-        ArtistRateBadge(artist.getId() == $film.getWrittenBy().getId(),
+        $badges : List() from collect(ArtistFlag());
+        ArtistFlag(artist.getId() == $film.getWrittenBy().getId(),
         		averageRate <= 3 && averageRate > 0, $averageRate : averageRate ) from $badges;
     then
         $recommendation.setRecommendPoints($points-10*(7-$averageRate));
         System.out.println("Film: "+ $film.getName() + " lost "+
         10*(7-$averageRate)+" points for badly rated scenarist");
-        update($conclusion);
         update($recommendation);
 end
 
 rule "Reward highly rated genre"
+	agenda-group "flags-recommendation"
 	lock-on-active
     when
         $recommendation : RecommendedFilm( $points : recommendPoints, $film : film );
-        $conclusion : UserConclusion( $badges : badges );
+        $badges : List() from collect(GenreFlag());
         Number( doubleValue >= 4, $averageRate : doubleValue ) from accumulate(
-        	GenreBadge(genre == $film.getGenre(), $rate: getAverageRateDouble() ) from $badges,
+        	GenreFlag(genre == $film.getGenre(), $rate: getAverageRateDouble() ) from $badges,
         	average($rate) );
     then
         $recommendation.setRecommendPoints($points+5*($film.getRating()+$averageRate));
         System.out.println("Film: "+ $film.getName() + " acquired " + 
         20*$averageRate+ " points for highly rated genre");
-        update($conclusion);
         update($recommendation);
 end
 
 rule "Reward watched genre"
+	agenda-group "flags-recommendation"
 	lock-on-active
     when
         $recommendation : RecommendedFilm( $points : recommendPoints, $film : film );
-        $conclusion : UserConclusion( $badges : badges );
-        GenreBadge(watchedTime > 0, $watchedNum : watchedTime, genre == $film.getGenre() )
+        $badges : List() from collect(GenreFlag());
+        GenreFlag(watchedTime > 0, $watchedNum : watchedTime, genre == $film.getGenre() )
         	from $badges;
     then
         $recommendation.setRecommendPoints($points+5*$film.getRating()+$watchedNum);
         System.out.println("Film: "+ $film.getName() + " acquired "+
         20*$watchedNum+" points for watched films");
-        update($conclusion);
         update($recommendation);
 end
 
 rule "Reward average rated genre"
+	agenda-group "flags-recommendation"
 	lock-on-active
     when
         $recommendation : RecommendedFilm( $points : recommendPoints, $film : film );
-        $conclusion : UserConclusion( $badges : badges );
+        $badges : List() from collect(GenreFlag());
         Number( doubleValue > 3, doubleValue < 4, $averageRate : doubleValue ) from accumulate(
-        	GenreBadge(genre == $film.getGenre(), $rate: getAverageRateDouble() ) from $badges,
+        	GenreFlag(genre == $film.getGenre(), $rate: getAverageRateDouble() ) from $badges,
         	average($rate) );
     then
         $recommendation.setRecommendPoints($points+$film.getRating()+$averageRate);
         System.out.println("Film: "+ $film.getName() + " acquired " + 
         5*$averageRate+ " points for average rated genre");
-        update($conclusion);
         update($recommendation);
 end
 
 rule "Punish unwwatched genre"
+	agenda-group "flags-recommendation"
 	lock-on-active
     when
-        $recommendation : RecommendedFilm( $points : recommendPoints, $film : film );
-        $conclusion : UserConclusion( $badges : badges, $reviewsSize : user.getReviews().size() );
-        GenreBadge(unwatchedTime == 0, watchedTime == 0, averageRate == 0, genre == $film.getGenre() ) 
+    	$recommendation : RecommendedFilm( $points : recommendPoints, $film : film );
+        $badges : List() from collect(GenreFlag());
+        $user : RegisteredUser( $reviewsSize : reviews.size(), reviews.size() > 0 );
+        GenreFlag(unwatchedTime == 0, watchedTime == 0, averageRate == 0, genre == $film.getGenre() ) 
         	from $badges
         or
-        GenreBadge(unwatchedTime > watchedTime, genre == $film.getGenre() ) 
+        GenreFlag(unwatchedTime > watchedTime, genre == $film.getGenre() ) 
         	from $badges;
     then
         $recommendation.setRecommendPoints($points-$reviewsSize);
-        System.out.println("Film: "+ $film.getName() + " lost 100"+
+        System.out.println("Film: "+ $film.getName() + " lost "+$reviewsSize+
         " points for unwwatched genre");
-        update($conclusion);
         update($recommendation);
 end
 
 rule "Punish badly rated genre"
+	agenda-group "flags-recommendation"
 	lock-on-active
     when
         $recommendation : RecommendedFilm( $points : recommendPoints, $film : film );
-        $conclusion : UserConclusion( $badges : badges );
+        $badges : List() from collect(GenreFlag());
         Number( doubleValue < 3 && doubleValue > 0, $averageRate : doubleValue ) from accumulate(
-        	GenreBadge(genre == $film.getGenre(), $rate: getAverageRateDouble() ) from $badges,
+        	GenreFlag(genre == $film.getGenre(), $rate: getAverageRateDouble() ) from $badges,
         	average($rate) );
     then
         $recommendation.setRecommendPoints($points-15*(10-$averageRate));
         System.out.println("Film: "+ $film.getName() + " lost " + 
         15*(10-$averageRate)+ " points for highly rated genre");
-        update($conclusion);
         update($recommendation);
 end
 
-rule "Check recommendations Rule"
-	salience -100
+rule "Recommendation analysis finished"
+	agenda-group "flags-recommendation"
+	salience -50
 	lock-on-active
     when
-    	$recommendations : List() from collect(RecommendedFilm());
-    	$conclusion : UserConclusion(  );
-        Number( intValue >= 15 ) from accumulate(
-        	$rec: RecommendedFilm( recommendPoints > 0 ) from $recommendations,
-        	count($rec) );
+        $recommendation : RecommendedFilm( $points : recommendPoints, $film : film );
     then
-    	System.out.println("Enough recommended films found.");
-    	delete($conclusion);
+        $recommendation.setAnalyzed(true);
+        update($recommendation);
+end
+
+rule "Activate recommendation based on age and gender"
+	agenda-group "flags-recommendation"
+	salience -100
+	no-loop
+    when
+    	$recommendations : List() from collect(RecommendedFilm());
+    	Number( intValue == $recommendations.size() ) from accumulate(
+    		$r:RecommendedFilm( analyzed == true ),
+    		count($r));
+    	Number( intValue < 15 ) from accumulate(
+    		$r:RecommendedFilm( recommendPoints <= 0 ),
+    		count($r));
+    	not ActivatedAgeGenderRecommendation();
+    then
+    	System.out.println("Flags-recommendation finished, not enough recommendations found."+
+    	" Age-gender recommendation activated.");
+        insert(new ActivatedAgeGenderRecommendation(true));
+        kcontext.getKnowledgeRuntime().getAgenda()
+        	.getAgendaGroup("age-gender-recommendation").setFocus();
 end
 
 rule "Points for favourite films by users of same age and gender"
-	salience -200
+	agenda-group "age-gender-recommendation"
 	lock-on-active
     when
+    	ActivatedAgeGenderRecommendation(  );
         $recommendation : RecommendedFilm( $points : recommendPoints, $film : film, $reviews : film.getReviews() );
-        $conclusion : UserConclusion( $ageCategory : user.getAgeCategory(),
-        							  $gender : user.getGender() );
+        $user : RegisteredUser( $ageCategory : ageCategory,
+        							  $gender : gender );
         Number( intValue > 0, $favourites : intValue ) from accumulate(
         	$review: Review( user.getAgeCategory() == $ageCategory,
         					 user.getGender() == $gender,
@@ -422,17 +506,18 @@ rule "Points for favourite films by users of same age and gender"
         $recommendation.setRecommendPoints($points+5*$favourites);
         System.out.println("Film: "+ $film.getName() + " acquired " + 
         5*$favourites+ " points for being favourite film of users of same age and gender");
-        update($conclusion);
+        update($user);
         update($recommendation);
 end
 
 rule "Points for highly rated films by users of same age and gender"
-	salience -200
+	agenda-group "age-gender-recommendation"
 	lock-on-active
     when
+    	ActivatedAgeGenderRecommendation(  );
         $recommendation : RecommendedFilm( $points : recommendPoints, $film : film, $reviews : film.getReviews() );
-        $conclusion : UserConclusion( $ageCategory : user.getAgeCategory(),
-        							  $gender : user.getGender() );
+        $user : RegisteredUser( $ageCategory : ageCategory,
+        							  $gender : gender );
         Number( doubleValue >= 4, $rating : doubleValue ) from accumulate(
         	Review( rate > 0, $rate : rate,
         	user.getAgeCategory() == $ageCategory,user.getGender() == $gender ) from $reviews,
@@ -444,17 +529,18 @@ rule "Points for highly rated films by users of same age and gender"
         $recommendation.setRecommendPoints($points+$watchedNum*$rating);
         System.out.println("Film: "+ $film.getName() + " acquired " + 
         $watchedNum*$rating+ " points for being highly rated by users of same age and gender");
-        update($conclusion);
+        update($user);
         update($recommendation);
 end
 
 rule "Points for watched films by users of same age and gender"
-	salience -200
+	agenda-group "age-gender-recommendation"
 	lock-on-active
     when
+    	ActivatedAgeGenderRecommendation(  );
         $recommendation : RecommendedFilm( $points : recommendPoints, $film : film, $reviews : film.getReviews() );
-        $conclusion : UserConclusion( $ageCategory : user.getAgeCategory(),
-        							  $gender : user.getGender() );
+        $user : RegisteredUser( $ageCategory : ageCategory,
+        							  $gender : gender );
         Number( intValue > 0, $watchedNum : intValue ) from accumulate(
         	$review: Review( watched == true, rate == 0,
         	user.getAgeCategory() == $ageCategory,user.getGender() == $gender ) from $reviews,
@@ -463,6 +549,6 @@ rule "Points for watched films by users of same age and gender"
         $recommendation.setRecommendPoints($points+$watchedNum);
         System.out.println("Film: "+ $film.getName() + " acquired " + 
         $watchedNum+ " points for being watched by users of same age and gender");
-        update($conclusion);
+        update($user);
         update($recommendation);
 end

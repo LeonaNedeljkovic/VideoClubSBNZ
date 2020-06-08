@@ -2,14 +2,14 @@ package com.videoClub.model.drl;
 
 import com.videoClub.model.enumeration.Genre;
 
-public class GenreBadge extends Badge {
+public class GenreFlag {
 
 	private Genre genre;
 	private int watchedTime;
 	private int unwatchedTime;
 	private double averageRate;
 
-	public GenreBadge(Genre genre, int watchedTime, int unwatchedTime, double averageRate) {
+	public GenreFlag(Genre genre, int watchedTime, int unwatchedTime, double averageRate) {
 		super();
 		this.genre = genre;
 		this.watchedTime = watchedTime;
@@ -17,7 +17,7 @@ public class GenreBadge extends Badge {
 		this.averageRate = averageRate;
 	}
 
-	public GenreBadge() {
+	public GenreFlag() {
 		super();
 	}
 
