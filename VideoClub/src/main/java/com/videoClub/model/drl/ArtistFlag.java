@@ -9,18 +9,21 @@ public class ArtistFlag {
 	private Integer favourites;
 	private int watchedNumber;
 	private int unwatchedNumber;
+	private int ratesNumber;
 	
 	public ArtistFlag() {
 		super();
 	}
 
-	public ArtistFlag(Artist artist, double averageRate, int favourites, int watchedNumber, int unwatchedNumber) {
+	public ArtistFlag(Artist artist, double averageRate, int favourites,
+			int watchedNumber, int unwatchedNumber, int ratesNumber) {
 		super();
 		this.artist = artist;
 		this.averageRate = averageRate;
 		this.favourites = favourites;
 		this.watchedNumber = watchedNumber;
 		this.unwatchedNumber = unwatchedNumber;
+		this.ratesNumber = ratesNumber;
 	}
 	
 	public ArtistFlag(Artist artist, int watchedNumber, int unwatchedNumber) {
@@ -87,5 +90,17 @@ public class ArtistFlag {
 
 	public void setUnwatchedNumber(int unwatchedNumber) {
 		this.unwatchedNumber = unwatchedNumber;
+	}
+
+	public int getRatesNumber() {
+		return ratesNumber;
+	}
+	
+	public Double getRatesNumberXRating() {
+		return ratesNumber*averageRate;
+	}
+
+	public void setRatesNumber(int ratesNumber) {
+		this.ratesNumber = ratesNumber;
 	}
 }
