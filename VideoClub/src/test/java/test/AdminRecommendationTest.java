@@ -14,224 +14,227 @@ import com.videoClub.dto.MessageDto;
 import com.videoClub.model.Artist;
 import com.videoClub.model.Film;
 import com.videoClub.model.Review;
-import com.videoClub.model.drl.ArtistFlag;
 import com.videoClub.model.enumeration.AgeCategory;
 import com.videoClub.model.enumeration.Genre;
 
 public class AdminRecommendationTest {
 
 	/*
-	 * Slucaj kada film nece biti popularan jer nema dobrog reditelja, scenaristu
-	 * niti glumce (ne postoje ArtistReviewBadges ni ArtistRateBadges ni za jednog
-	 * od njih)
+	 * Slucaj kada ce film biti popularan jer
+	 * je barem jedan od artista bio uspesan scenarista nekog od filmova u sistemu ili je
+	 * bar jedan reditelj je bio uspesan reditelj nekog od filmova u sitemu ili je
+	 * bar jedan od glumaca je bio uspesan u nekom od filmova sistema
+	 * i zanr je visoko ocenjen ili gledan
 	 */
 
 	@Test
-	public void test_filmWontBePopular() {
+	public void test_filmHasGoodElements_allGood() {
+		KieContainer kieContainer = KieServices.Factory.get().getKieClasspathContainer();
+		KieSession kieSession = kieContainer.newKieSession("adminRecommendationRulesSession");
 		Artist actor = new Artist(1L, "Brad", "Pitt", new ArrayList<Film>(), new ArrayList<Film>(),
 				new ArrayList<Film>());
 		Artist scenarist = new Artist(2L, "John", "Smith", new ArrayList<Film>(), new ArrayList<Film>(),
 				new ArrayList<Film>());
 		Artist director = new Artist(3L, "Sammuel", "Vein", new ArrayList<Film>(), new ArrayList<Film>(),
 				new ArrayList<Film>());
-		MessageDto messageDto = new MessageDto();
-		
-		Film film = new Film(new Long(1), "New movie", "Best movie ever", Genre.ACTION, 100, 2020, 0.0, "poster",
+		Film film1 = new Film(new Long(1), "Film1", "Best movie ever", Genre.ACTION, 100, 2020, 5.0, "poster",
 				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>(), new ArrayList<AgeCategory>());
-		actor.getRoles().add(film);
-		scenarist.getWritten().add(film);
-		director.getDirected().add(film);
-		KieContainer kieContainer = KieServices.Factory.get().getKieClasspathContainer();
-		KieSession kieSession = kieContainer.newKieSession("adminRecommendationRulesSession");
-		kieSession.setGlobal("usersNumber", 4);
-		kieSession.insert(film);
-		kieSession.insert(messageDto);
+		Film film2 = new Film(new Long(2), "Film2", "Best movie ever", Genre.ACTION, 100, 2020, 2.0, "poster",
+				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>(), new ArrayList<AgeCategory>());
+		Film film3 = new Film(new Long(3), "Film3", "Best movie ever", Genre.ACTION, 100, 2020, 2.0, "poster",
+				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>(), new ArrayList<AgeCategory>());
+		Film film4 = new Film(new Long(4), "Film4", "Best movie ever", Genre.ACTION, 100, 2020, 5.0, "poster",
+				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>(), new ArrayList<AgeCategory>());
+		Film film5 = new Film(new Long(5), "Film5", "Best movie ever", Genre.ACTION, 100, 2020, 4.0, "poster",
+				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>(), new ArrayList<AgeCategory>());
+		Film film6 = new Film(new Long(6), "Film6", "Best movie ever", Genre.ACTION, 100, 2020, 4.0, "poster",
+				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>(), new ArrayList<AgeCategory>());
+		Review review1 = new Review(1L,film1,null,null,false,null,0);
+		Review review2 = new Review(2L,film1,null,null,false,null,0);
+		Review review3 = new Review(3L,film1,null,null,true,null,5);
+		Review review4 = new Review(4L,film1,null,null,true,null,5);
+		Review review5 = new Review(2L,film1,null,null,true,null,5);
+		kieSession.insert(actor);
+		kieSession.insert(scenarist);
+		kieSession.insert(director);
+		kieSession.insert(film1);
+		kieSession.insert(film2);
+		kieSession.insert(film3);
+		kieSession.insert(film4);
+		kieSession.insert(film5);
+		kieSession.insert(film6);
+		kieSession.insert(review1);
+		kieSession.insert(review2);
+		kieSession.insert(review3);
+		kieSession.insert(review4);
+		kieSession.insert(review5);
+		MessageDto messageDTO = new MessageDto();
+		kieSession.insert(messageDTO);
+		kieSession.insert(Genre.ACTION);
 		kieSession.fireAllRules();
-		assertEquals("Film wont be successfull", messageDto.getMessage());
-		assertEquals(
-				"Neither director nor scenarist nor actors are popular on this platform, so, don't expect too much from this film.",
-				messageDto.getResult());
+		assertEquals("Film has good elements",messageDTO.getMessage());
+		assertEquals("Film has good elements", messageDTO.getResult());	
 	}
-
-	/*
-	 * Slucaj kada film nece biti popularan jer glumci, scenarista i reditelj nisu
-	 * popularni tj broj ArtistReviewBadges za njih je manji od 50% ukupnog broja
-	 * korisnika
+	
+	/*Slucaj kada film nece biti popularan jer nema popularan zanr niti je barem jedan od artista bio uspesan scenarista 
+	 * nekog od filmova u sistemu niti je
+	 * bar jedan reditelj je bio uspesan reditelj nekog od filmova u sitemu niti je
+	 * bar jedan od glumaca je bio uspesan u nekom od filmova sistema
 	 */
 	@Test
-	public void test_filmWontBePopular2() {
-		Artist actor = new Artist(1L, "Brad","Pitt",new ArrayList<Film>(),new ArrayList<Film>(),new ArrayList<Film>());
-		Artist scenarist = new Artist(2L, "John","Smith",new ArrayList<Film>(),new ArrayList<Film>(),new ArrayList<Film>());
-		Artist director = new Artist(3L, "Sammuel","Vein",new ArrayList<Film>(),new ArrayList<Film>(),new ArrayList<Film>());
-		MessageDto messageDto = new MessageDto();
-		Film film = new Film(new Long(1), "New movie", "Best movie ever", Genre.ACTION, 100, 2020, 0.0, "poster",
-				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>(), new ArrayList<AgeCategory>());
-		ArtistFlag actorReviewBadge = new ArtistFlag(actor, 1, 1);
-		ArtistFlag scenaristReviewBadge = new ArtistFlag(scenarist, 1, 1);
-		ArtistFlag directorReviewBadge = new ArtistFlag(director, 1, 1);
-		actor.getRoles().add(film);
-		scenarist.getWritten().add(film);
-		director.getDirected().add(film);
+	public void test_filmDoesntHaveGoodElements_nothingGood() {
 		KieContainer kieContainer = KieServices.Factory.get().getKieClasspathContainer();
 		KieSession kieSession = kieContainer.newKieSession("adminRecommendationRulesSession");
-		kieSession.setGlobal("usersNumber", 4);
-		kieSession.insert(film);
-		kieSession.insert(messageDto);
-		kieSession.insert(actorReviewBadge);
-		kieSession.insert(scenaristReviewBadge);
-		kieSession.insert(scenaristReviewBadge);
-		kieSession.insert(directorReviewBadge);
-		kieSession.fireAllRules();
-		assertEquals("Film wont be successfull",messageDto.getMessage());
-		assertEquals("Neither director nor scenarist nor actors are popular on this platform, so, don't expect too much from this film.", messageDto.getResult());
-		
-	}
-
-	/*
-	 * Film ce moguce biti uspesan
-	 POPULARAN DIRECTOR*/
-	@Test
-	public void test_filmMightBeSuccessful_popularDirector() {
-		Artist actor = new Artist(1L, "Brad","Pitt",new ArrayList<Film>(),new ArrayList<Film>(),new ArrayList<Film>());
-		Artist scenarist = new Artist(2L, "John","Smith",new ArrayList<Film>(),new ArrayList<Film>(),new ArrayList<Film>());
-		Artist director = new Artist(3L, "Sammuel","Vein",new ArrayList<Film>(),new ArrayList<Film>(),new ArrayList<Film>());
-		MessageDto messageDto = new MessageDto();
-		Film film = new Film(new Long(1), "New movie", "Best movie ever", Genre.ACTION, 100, 2020, 0.0, "poster",
+		Artist actor = new Artist(1L, "Brad", "Pitt", new ArrayList<Film>(), new ArrayList<Film>(),
+				new ArrayList<Film>());
+		Artist scenarist = new Artist(2L, "John", "Smith", new ArrayList<Film>(), new ArrayList<Film>(),
+				new ArrayList<Film>());
+		Artist director = new Artist(3L, "Sammuel", "Vein", new ArrayList<Film>(), new ArrayList<Film>(),
+				new ArrayList<Film>());
+		Film film1 = new Film(new Long(1), "Film1", "Best movie ever", Genre.ACTION, 100, 2020, 2.0, "poster",
 				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>(), new ArrayList<AgeCategory>());
-		actor.getRoles().add(film);
-		scenarist.getWritten().add(film);
-		director.getDirected().add(film);
-		KieContainer kieContainer = KieServices.Factory.get().getKieClasspathContainer();
-		KieSession kieSession = kieContainer.newKieSession("adminRecommendationRulesSession");
-		kieSession.setGlobal("usersNumber", 2);
-		kieSession.insert(film);
-		kieSession.insert(messageDto);
-		kieSession.insert(new ArtistFlag(director,2,0));
-		kieSession.insert(new ArtistFlag(director,2,0));
-		kieSession.insert(new ArtistFlag(director,2,0));
-		kieSession.insert(new ArtistFlag(director,5,0));
-		kieSession.insert(new ArtistFlag(director,5,0));
-		kieSession.insert(new ArtistFlag(director,5,0));
-		kieSession.insert(new ArtistFlag(director,5,0));
+		Film film2 = new Film(new Long(2), "Film2", "Best movie ever", Genre.ACTION, 100, 2020, 2.0, "poster",
+				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>(), new ArrayList<AgeCategory>());
+		Film film3 = new Film(new Long(3), "Film3", "Best movie ever", Genre.ACTION, 100, 2020, 2.0, "poster",
+				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>(), new ArrayList<AgeCategory>());
+		Film film4 = new Film(new Long(4), "Film4", "Best movie ever", Genre.ACTION, 100, 2020, 2.0, "poster",
+				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>(), new ArrayList<AgeCategory>());
+		Film film5 = new Film(new Long(5), "Film5", "Best movie ever", Genre.ACTION, 100, 2020, 2.0, "poster",
+				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>(), new ArrayList<AgeCategory>());
+		Film film6 = new Film(new Long(6), "Film6", "Best movie ever", Genre.ACTION, 100, 2020, 3.0, "poster",
+				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>(), new ArrayList<AgeCategory>());
+		Review review1 = new Review(1L,film1,null,null,false,null,0);
+		Review review2 = new Review(2L,film1,null,null,false,null,0);
+		Review review3 = new Review(3L,film1,null,null,true,null,5);
+		Review review4 = new Review(4L,film1,null,null,true,null,5);
+		Review review5 = new Review(2L,film1,null,null,true,null,5);
+		kieSession.insert(actor);
+		kieSession.insert(scenarist);
+		kieSession.insert(director);
+		kieSession.insert(film1);
+		kieSession.insert(film2);
+		kieSession.insert(film3);
+		kieSession.insert(film4);
+		kieSession.insert(film5);
+		kieSession.insert(film6);
+		kieSession.insert(review1);
+		kieSession.insert(review2);
+		kieSession.insert(review3);
+		kieSession.insert(review4);
+		kieSession.insert(review5);
+		MessageDto messageDTO = new MessageDto();
+		kieSession.insert(messageDTO);
+		kieSession.insert(Genre.COMEDY);
 		kieSession.fireAllRules();
-		assertEquals("Film might be successfull",messageDto.getMessage());
-		assertEquals("Users like watching some artists in this film, so, this film may be popular.", messageDto.getResult());
-		
+		assertEquals("Film doesn't have good elements",messageDTO.getMessage());
+		assertEquals("Film doesn't have good elements", messageDTO.getResult());	
 	}
 	
-	/*
-	 * Film ce moguce biti uspesan
-	 POPULARAN SCENARISTA*/
+	/*Zanr je popularan ali artisti nisu*/
 	@Test
-	public void test_filmMightBeSuccessful_popularScenarist() {
-		Artist actor = new Artist(1L, "Brad","Pitt",new ArrayList<Film>(),new ArrayList<Film>(),new ArrayList<Film>());
-		Artist scenarist = new Artist(2L, "John","Smith",new ArrayList<Film>(),new ArrayList<Film>(),new ArrayList<Film>());
-		Artist director = new Artist(3L, "Sammuel","Vein",new ArrayList<Film>(),new ArrayList<Film>(),new ArrayList<Film>());
-		MessageDto messageDto = new MessageDto();
-		Film film = new Film(new Long(1), "New movie", "Best movie ever", Genre.ACTION, 100, 2020, 0.0, "poster",
-				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>(), new ArrayList<AgeCategory>());
-		actor.getRoles().add(film);
-		scenarist.getWritten().add(film);
-		director.getDirected().add(film);
+	public void test_filmHasGoodElements_genrePopularArtistsNot() {
 		KieContainer kieContainer = KieServices.Factory.get().getKieClasspathContainer();
 		KieSession kieSession = kieContainer.newKieSession("adminRecommendationRulesSession");
-		kieSession.setGlobal("usersNumber", 2);
-		kieSession.insert(film);
-		kieSession.insert(messageDto);
-		kieSession.insert(new ArtistFlag(scenarist,2,0));
-		kieSession.insert(new ArtistFlag(scenarist,2,0));
-		kieSession.insert(new ArtistFlag(scenarist,2,0));
-		kieSession.insert(new ArtistFlag(scenarist,5,0));
-		kieSession.insert(new ArtistFlag(scenarist,5,0));
-		kieSession.insert(new ArtistFlag(scenarist,5,0));
-		kieSession.insert(new ArtistFlag(scenarist,5,0));
+		Artist actor = new Artist(1L, "Brad", "Pitt", new ArrayList<Film>(), new ArrayList<Film>(),
+				new ArrayList<Film>());
+		Artist scenarist = new Artist(2L, "John", "Smith", new ArrayList<Film>(), new ArrayList<Film>(),
+				new ArrayList<Film>());
+		Artist director = new Artist(3L, "Sammuel", "Vein", new ArrayList<Film>(), new ArrayList<Film>(),
+				new ArrayList<Film>());
+		Artist random = new Artist(4L, "Paper", "Vaj", new ArrayList<Film>(), new ArrayList<Film>(),
+				new ArrayList<Film>());
+		Film film1 = new Film(new Long(1), "Film1", "Best movie ever", Genre.ACTION, 100, 2020, 5.0, "poster",
+				new ArrayList<Artist>(Arrays.asList(random)),random,random, new ArrayList<Review>(), new ArrayList<AgeCategory>());
+		Film film2 = new Film(new Long(2), "Film2", "Best movie ever", Genre.ACTION, 100, 2020, 4.0, "poster",
+				new ArrayList<Artist>(Arrays.asList(random)),random,random, new ArrayList<Review>(), new ArrayList<AgeCategory>());
+		Film film3 = new Film(new Long(3), "Film3", "Best movie ever", Genre.ACTION, 100, 2020, 5.0, "poster",
+				new ArrayList<Artist>(Arrays.asList(random)),random,random, new ArrayList<Review>(), new ArrayList<AgeCategory>());
+		Film film4 = new Film(new Long(4), "Film4", "Best movie ever", Genre.ACTION, 100, 2020, 5.0, "poster",
+				new ArrayList<Artist>(Arrays.asList(random)),random,random, new ArrayList<Review>(), new ArrayList<AgeCategory>());
+		Film film5 = new Film(new Long(5), "Film5", "Best movie ever", Genre.ACTION, 100, 2020, 4.0, "poster",
+				new ArrayList<Artist>(Arrays.asList(random)),random,random, new ArrayList<Review>(), new ArrayList<AgeCategory>());
+		Film film6 = new Film(new Long(6), "Film6", "Best movie ever", Genre.ACTION, 100, 2020, 3.0, "poster",
+				new ArrayList<Artist>(Arrays.asList(random)),random,random, new ArrayList<Review>(), new ArrayList<AgeCategory>());
+		Review review1 = new Review(1L,film1,null,null,false,null,0);
+		Review review2 = new Review(2L,film1,null,null,false,null,0);
+		Review review3 = new Review(3L,film1,null,null,true,null,5);
+		Review review4 = new Review(4L,film1,null,null,true,null,5);
+		Review review5 = new Review(2L,film1,null,null,true,null,5);
+		kieSession.insert(actor);
+		kieSession.insert(scenarist);
+		kieSession.insert(director);
+		kieSession.insert(film1);
+		kieSession.insert(film2);
+		kieSession.insert(film3);
+		kieSession.insert(film4);
+		kieSession.insert(film5);
+		kieSession.insert(film6);
+		kieSession.insert(review1);
+		kieSession.insert(review2);
+		kieSession.insert(review3);
+		kieSession.insert(review4);
+		kieSession.insert(review5);
+		MessageDto messageDTO = new MessageDto();
+		kieSession.insert(messageDTO);
+		kieSession.insert(Genre.ACTION);
 		kieSession.fireAllRules();
-		assertEquals("Film might be successfull",messageDto.getMessage());
-		assertEquals("Users like watching some artists in this film, so, this film may be popular.", messageDto.getResult());
-		
+		assertEquals("Film has good elements",messageDTO.getMessage());
+		assertEquals("Film has good elements", messageDTO.getResult());	
 	}
 	
-	/*
-	 * Film ce moguce biti uspesan
-	 POPULARAN GLUMAC*/
+	
+	/*Artisti su popularni zanr nije
+	 */
 	@Test
-	public void test_filmMightBeSuccessful_popularActors() {
-		Artist actor = new Artist(1L, "Brad","Pitt",new ArrayList<Film>(),new ArrayList<Film>(),new ArrayList<Film>());
-		Artist scenarist = new Artist(2L, "John","Smith",new ArrayList<Film>(),new ArrayList<Film>(),new ArrayList<Film>());
-		Artist director = new Artist(3L, "Sammuel","Vein",new ArrayList<Film>(),new ArrayList<Film>(),new ArrayList<Film>());
-		MessageDto messageDto = new MessageDto();
-		Film film = new Film(new Long(1), "New movie", "Best movie ever", Genre.ACTION, 100, 2020, 0.0, "poster",
-				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>(), new ArrayList<AgeCategory>());
-		actor.getRoles().add(film);
-		scenarist.getWritten().add(film);
-		director.getDirected().add(film);
+	public void test_filmHasGoodElements_popularArtistsNotGenre() {
 		KieContainer kieContainer = KieServices.Factory.get().getKieClasspathContainer();
 		KieSession kieSession = kieContainer.newKieSession("adminRecommendationRulesSession");
-		kieSession.setGlobal("usersNumber", 2);
-		kieSession.insert(film);
-		kieSession.insert(messageDto);
-		kieSession.insert(new ArtistFlag(actor,2,0));
-		kieSession.insert(new ArtistFlag(actor,2,0));
-		kieSession.insert(new ArtistFlag(actor,2,0));
-		kieSession.insert(new ArtistFlag(actor,5,0));
-		kieSession.insert(new ArtistFlag(actor,5,0));
-		kieSession.insert(new ArtistFlag(actor,5,0));
-		kieSession.insert(new ArtistFlag(actor,5,0));
+		Artist actor = new Artist(1L, "Brad", "Pitt", new ArrayList<Film>(), new ArrayList<Film>(),
+				new ArrayList<Film>());
+		Artist scenarist = new Artist(2L, "John", "Smith", new ArrayList<Film>(), new ArrayList<Film>(),
+				new ArrayList<Film>());
+		Artist director = new Artist(3L, "Sammuel", "Vein", new ArrayList<Film>(), new ArrayList<Film>(),
+				new ArrayList<Film>());
+		Film film1 = new Film(new Long(1), "Film1", "Best movie ever", Genre.ACTION, 100, 2020, 5.0, "poster",
+				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>(), new ArrayList<AgeCategory>());
+		Film film2 = new Film(new Long(2), "Film2", "Best movie ever", Genre.ACTION, 100, 2020, 5.0, "poster",
+				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>(), new ArrayList<AgeCategory>());
+		Film film3 = new Film(new Long(3), "Film3", "Best movie ever", Genre.ACTION, 100, 2020, 4.0, "poster",
+				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>(), new ArrayList<AgeCategory>());
+		Film film4 = new Film(new Long(4), "Film4", "Best movie ever", Genre.ACTION, 100, 2020, 5.0, "poster",
+				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>(), new ArrayList<AgeCategory>());
+		Film film5 = new Film(new Long(5), "Film5", "Best movie ever", Genre.ACTION, 100, 2020, 4.0, "poster",
+				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>(), new ArrayList<AgeCategory>());
+		Film film6 = new Film(new Long(6), "Film6", "Best movie ever", Genre.ACTION, 100, 2020, 3.0, "poster",
+				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>(), new ArrayList<AgeCategory>());
+		Review review1 = new Review(1L,film1,null,null,false,null,0);
+		Review review2 = new Review(2L,film1,null,null,false,null,0);
+		Review review3 = new Review(3L,film1,null,null,true,null,5);
+		Review review4 = new Review(4L,film1,null,null,true,null,5);
+		Review review5 = new Review(2L,film1,null,null,true,null,5);
+		kieSession.insert(actor);
+		kieSession.insert(scenarist);
+		kieSession.insert(director);
+		kieSession.insert(film1);
+		kieSession.insert(film2);
+		kieSession.insert(film3);
+		kieSession.insert(film4);
+		kieSession.insert(film5);
+		kieSession.insert(film6);
+		kieSession.insert(review1);
+		kieSession.insert(review2);
+		kieSession.insert(review3);
+		kieSession.insert(review4);
+		kieSession.insert(review5);
+		MessageDto messageDTO = new MessageDto();
+		kieSession.insert(messageDTO);
+		kieSession.insert(Genre.COMEDY);
 		kieSession.fireAllRules();
-		assertEquals("Film might be successfull",messageDto.getMessage());
-		assertEquals("Users like watching some artists in this film, so, this film may be popular.", messageDto.getResult());
-		
+		assertEquals("Film has good elements",messageDTO.getMessage());
+		assertEquals("Film has good elements", messageDTO.getResult());	
 	}
 	
-	/*
-	 * Film ce moguce biti uspesan
-	 POPULARAN GLUMAC, REDITELJ I SCENARISTA*/
-	@Test
-	public void test_filmWillBeSuccessful() {
-		Artist actor = new Artist(1L, "Brad","Pitt",new ArrayList<Film>(),new ArrayList<Film>(),new ArrayList<Film>());
-		Artist scenarist = new Artist(2L, "John","Smith",new ArrayList<Film>(),new ArrayList<Film>(),new ArrayList<Film>());
-		Artist director = new Artist(3L, "Sammuel","Vein",new ArrayList<Film>(),new ArrayList<Film>(),new ArrayList<Film>());
-		MessageDto messageDto = new MessageDto();
-		Film film = new Film(new Long(1), "New movie", "Best movie ever", Genre.ACTION, 100, 2020, 0.0, "poster",
-				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>(), new ArrayList<AgeCategory>());
-		actor.getRoles().add(film);
-		scenarist.getWritten().add(film);
-		director.getDirected().add(film);
-		KieContainer kieContainer = KieServices.Factory.get().getKieClasspathContainer();
-		KieSession kieSession = kieContainer.newKieSession("adminRecommendationRulesSession");
-		kieSession.setGlobal("usersNumber", 2);
-		kieSession.insert(film);
-		kieSession.insert(messageDto);
-		kieSession.insert(new ArtistFlag(actor,2,0));
-		kieSession.insert(new ArtistFlag(actor,2,0));
-		kieSession.insert(new ArtistFlag(actor,2,0));
-		kieSession.insert(new ArtistFlag(actor,5,0));
-		kieSession.insert(new ArtistFlag(actor,5,0));
-		kieSession.insert(new ArtistFlag(actor,5,0));
-		kieSession.insert(new ArtistFlag(actor,5,0));
-		
-		
-		kieSession.insert(new ArtistFlag(scenarist,2,0));
-		kieSession.insert(new ArtistFlag(scenarist,2,0));
-		kieSession.insert(new ArtistFlag(scenarist,2,0));
-		kieSession.insert(new ArtistFlag(scenarist,5,0));
-		kieSession.insert(new ArtistFlag(scenarist,5,0));
-		kieSession.insert(new ArtistFlag(scenarist,5,0));
-		kieSession.insert(new ArtistFlag(scenarist,5,0));
-		
-		
-		kieSession.insert(new ArtistFlag(director,2,0));
-		kieSession.insert(new ArtistFlag(director,2,0));
-		kieSession.insert(new ArtistFlag(director,2,0));
-		kieSession.insert(new ArtistFlag(director,5,0));
-		kieSession.insert(new ArtistFlag(director,5,0));
-		kieSession.insert(new ArtistFlag(director,5,0));
-		kieSession.insert(new ArtistFlag(director,5,0));
-
-		kieSession.fireAllRules();
-		assertEquals("Film will be successfull",messageDto.getMessage());
-		assertEquals("Film will be successfull", messageDto.getResult());
-		
-	}
+	
+	
 
 }
