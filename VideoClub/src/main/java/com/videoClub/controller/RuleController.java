@@ -47,6 +47,7 @@ import com.videoClub.service.FilmService;
 import com.videoClub.service.PurchaseService;
 import com.videoClub.service.RuleService;
 import com.videoClub.service.UserService;
+import com.videoClub.template.FilmAgeRestrictionTemplate;
 import com.videoClub.template.FreeMinutes;
 import com.videoClub.template.GenreAgeRestrictionTemplate;
 import com.videoClub.template.UserAgeCategoryTemplate;
@@ -120,6 +121,22 @@ public class RuleController {
 		InputStream template = RuleController.class.getResourceAsStream("/templates/genreRestrictionByAge.drt");
 		ObjectDataCompiler converter = new ObjectDataCompiler();
 	    String drl = converter.compile(freeMinutes, template);
+	    KieSession ksession = initializeKieSessionFromDRL(drl);
+	    List<Film> films = filmService.getAll();
+	    for(Film film : films){
+			ksession.insert(film);		
+		}
+	    ksession.fireAllRules();
+        ksession.dispose();
+        return new ResponseEntity<>(filmService.save(films), HttpStatus.OK);
+	}
+	
+	@PutMapping(value = "/restrict_film/age", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public ResponseEntity<List<Film>> restrictFilmByAge(@RequestBody List<FilmAgeRestrictionTemplate> restricted) {
+		InputStream template = RuleController.class.getResourceAsStream("/templates/filmRestrictionByAge.drt");
+		ObjectDataCompiler converter = new ObjectDataCompiler();
+	    String drl = converter.compile(restricted, template);
 	    KieSession ksession = initializeKieSessionFromDRL(drl);
 	    List<Film> films = filmService.getAll();
 	    for(Film film : films){
