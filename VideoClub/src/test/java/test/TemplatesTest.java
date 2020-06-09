@@ -18,6 +18,7 @@ import com.videoClub.model.Review;
 import com.videoClub.model.enumeration.AgeCategory;
 import com.videoClub.model.enumeration.Genre;
 import com.videoClub.model.enumeration.Rank;
+import com.videoClub.template.FilmAgeRestrictionTemplate;
 import com.videoClub.template.FreeMinutes;
 import com.videoClub.template.GenreAgeRestrictionTemplate;
 import com.videoClub.template.UserAgeCategoryTemplate;
@@ -208,6 +209,42 @@ public class TemplatesTest {
         assertEquals(300, users.get(11).getAvailableMinutes());
         assertEquals(200, users.get(12).getAvailableMinutes());
         assertEquals(150, users.get(13).getAvailableMinutes());
+    }
+	
+	@Test
+    public void testFilmAgeRestrictionTemplate(){
+        
+        InputStream template = TemplatesTest.class.getResourceAsStream("/templates/filmRestrictionByAge.drt");
+        
+        List<FilmAgeRestrictionTemplate> data = new ArrayList<FilmAgeRestrictionTemplate>();
+        
+        Film film1 = new Film();
+        film1.setId(1L);
+        Film film2 = new Film();
+        film2.setId(2L);
+        Film film3 = new Film();
+        film3.setId(3L);
+        
+        data.add(new FilmAgeRestrictionTemplate(AgeCategory.CHILD, 1L));
+        data.add(new FilmAgeRestrictionTemplate(AgeCategory.CHILD, 2L));
+        
+        ObjectDataCompiler converter = new ObjectDataCompiler();
+        String drl = converter.compile(data, template);
+        
+        System.out.println(drl);
+        KieSession ksession = createKieSessionFromDRL(drl);
+        ksession.insert(film1);
+        ksession.insert(film2);
+        ksession.insert(film3);
+        ksession.fireAllRules();
+        ksession.dispose();
+        
+        assertTrue(film1.getRestrictedAgeCategories().size() == 1);
+        assertTrue(film2.getRestrictedAgeCategories().size() == 1);
+        assertTrue(film3.getRestrictedAgeCategories().size() == 0);
+        
+        assertTrue(film1.getRestrictedAgeCategories().contains(AgeCategory.CHILD));
+        assertTrue(film2.getRestrictedAgeCategories().contains(AgeCategory.CHILD));
     }
 	
 	public static List<RegisteredUser> generateUsers(){

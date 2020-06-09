@@ -6,7 +6,138 @@ import com.videoClub.model.drl.*;
 import com.videoClub.model.*;
 import java.util.List;
 import java.util.Collections;
+import com.videoClub.model.enumeration.*;
 
-global Integer usersNumber;
+declare ActorsRateReport
+	rate : double
+end
+
+declare ActorsReviewReport
+	reviews : int
+end
+
+declare ScenaristRateReport
+	rate : double
+end
+
+declare ScenaristReviewReport
+	reviews : int
+end
+
+declare DirectorRateReport
+	rate : double
+end
+
+declare DirectorReviewReport
+	reviews : int
+end
+
+declare GenreRateReport
+	rate : double
+end
+
+declare AgeCategoryReport
+	ageCategory : AgeCategory
+end
+
+
+query actorsRateAnalysis()
+	ActorsRateReport();
+	//setovati na neki nacin vrednost u ScenaristReviewReort o tome kolika je prosecna
+	//ocena glumaca iz filma na osnovu pregleda drugih filmova u kojima glume
+end
+
+query actorsReviewAnalysis()
+	ActorsReviewReport();
+	//setovati na neki nacin vrednost u ScenaristReviewReort o tome kolika je prosecna
+	//gledanost glumaca iz filma na osnovu pregleda drugih filmova u kojima glume
+end
+
+query scenaristRateAnalysis()
+	ScenaristRateReport();
+	
+end
+
+query scenaristReviewAnalysis()
+	ScenaristReviewReport();
+	
+end
+
+query directorRateAnalysis()
+	DirectorRateReport();
+end
+
+query directorReviewAnalysis()
+	DirectorReviewReport();
+end
+
+query scenaristAnalysis(ScenaristRateReport s1, ScenaristRateReport s2)
+	scenaristReviewAnalysis()
+	and
+	scenaristRateAnalysis();
+end
+
+query actorsAnalysis(ActorsRateReport a1, ActorsReviewReport a2)
+	actorsReviewAnalysis()
+	and
+	actorsRateAnalysis();
+end
+
+query directorAnalysis(DirectorRateReport d1, DirectorReviewReport d2)
+	directorReviewAnalysis()
+	and
+	directorRateAnalysis();
+end
+
+query artistsAnalysis()
+	directorAnalysis()
+    and
+    actorsAnalysis()
+    and
+    scenaristAnalysis();
+end
+
+query ageCategoryAnalysis()
+	//koja AgeCategory je najzastupljenija u pregledima u kojima se nalazi reziser?
+end
+
+query genreAnalysis()
+	
+end
+
+
+rule "Film Analysis"
+    when
+    	ActorsRateReport();
+    	ActorsReviewReport();
+    	ScenaristRateReport();
+    	ScenaristReviewReport();
+    	DirectorRateReport();
+    	DirectorReviewReport();
+    	GenreRateReport();
+    	AgeCategoryReport();
+    	
+    	genreAnalysis() 
+    	and
+    	ageCategoryAnalysis()
+    	and 
+    	artistsAnalysis();
+    then
+    	
+end
+
+rule "Film Analysis - initialization"
+    when
+    	Film (  );
+    then
+    	insert(new ActorsRateReport(0.0));
+    	insert(new ActorsReviewReport(0));
+    	insert(new ScenaristRateReport(0.0));
+    	insert(new ScenaristRateReport(0));
+    	insert(new DirectorRateReport(0.0));
+    	insert(new DirectorReviewReport(0));
+    	insert(new GenreRateReport(0.0));
+    	insert(new AgeCategoryReport());
+end
 
 
