@@ -8,13 +8,16 @@ public class GenreFlag {
 	private int watchedTime;
 	private int unwatchedTime;
 	private double averageRate;
+	private int ratesNumber;
 
-	public GenreFlag(Genre genre, int watchedTime, int unwatchedTime, double averageRate) {
+	public GenreFlag(Genre genre, int watchedTime, int unwatchedTime,
+			double averageRate, int ratesNumber) {
 		super();
 		this.genre = genre;
 		this.watchedTime = watchedTime;
 		this.unwatchedTime = unwatchedTime;
 		this.averageRate = averageRate;
+		this.ratesNumber = ratesNumber;
 	}
 
 	public GenreFlag() {
@@ -55,5 +58,17 @@ public class GenreFlag {
 
 	public void setAverageRate(double averageRate) {
 		this.averageRate = averageRate;
+	}
+
+	public int getRatesNumber() {
+		return ratesNumber;
+	}
+	
+	public Integer getRatesNumberInteger() {
+		return ratesNumber;
+	}
+
+	public void setRatesNumber(int ratesNumber) {
+		this.ratesNumber = ratesNumber;
 	}
 }
