@@ -15,13 +15,11 @@ public class PurchaseEvent implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private RegisteredUser user;
 	private Purchase purchase;
-	private Date executionTime;
 
 	public PurchaseEvent(Purchase purchase, RegisteredUser user) {
 		super();
 		this.user = user;
 		this.purchase = purchase;
-		this.executionTime = new Date();
 	}
 
 	public Purchase getPurchase() {
@@ -30,14 +28,6 @@ public class PurchaseEvent implements Serializable {
 
 	public void setPurchase(Purchase purchase) {
 		this.purchase = purchase;
-	}
-
-	public Date getExecutionTime() {
-		return executionTime;
-	}
-
-	public void setExecutionTime(Date executionTime) {
-		this.executionTime = executionTime;
 	}
 
 	public RegisteredUser getUser() {

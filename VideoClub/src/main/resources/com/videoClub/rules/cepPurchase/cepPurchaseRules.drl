@@ -24,6 +24,7 @@ rule "More than 10 purchases in 1 hour from same user"
         not (SuspiciousUserEvent(user.id == $userId, reason == "Many purchases in 1 hour from same user"))
     then
     	$user.setAllowedToPurchase(false);
+    	insert(new SuspiciousUserEvent($user, "Many purchases in 1 hour from the same user"));
 end
 
 rule "Less than 10 purchases in 1 hour from same user"

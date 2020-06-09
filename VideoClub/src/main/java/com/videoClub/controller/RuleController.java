@@ -15,6 +15,7 @@ import org.kie.api.builder.Results;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.utils.KieHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -444,13 +445,14 @@ public class RuleController {
 	@Scheduled(cron="0 0 * * * *")
 	public void fireReportRules() {
 		ReportDTO reportDTO = new ReportDTO(0.0,LocalDate.now(),null,0L);
-		cepConfigKsessionRealtimeClock.insert(reportDTO);
+		FactHandle factHandle = cepConfigKsessionRealtimeClock.insert(reportDTO);
 		cepConfigKsessionRealtimeClock.fireAllRules();
 		System.out.println("Earned in last 24h "+reportDTO.getEarned());
 		if(reportDTO.getFilm() != null) {
 			System.out.println("Most watched film is "+ reportDTO.getFilm().getName());
 		}
 		System.out.println("Number of views in the last 24h "+reportDTO.getNumberOfViews());
+		cepConfigKsessionRealtimeClock.delete(factHandle);
 	}
 	
 	private KieSession initializeKieSession(String sessionName){

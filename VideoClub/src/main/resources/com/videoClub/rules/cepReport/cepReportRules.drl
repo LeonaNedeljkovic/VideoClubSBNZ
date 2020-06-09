@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 declare FilmNumber
+	@role(event)
+    @expires(24h)
     film: Film
     numTimes: int
 end
@@ -20,12 +22,13 @@ end
 rule "Obtain last 24h of purchases"
 	when
 		$r: ReportDTO( );
-		//Number($n : doubleValue ) from accumulate(
-		//	PurchaseEvent($p: purchase.getPrice())
-		//	over window:time(24h), sum($p)
-		//	)
+		Number($n : doubleValue ) from accumulate(
+			PurchaseEvent($p: purchase.getPrice())
+			over window:time(24h), sum($p)
+			)
 	then
-		//$r.setEarned($n);
+		$r.setEarned($n);
+		update($r);
 end
 
 rule "New film event added"
@@ -33,7 +36,6 @@ rule "New film event added"
 		$e : FilmWatchEvent($f: film);
 		not FilmNumber($f.getName() == film.getName())
 	then
-		System.out.println("Film unet");
 		insert(new FilmNumber($f, 1));
 end
 
@@ -43,7 +45,6 @@ rule "Film already existed in the memory"
 		$e : FilmWatchEvent($f: film);
 		$filmNumber: FilmNumber($f.getName() == film.getName())
 	then
-		System.out.println("Film povecan");
 		$filmNumber.setNumTimes($filmNumber.getNumTimes()+1);
 		update($filmNumber);
 end
@@ -56,6 +57,7 @@ rule "Get most watched film in the last 24h"
 		not FilmNumber(numTimes > $filmNumber.getNumTimes()) from $allFilms;
 	then
 		$r.setFilm($filmNumber.getFilm());
+		update($r);
 end
 
 rule "number of views in the last 24h"
@@ -67,6 +69,7 @@ rule "number of views in the last 24h"
 		)
 	then
 		$r.setNumberOfViews($cnt);
+		update($r);
 end
 
 
