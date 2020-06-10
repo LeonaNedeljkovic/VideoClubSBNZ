@@ -11,6 +11,7 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.ObjectFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.videoClub.comparator.RecommendedFilmComparator;
@@ -48,6 +49,7 @@ public class FilmServiceImpl implements FilmService{
 	
 	@Autowired
 	private KieContainer kieContainer;
+	
 
 	@Override
 	public Film save(FilmDTO filmDTO) {

@@ -10,9 +10,11 @@ import java.util.Optional;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.videoClub.dto.ReviewDTO;
+import com.videoClub.event.FilmWatchEvent;
 import com.videoClub.exception.EntityNotFound;
 import com.videoClub.model.Action;
 import com.videoClub.model.RegisteredUser;
@@ -35,6 +37,10 @@ public class ReviewServiceImpl implements ReviewService{
 	
 	@Autowired
 	private KieContainer kieContainer;
+	
+	@Autowired
+	@Qualifier(value = "cepConfigKsessionRealtimeClock")
+	private KieSession cepConfigKsessionRealtimeClock;
 	
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	private DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
@@ -70,6 +76,7 @@ public class ReviewServiceImpl implements ReviewService{
 			review.getTimeIntervals().add(interval);
 			kieSession.insert(interval);
 		}
+		cepConfigKsessionRealtimeClock.insert(new FilmWatchEvent(filmService.getOne(reviewDTO.getVideoContentId())));
 		kieSession.insert(user);
 		kieSession.fireAllRules();
 		kieSession.dispose();

@@ -6,7 +6,7 @@ import org.kie.api.definition.type.Role;
 import com.videoClub.model.Film;
 
 @Role(Role.Type.EVENT)
-@Expires("30h")
+@Expires("24h")
 public class FilmWatchEvent {
 
 	private Film film;
