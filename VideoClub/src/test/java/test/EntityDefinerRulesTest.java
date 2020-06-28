@@ -7,14 +7,11 @@ import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
-import com.videoClub.bean.BronzeImmunity;
-import com.videoClub.bean.BronzeTitle;
-import com.videoClub.bean.GoldImmunity;
-import com.videoClub.bean.GoldTitle;
-import com.videoClub.bean.SilverImmunity;
-import com.videoClub.bean.SilverTitle;
+import com.videoClub.bean.Immunity;
+import com.videoClub.bean.Title;
 import com.videoClub.exception.InvalidImmunity;
 import com.videoClub.exception.InvalidTitle;
+import com.videoClub.model.enumeration.Rank;
 
 public class EntityDefinerRulesTest {
 
@@ -22,7 +19,7 @@ public class EntityDefinerRulesTest {
 	@Test
 	public void test1(){
 		KieSession kieSession = initializeKieSession();
-		kieSession.insert(new BronzeImmunity(15));
+		kieSession.insert(new Immunity(15, Rank.BRONZE));
 		kieSession.fireAllRules();
 		kieSession.dispose();
 	}
@@ -31,7 +28,7 @@ public class EntityDefinerRulesTest {
 	@Test
 	public void test2(){
 		KieSession kieSession = initializeKieSession();
-		kieSession.insert(new BronzeImmunity(30));
+		kieSession.insert(new Immunity(30, Rank.BRONZE));
 		boolean exceptionOccured = false;
 		try {
 			kieSession.fireAllRules();
@@ -47,7 +44,7 @@ public class EntityDefinerRulesTest {
 	@Test
 	public void test3(){
 		KieSession kieSession = initializeKieSession();
-		kieSession.insert(new BronzeImmunity(1));
+		kieSession.insert(new Immunity(1, Rank.BRONZE));
 		boolean exceptionOccured = false;
 		try {
 			kieSession.fireAllRules();
@@ -63,7 +60,7 @@ public class EntityDefinerRulesTest {
 	@Test
 	public void test4(){
 		KieSession kieSession = initializeKieSession();
-		kieSession.insert(new SilverImmunity(25));
+		kieSession.insert(new Immunity(25, Rank.SILVER));
 		kieSession.fireAllRules();
 		kieSession.dispose();
 	}
@@ -72,7 +69,7 @@ public class EntityDefinerRulesTest {
 	@Test
 	public void test5(){
 		KieSession kieSession = initializeKieSession();
-		kieSession.insert(new SilverImmunity(50));
+		kieSession.insert(new Immunity(50, Rank.SILVER));
 		boolean exceptionOccured = false;
 		try {
 			kieSession.fireAllRules();
@@ -88,7 +85,7 @@ public class EntityDefinerRulesTest {
 	@Test
 	public void test6(){
 		KieSession kieSession = initializeKieSession();
-		kieSession.insert(new SilverImmunity(10));
+		kieSession.insert(new Immunity(10, Rank.SILVER));
 		boolean exceptionOccured = false;
 		try {
 			kieSession.fireAllRules();
@@ -104,7 +101,7 @@ public class EntityDefinerRulesTest {
 	@Test
 	public void test7(){
 		KieSession kieSession = initializeKieSession();
-		kieSession.insert(new GoldImmunity(50));
+		kieSession.insert(new Immunity(50, Rank.GOLD));
 		kieSession.fireAllRules();
 		kieSession.dispose();
 	}
@@ -113,7 +110,7 @@ public class EntityDefinerRulesTest {
 	@Test
 	public void test8(){
 		KieSession kieSession = initializeKieSession();
-		kieSession.insert(new GoldImmunity(20));
+		kieSession.insert(new Immunity(20, Rank.GOLD));
 		boolean exceptionOccured = false;
 		try {
 			kieSession.fireAllRules();
@@ -129,7 +126,7 @@ public class EntityDefinerRulesTest {
 	@Test
 	public void test9(){
 		KieSession kieSession = initializeKieSession();
-		kieSession.insert(new GoldImmunity(1001));
+		kieSession.insert(new Immunity(1001, Rank.GOLD));
 		boolean exceptionOccured = false;
 		try {
 			kieSession.fireAllRules();
@@ -145,7 +142,7 @@ public class EntityDefinerRulesTest {
 	@Test
 	public void test10(){
 		KieSession kieSession = initializeKieSession();
-		kieSession.insert(new BronzeTitle(200, 50, 100));
+		kieSession.insert(new Title(200, 50, 100, Rank.BRONZE));
 		boolean exceptionOccured = false;
 		try {
 			kieSession.fireAllRules();
@@ -161,7 +158,7 @@ public class EntityDefinerRulesTest {
 	@Test
 	public void test11(){
 		KieSession kieSession = initializeKieSession();
-		kieSession.insert(new BronzeTitle(1, 50, 100));
+		kieSession.insert(new Title(1, 50, 100, Rank.BRONZE));
 		boolean exceptionOccured = false;
 		try {
 			kieSession.fireAllRules();
@@ -177,7 +174,7 @@ public class EntityDefinerRulesTest {
 	@Test
 	public void test12(){
 		KieSession kieSession = initializeKieSession();
-		kieSession.insert(new BronzeTitle(100, 100, 100));
+		kieSession.insert(new Title(100, 100, 100, Rank.BRONZE));
 		boolean exceptionOccured = false;
 		try {
 			kieSession.fireAllRules();
@@ -193,7 +190,7 @@ public class EntityDefinerRulesTest {
 	@Test
 	public void test13(){
 		KieSession kieSession = initializeKieSession();
-		kieSession.insert(new BronzeTitle(100, 50, 200));
+		kieSession.insert(new Title(100, 50, 200, Rank.BRONZE));
 		boolean exceptionOccured = false;
 		try {
 			kieSession.fireAllRules();
@@ -209,7 +206,7 @@ public class EntityDefinerRulesTest {
 	@Test
 	public void test14(){
 		KieSession kieSession = initializeKieSession();
-		kieSession.insert(new SilverTitle(100, 100, 200));
+		kieSession.insert(new Title(100, 100, 200, Rank.SILVER));
 		boolean exceptionOccured = false;
 		try {
 			kieSession.fireAllRules();
@@ -225,7 +222,7 @@ public class EntityDefinerRulesTest {
 	@Test
 	public void test15(){
 		KieSession kieSession = initializeKieSession();
-		kieSession.insert(new SilverTitle(300, 100, 200));
+		kieSession.insert(new Title(300, 100, 200, Rank.SILVER));
 		boolean exceptionOccured = false;
 		try {
 			kieSession.fireAllRules();
@@ -241,7 +238,7 @@ public class EntityDefinerRulesTest {
 	@Test
 	public void test16(){
 		KieSession kieSession = initializeKieSession();
-		kieSession.insert(new SilverTitle(200, 200, 200));
+		kieSession.insert(new Title(200, 200, 200, Rank.SILVER));
 		boolean exceptionOccured = false;
 		try {
 			kieSession.fireAllRules();
@@ -257,7 +254,7 @@ public class EntityDefinerRulesTest {
 	@Test
 	public void test17(){
 		KieSession kieSession = initializeKieSession();
-		kieSession.insert(new SilverTitle(200, 100, 300));
+		kieSession.insert(new Title(200, 100, 300, Rank.SILVER));
 		boolean exceptionOccured = false;
 		try {
 			kieSession.fireAllRules();
@@ -273,7 +270,7 @@ public class EntityDefinerRulesTest {
 	@Test
 	public void test18(){
 		KieSession kieSession = initializeKieSession();
-		kieSession.insert(new GoldTitle(10001, 150, 300));
+		kieSession.insert(new Title(10001, 150, 300, Rank.GOLD));
 		boolean exceptionOccured = false;
 		try {
 			kieSession.fireAllRules();
@@ -289,7 +286,7 @@ public class EntityDefinerRulesTest {
 	@Test
 	public void test19(){
 		KieSession kieSession = initializeKieSession();
-		kieSession.insert(new GoldTitle(200, 150, 300));
+		kieSession.insert(new Title(200, 150, 300, Rank.GOLD));
 		boolean exceptionOccured = false;
 		try {
 			kieSession.fireAllRules();
@@ -305,7 +302,7 @@ public class EntityDefinerRulesTest {
 	@Test
 	public void test20(){
 		KieSession kieSession = initializeKieSession();
-		kieSession.insert(new GoldTitle(300, 100, 300));
+		kieSession.insert(new Title(300, 100, 300, Rank.GOLD));
 		boolean exceptionOccured = false;
 		try {
 			kieSession.fireAllRules();
@@ -321,7 +318,7 @@ public class EntityDefinerRulesTest {
 	@Test
 	public void test21(){
 		KieSession kieSession = initializeKieSession();
-		kieSession.insert(new GoldTitle(300, 150, 601));
+		kieSession.insert(new Title(300, 150, 601, Rank.GOLD));
 		boolean exceptionOccured = false;
 		try {
 			kieSession.fireAllRules();
@@ -337,7 +334,7 @@ public class EntityDefinerRulesTest {
 	@Test
 	public void test22(){
 		KieSession kieSession = initializeKieSession();
-		kieSession.insert(new BronzeTitle(120, 70, 120));
+		kieSession.insert(new Title(120, 70, 120, Rank.BRONZE));
 		kieSession.fireAllRules();
 		kieSession.dispose();
 	}
@@ -346,7 +343,7 @@ public class EntityDefinerRulesTest {
 	@Test
 	public void test23(){
 		KieSession kieSession = initializeKieSession();
-		kieSession.insert(new SilverTitle(220, 110, 220));
+		kieSession.insert(new Title(220, 110, 220, Rank.SILVER));
 		kieSession.fireAllRules();
 		kieSession.dispose();
 	}
@@ -355,7 +352,7 @@ public class EntityDefinerRulesTest {
 	@Test
 	public void test24(){
 		KieSession kieSession = initializeKieSession();
-		kieSession.insert(new GoldTitle(320, 210, 320));
+		kieSession.insert(new Title(320, 210, 320, Rank.GOLD));
 		kieSession.fireAllRules();
 		kieSession.dispose();
 	}
@@ -372,28 +369,28 @@ public class EntityDefinerRulesTest {
 		return kieSession;
 	}
 	
-	public BronzeImmunity generateBronzeImmunity(){
-		return new BronzeImmunity(10);
+	public Immunity generateBronzeImmunity(){
+		return new Immunity(10, Rank.BRONZE);
 	}
 	
-	public SilverImmunity generateSilverImmunity(){
-		return new SilverImmunity(20);
+	public Immunity generateSilverImmunity(){
+		return new Immunity(20, Rank.SILVER);
 	}
 
-	public GoldImmunity generateGoldImmunity(){
-		return new GoldImmunity(30);
+	public Immunity generateGoldImmunity(){
+		return new Immunity(30, Rank.GOLD);
 	}
 	
 	
-	public BronzeTitle generateBronzeTitle(){
-		return new BronzeTitle(100, 50, 100);
+	public Title generateBronzeTitle(){
+		return new Title(100, 50, 100, Rank.BRONZE);
 	}
 	
-	public SilverTitle generateSilverTitle(){
-		return new SilverTitle(200, 100, 200);
+	public Title generateSilverTitle(){
+		return new Title(200, 100, 200, Rank.SILVER);
 	}
 
-	public GoldTitle generateGoldTitle(){
-		return new GoldTitle(300, 150, 300);
+	public Title generateGoldTitle(){
+		return new Title(300, 150, 300, Rank.GOLD);
 	}
 }

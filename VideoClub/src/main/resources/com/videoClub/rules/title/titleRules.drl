@@ -2,262 +2,81 @@
 package com.videoClub.rules.title
 
 import com.videoClub.model.*;
-import com.videoClub.bean.*;
+import com.videoClub.factory.*;
 import com.videoClub.model.enumeration.*;
 import com.videoClub.exception.*;
 
-global BronzeImmunity bronzeImmunity;
-global SilverImmunity silverImmunity;
-global GoldImmunity goldImmunity;
-global BronzeTitle bronzeTitle;
-global SilverTitle silverTitle;
-global GoldTitle goldTitle;
+global ImmunityFactory immunityFactory;
+global TitleFactory titleFactory;
 
-rule "Acquire Bronze title rule"
+rule "Save title rule"
+	salience $purchasedMinutes * 100
 	no-loop
     when
-    	$user : RegisteredUser( $id : id, title == Rank.NONE );
-        $total : Number( intValue >= bronzeTitle.getAcquirePoints() 
-        				&& intValue < silverTitle.getAcquirePoints()) from accumulate(
+    	$user : RegisteredUser( $id : id, title != Rank.NONE );
+        $total : Number( $purchasedMinutes : intValue ) from accumulate(
          	Purchase( $minutes : purchasedMinutes, user.getId() == $id ),
          	sum( $minutes ) );
+         RegisteredUser( id == $id, title == titleFactory.savedTitle($purchasedMinutes, title) );
     then
-		$user.setTitle(Rank.BRONZE);
-		$user.setAvailableMinutes($user.getAvailableMinutes() + bronzeTitle.getRewardPoints());
-		System.out.println($user.getUsername() + " acquired BRONZE title with " + $total + 
-		" purchased minutes. Reward minutes: " + bronzeTitle.getRewardPoints() +
-		", Total minutes: " + $user.getAvailableMinutes());
-		$user.getNotifications().add(new Notification("Bronze Title acquirement",
-    	"Congratulations! You have acquired Bronze title for this month, which rewarded you with "
-    	+ bronzeTitle.getRewardPoints() +" free minutes!",false, $user));
-		
+		$user.setAvailableMinutes($user.getAvailableMinutes() + titleFactory.getRewardPoints($user.getTitle()));
+		System.out.println($user.getUsername() + " saved "+$user.getTitle()+" title with " + $purchasedMinutes + 
+		" purchased minutes.");
+		delete($user);
 end
 
-rule "Acquire Silver title rule"
+rule "Acquire title rule"
+	salience $purchasedMinutes * 50
 	no-loop
     when
-    	$user : RegisteredUser( $id : id, title == Rank.NONE || title == Rank.BRONZE );
-        $total : Number( intValue >= silverTitle.getAcquirePoints() 
-        				&& intValue < goldTitle.getAcquirePoints()) from accumulate(
-         	Purchase( $minutes : purchasedMinutes, user.getId() == $id ),
-         	sum( $minutes ) );
+    	$user : RegisteredUser( $id : id );
+        $total : Number( intValue >= titleFactory.getAcquirePoints(Rank.BRONZE),
+        	$purchasedMinutes : intValue ) from accumulate(
+         		Purchase( $minutes : purchasedMinutes, user.getId() == $id ),
+         		sum( $minutes ) );
     then
-		$user.setTitle(Rank.SILVER);
-		$user.setAvailableMinutes($user.getAvailableMinutes() + silverTitle.getRewardPoints());
-		System.out.println($user.getUsername() + " acquired SILVER title with " + $total + 
-		" purchased minutes. Reward minutes: " + silverTitle.getRewardPoints() +
-		", Total minutes: " + $user.getAvailableMinutes());
-		$user.getNotifications().add(new Notification("Silver Title acquirement",
-    	"Congratulations! You have acquired Silver title for this month, which rewarded you with "
-    	+ silverTitle.getRewardPoints() +" free minutes!",false, $user));
+		$user.setTitle(titleFactory.acquiredTitle($purchasedMinutes));
+		$user.setAvailableMinutes($user.getAvailableMinutes() + titleFactory.getRewardPoints($user.getTitle()));
+		System.out.println($user.getUsername() + " acquired "+$user.getTitle()+" title");
+		delete($user);
 end
 
-rule "Acquire Gold title rule"
+rule "Acquire immunity rule"
+	salience $purchasedMinutes + 30
 	no-loop
     when
-    	$user : RegisteredUser( $id : id, title != Rank.GOLD );
-        $total : Number( intValue >= goldTitle.getAcquirePoints() ) from accumulate(
-         	Purchase( $minutes : purchasedMinutes, user.getId() == $id ),
-         	sum( $minutes ) );
+    	$user : RegisteredUser( $id : id, title != Rank.NONE,
+    		title.equalsOrHigher(immunityFactory.acquiredImmunity(immunityPoints)) );
+    	$total : Number( $purchasedMinutes : intValue ) from accumulate(
+         		Purchase( $minutes : purchasedMinutes, user.getId() == $id ),
+         		sum( $minutes ) );
     then
-		$user.setTitle(Rank.GOLD);
-		$user.setAvailableMinutes($user.getAvailableMinutes() + goldTitle.getRewardPoints());
-		System.out.println($user.getUsername() + " acquired GOLD title with " + $total + 
-		" purchased minutes. Reward minutes: " + goldTitle.getRewardPoints() +
-		", Total minutes: " + $user.getAvailableMinutes());
-		$user.getNotifications().add(new Notification("Gold Title acquirement",
-    	"Congratulations! You have acquired Gold title for this month, which rewarded you with "
-    	+ goldTitle.getRewardPoints() +" free minutes!",false, $user));
-end
-
-rule "Save Bronze title rule"
-	no-loop
-    when
-    	$user : RegisteredUser( $id : id, title == Rank.BRONZE );
-        $total : Number( intValue >= bronzeTitle.getSavePoints() 
-        				&& intValue < silverTitle.getAcquirePoints()) from accumulate(
-         	Purchase( $minutes : purchasedMinutes, user.getId() == $id ),
-         	sum( $minutes ) );
-    then
-		$user.setAvailableMinutes($user.getAvailableMinutes() + bronzeTitle.getRewardPoints());
-		System.out.println($user.getUsername() + " saved BRONZE title with " + $total + 
-		" purchased minutes. Reward minutes: " + bronzeTitle.getRewardPoints() +
-		", Total minutes: " + $user.getAvailableMinutes());
-		$user.getNotifications().add(new Notification("Bronze Title saved",
-    	"Congratulations! You have saved Bronze title for this month, which rewarded you with "
-    	+ bronzeTitle.getRewardPoints() +" free minutes!",false, $user));
-end
-
-rule "Save Silver title rule"
-	no-loop
-    when
-    	$user : RegisteredUser( $id : id, title == Rank.SILVER );
-        $total : Number( intValue >= silverTitle.getSavePoints() 
-        				&& intValue < goldTitle.getAcquirePoints()) from accumulate(
-         	Purchase( $minutes : purchasedMinutes, user.getId() == $id ),
-         	sum( $minutes ) );
-    then
-		$user.setAvailableMinutes($user.getAvailableMinutes() + silverTitle.getRewardPoints());
-		System.out.println($user.getUsername() + " saved SILVER title with " + $total + 
-		" purchased minutes. Reward minutes: " + silverTitle.getRewardPoints() +
-		", Total minutes: " + $user.getAvailableMinutes());
-		$user.getNotifications().add(new Notification("Silver Title saved",
-    	"Congratulations! You have saved Silver title for this month, which rewarded you with "
-    	+ silverTitle.getRewardPoints() +" free minutes!",false, $user));
-end
-
-rule "Save Gold title rule"
-	no-loop
-    when
-    	$user : RegisteredUser( $id : id, title == Rank.GOLD );
-        $total : Number( intValue >= goldTitle.getSavePoints() ) from accumulate(
-         	Purchase( $minutes : purchasedMinutes, user.getId() == $id ),
-         	sum( $minutes ) );
-    then
-		$user.setAvailableMinutes($user.getAvailableMinutes() + goldTitle.getRewardPoints());
-		System.out.println($user.getUsername() + " saved GOLD title with " + $total + 
-		" purchased minutes. Reward minutes: " + goldTitle.getRewardPoints() +
-		", Total minutes: " + $user.getAvailableMinutes());
-		$user.getNotifications().add(new Notification("Gold Title saved",
-    	"Congratulations! You have saved Gold title for this month, which rewarded you with "
-    	+ goldTitle.getRewardPoints() +" free minutes!",false, $user));
-end
-
-rule "Acquire Bronze immunity rule"
-	salience 30
-	no-loop
-    when
-    	$user : RegisteredUser( $id : id, title == Rank.BRONZE, 
-    		immunityPoints >= bronzeImmunity.getAcquirePoints() );
-        $total : Number( intValue < bronzeTitle.getSavePoints() ) from accumulate(
-         	Purchase( $minutes : purchasedMinutes, user.getId() == $id ),
-         	sum( $minutes ) );
-    then
-    	$user.setImmunity(Rank.BRONZE);
-    	$user.setImmunityPoints($user.getImmunityPoints() - bronzeImmunity.getAcquirePoints());
-		System.out.println($user.getUsername() + " acquired BRONZE immunity. " + 
-		"Immunity points left: " + $user.getImmunityPoints());
+    	$user.setImmunity($user.getTitle());
+    	$user.setImmunityPoints($user.getImmunityPoints() - immunityFactory.getAcquirePoints($user.getImmunity()));
+		System.out.println($user.getUsername() + " acquired "+$user.getImmunity()+" immunity.");
 		update($user);
 end
 
-rule "Acquire Silver immunity rule"
-	salience 30
-	no-loop
+rule "Save title with immunity rule"
+	salience $purchasedMinutes + 20
     when
-    	$user : RegisteredUser( $id : id, title == Rank.SILVER, 
-    		immunityPoints >= silverImmunity.getAcquirePoints() );
-        $total : Number( intValue < silverTitle.getSavePoints() ) from accumulate(
+    	$user : RegisteredUser( $id : id, immunity != Rank.NONE );
+    	$total : Number( $purchasedMinutes : intValue ) from accumulate(
+         		Purchase( $minutes : purchasedMinutes, user.getId() == $id ),
+         		sum( $minutes ) );
+    then
+    	$user.setAvailableMinutes($user.getAvailableMinutes() + titleFactory.getRewardPoints($user.getTitle()));
+		System.out.println($user.getUsername() + " saved "+$user.getTitle()+" title with immunity. "); 
+end
+
+rule "Lose title rule"
+	salience $purchasedMinutes
+    when
+    	$user : RegisteredUser( $id : id, immunity == Rank.NONE, title != Rank.NONE, $title : title );
+        $total : Number( intValue < titleFactory.getSavePoints($title), $purchasedMinutes : intValue ) from accumulate(
          	Purchase( $minutes : purchasedMinutes, user.getId() == $id ),
          	sum( $minutes ) );
     then
-    	$user.setImmunity(Rank.SILVER);
-    	$user.setImmunityPoints($user.getImmunityPoints() - silverImmunity.getAcquirePoints());
-		System.out.println($user.getUsername() + " acquired SILVER immunity. " + 
-		"Immunity points left: " + $user.getImmunityPoints());
-		update($user);
-end
-
-rule "Acquire Gold immunity rule"
-	salience 30
-	no-loop
-    when
-    	$user : RegisteredUser( $id : id, title == Rank.GOLD, 
-    		immunityPoints >= goldImmunity.getAcquirePoints() );
-        $total : Number( intValue < goldTitle.getSavePoints() ) from accumulate(
-         	Purchase( $minutes : purchasedMinutes, user.getId() == $id ),
-         	sum( $minutes ) );
-    then
-    	$user.setImmunity(Rank.GOLD);
-    	$user.setImmunityPoints($user.getImmunityPoints() - goldImmunity.getAcquirePoints());
-		System.out.println($user.getUsername() + " acquired GOLD immunity. " + 
-		"Immunity points left: " + $user.getImmunityPoints());
-		update($user);
-end
-
-rule "Save Bronze title with immunity rule"
-	salience 20
-    when
-    	$user : RegisteredUser( $id : id, immunity == Rank.BRONZE );
-    then
-    	$user.setAvailableMinutes($user.getAvailableMinutes() + bronzeTitle.getRewardPoints());
-		System.out.println($user.getUsername() + " saved BRONZE title with immunity. " + 
-		"Reward minutes: " + bronzeTitle.getRewardPoints() +
-		", Total minutes: " + $user.getAvailableMinutes());
-		$user.getNotifications().add(new Notification("Bronze Title saved with immunity",
-    	"Congratulations! You have saved Bronze title with immunity for this month, which rewarded you with "
-    	+ bronzeTitle.getRewardPoints() +" free minutes!",false, $user));
-end
-
-rule "Save Silver title with immunity rule"
-	salience 20
-    when
-    	$user : RegisteredUser( $id : id, immunity == Rank.SILVER );
-    then
-    	$user.setAvailableMinutes($user.getAvailableMinutes() + silverTitle.getRewardPoints());
-		System.out.println($user.getUsername() + " saved SILVER title with immunity. " + 
-		"Reward minutes: " + silverTitle.getRewardPoints() +
-		", Total minutes: " + $user.getAvailableMinutes());
-		$user.getNotifications().add(new Notification("Silver Title saved with immunity",
-    	"Congratulations! You have saved Silver title with immunity for this month, which rewarded you with "
-    	+ silverTitle.getRewardPoints() +" free minutes!",false, $user));
-end
-
-rule "Save Gold title with immunity rule"
-	salience 20
-    when
-    	$user : RegisteredUser( $id : id, immunity == Rank.GOLD );
-    then
-    	$user.setAvailableMinutes($user.getAvailableMinutes() + goldTitle.getRewardPoints());
-		System.out.println($user.getUsername() + " saved GOLD title with immunity. " + 
-		"Reward minutes: " + goldTitle.getRewardPoints() +
-		", Total minutes: " + $user.getAvailableMinutes());
-		$user.getNotifications().add(new Notification("Gold Title saved with immunity",
-    	"Congratulations! You have saved Gold title with immunity for this month, which rewarded you with "
-    	+ goldTitle.getRewardPoints() +" free minutes!",false, $user));
-end
-
-rule "Lose Bronze title rule"
-	salience 10
-    when
-    	$user : RegisteredUser( $id : id, immunity == Rank.NONE, title == Rank.BRONZE );
-        $total : Number( intValue < bronzeTitle.getSavePoints() ) from accumulate(
-         	Purchase( $minutes : purchasedMinutes, user.getId() == $id ),
-         	sum( $minutes ) );
-    then
-		$user.setTitle(Rank.NONE);
-		System.out.println($user.getUsername()+" lost BRONZE title. Current title: "+$user.getTitle());
-		$user.getNotifications().add(new Notification("Bronze Title lost",
-    	"You have lost bronze title for this month.",false, $user));
-end
-
-rule "Lose Silver title rule"
-	salience 10
-    when
-    	$user : RegisteredUser( $id : id, immunity == Rank.NONE, title == Rank.SILVER );
-        $total : Number( intValue < silverTitle.getSavePoints() ) from accumulate(
-         	Purchase( $minutes : purchasedMinutes, user.getId() == $id ),
-         	sum( $minutes ) );
-    then
-		$user.setTitle(Rank.BRONZE);
-		$user.setAvailableMinutes($user.getAvailableMinutes() + bronzeTitle.getRewardPoints());
-		System.out.println($user.getUsername()+" lost SILVER title. Current title: "+$user.getTitle());
-		$user.getNotifications().add(new Notification("Silver title lost, Bronze title acquired",
-    	"You have lost Silver title. But don't worry because you have acquired Bronze title for this month, which rewarded you with "
-    	+ bronzeTitle.getRewardPoints() +" free minutes!",false, $user));
-end
-
-rule "Lose Gold title rule"
-	salience 10
-    when
-    	$user : RegisteredUser( $id : id, immunity == Rank.NONE, title == Rank.GOLD );
-        $total : Number( intValue < goldTitle.getSavePoints() ) from accumulate(
-         	Purchase( $minutes : purchasedMinutes, user.getId() == $id ),
-         	sum( $minutes ) );
-    then
-		$user.setTitle(Rank.SILVER);
-		$user.setAvailableMinutes($user.getAvailableMinutes() + silverTitle.getRewardPoints());
-		System.out.println($user.getUsername()+" lost GOLD title. Current title: "+$user.getTitle());
-		$user.getNotifications().add(new Notification("Silver title lost, Bronze title acquired",
-    	"You have lost Gold title. But don't worry because you have acquired Silver title for this month, which rewarded you with "
-    	+ silverTitle.getRewardPoints() +" free minutes!",false, $user));
+		$user.setTitle($user.getTitle().getLowerRank());
+		System.out.println($user.getUsername()+" lost "+$user.getTitle().getHigherRank()+" title. Current title: "+$user.getTitle());
 end

@@ -24,21 +24,18 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.videoClub.bean.BronzeImmunity;
-import com.videoClub.bean.BronzeTitle;
-import com.videoClub.bean.GoldImmunity;
-import com.videoClub.bean.GoldTitle;
-import com.videoClub.bean.SilverImmunity;
-import com.videoClub.bean.SilverTitle;
+import com.videoClub.bean.Immunity;
+import com.videoClub.bean.Title;
 import com.videoClub.dto.PointsDTO;
 import com.videoClub.dto.ReportDTO;
+import com.videoClub.factory.ImmunityFactory;
+import com.videoClub.factory.TitleFactory;
 import com.videoClub.model.Film;
 import com.videoClub.model.Purchase;
 import com.videoClub.model.RegisteredUser;
@@ -57,24 +54,6 @@ import com.videoClub.template.UserAgeCategoryTemplate;
 @RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
 //@CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*")
 public class RuleController {
-	
-	@Autowired
-	private BronzeImmunity bronzeImmunity;
-	
-	@Autowired
-	private SilverImmunity silverImmunity;
-	
-	@Autowired
-	private GoldImmunity goldImmunity;
-	
-	@Autowired
-	private BronzeTitle bronzeTitle;
-	
-	@Autowired
-	private SilverTitle silverTitle;
-	
-	@Autowired
-	private GoldTitle goldTitle;
 	
 	@Autowired
 	private RuleService ruleService;
@@ -97,6 +76,13 @@ public class RuleController {
 	
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	private DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+	
+	private Immunity bronzeImmunity = bronzeImmunity();
+	private Immunity silverImmunity = silverImmunity();
+	private Immunity goldImmunity = goldImmunity();
+	private Title bronzeTitle = bronzeTitle();
+	private Title silverTitle = silverTitle();
+	private Title goldTitle = goldTitle();
 	
 	@PutMapping(value = "/classify_user/age", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -278,10 +264,11 @@ public class RuleController {
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<PointsDTO> setBronzeImmunity(@RequestBody PointsDTO points) {
 		KieSession kieSession = initializeKieSession("entityDefinerRulesSession");
-		bronzeImmunity.setAcquirePoints(points.getValue());
-		kieSession.insert(bronzeImmunity);
+		Immunity newImmunity = new Immunity(points.getValue(), Rank.BRONZE);
+		kieSession.insert(newImmunity);
 		kieSession.fireAllRules();
 		kieSession.dispose();
+		bronzeImmunity.setAcquirePoints(points.getValue());
 		ruleService.setImmunityPoints(Rank.BRONZE, points.getValue());
 		return new ResponseEntity<>(new PointsDTO(bronzeImmunity.getAcquirePoints()), HttpStatus.OK);
 	}
@@ -290,10 +277,11 @@ public class RuleController {
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<PointsDTO> setSilverImmunity(@RequestBody PointsDTO points) {
 		KieSession kieSession = initializeKieSession("entityDefinerRulesSession");
-		silverImmunity.setAcquirePoints(points.getValue());
-		kieSession.insert(silverImmunity);
+		Immunity newImmunity = new Immunity(points.getValue(), Rank.SILVER);
+		kieSession.insert(newImmunity);
 		kieSession.fireAllRules();
 		kieSession.dispose();
+		silverImmunity.setAcquirePoints(points.getValue());
 		ruleService.setImmunityPoints(Rank.SILVER, points.getValue());
 		return new ResponseEntity<>(new PointsDTO(silverImmunity.getAcquirePoints()), HttpStatus.OK);
 	}
@@ -302,10 +290,11 @@ public class RuleController {
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<PointsDTO> setGoldImmunity(@RequestBody PointsDTO points) {
 		KieSession kieSession = initializeKieSession("entityDefinerRulesSession");
-		goldImmunity.setAcquirePoints(points.getValue());
-		kieSession.insert(goldImmunity);
+		Immunity newImmunity = new Immunity(points.getValue(), Rank.GOLD);
+		kieSession.insert(newImmunity);
 		kieSession.fireAllRules();
 		kieSession.dispose();
+		goldImmunity.setAcquirePoints(points.getValue());
 		ruleService.setImmunityPoints(Rank.GOLD, points.getValue());
 		return new ResponseEntity<>(new PointsDTO(goldImmunity.getAcquirePoints()), HttpStatus.OK);
 	}
@@ -314,10 +303,11 @@ public class RuleController {
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<PointsDTO> setBronzeTitleAcquire(@RequestBody PointsDTO points) {
 		KieSession kieSession = initializeKieSession("entityDefinerRulesSession");
-		bronzeTitle.setAcquirePoints(points.getValue());
-		kieSession.insert(bronzeTitle);
+		Title newTitle = new Title(points.getValue(), bronzeTitle.getSavePoints(), bronzeTitle.getRewardPoints(), Rank.BRONZE);
+		kieSession.insert(newTitle);
 		kieSession.fireAllRules();
 		kieSession.dispose();
+		bronzeTitle.setAcquirePoints(points.getValue());
 		ruleService.setTitleAcquirePoints(Rank.BRONZE, points.getValue());
 		return new ResponseEntity<>(new PointsDTO(bronzeTitle.getAcquirePoints()), HttpStatus.OK);
 	}
@@ -326,10 +316,11 @@ public class RuleController {
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<PointsDTO> setBronzeTitleSave(@RequestBody PointsDTO points) {
 		KieSession kieSession = initializeKieSession("entityDefinerRulesSession");
-		bronzeTitle.setSavePoints(points.getValue());
-		kieSession.insert(bronzeTitle);
+		Title newTitle = new Title(bronzeTitle.getAcquirePoints(), points.getValue(), bronzeTitle.getRewardPoints(), Rank.BRONZE);
+		kieSession.insert(newTitle);
 		kieSession.fireAllRules();
 		kieSession.dispose();
+		bronzeTitle.setSavePoints(points.getValue());
 		ruleService.setTitleSavePoints(Rank.BRONZE, points.getValue());
 		return new ResponseEntity<>(new PointsDTO(bronzeTitle.getSavePoints()), HttpStatus.OK);
 	}
@@ -338,10 +329,11 @@ public class RuleController {
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<PointsDTO> setBronzeTitleReward(@RequestBody PointsDTO points) {
 		KieSession kieSession = initializeKieSession("entityDefinerRulesSession");
-		bronzeTitle.setRewardPoints(points.getValue());
-		kieSession.insert(bronzeTitle);
+		Title newTitle = new Title(bronzeTitle.getAcquirePoints(), bronzeTitle.getSavePoints(), points.getValue(), Rank.BRONZE);
+		kieSession.insert(newTitle);
 		kieSession.fireAllRules();
 		kieSession.dispose();
+		bronzeTitle.setRewardPoints(points.getValue());
 		ruleService.setTitleRewardPoints(Rank.BRONZE, points.getValue());
 		return new ResponseEntity<>(new PointsDTO(bronzeTitle.getRewardPoints()), HttpStatus.OK);
 	}
@@ -350,10 +342,11 @@ public class RuleController {
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<PointsDTO> setSilverTitleAcquire(@RequestBody PointsDTO points) {
 		KieSession kieSession = initializeKieSession("entityDefinerRulesSession");
-		silverTitle.setAcquirePoints(points.getValue());
-		kieSession.insert(silverTitle);
+		Title newTitle = new Title(points.getValue(), silverTitle.getSavePoints(), silverTitle.getRewardPoints(), Rank.SILVER);
+		kieSession.insert(newTitle);
 		kieSession.fireAllRules();
 		kieSession.dispose();
+		silverTitle.setAcquirePoints(points.getValue());
 		ruleService.setTitleAcquirePoints(Rank.SILVER, points.getValue());
 		return new ResponseEntity<>(new PointsDTO(silverTitle.getAcquirePoints()), HttpStatus.OK);
 	}
@@ -362,10 +355,11 @@ public class RuleController {
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<PointsDTO> setSilverTitleSave(@RequestBody PointsDTO points) {
 		KieSession kieSession = initializeKieSession("entityDefinerRulesSession");
-		silverTitle.setSavePoints(points.getValue());
-		kieSession.insert(silverTitle);
+		Title newTitle = new Title(silverTitle.getAcquirePoints(), points.getValue(), silverTitle.getRewardPoints(), Rank.SILVER);
+		kieSession.insert(newTitle);
 		kieSession.fireAllRules();
 		kieSession.dispose();
+		silverTitle.setSavePoints(points.getValue());
 		ruleService.setTitleSavePoints(Rank.SILVER, points.getValue());
 		return new ResponseEntity<>(new PointsDTO(silverTitle.getSavePoints()), HttpStatus.OK);
 	}
@@ -374,10 +368,11 @@ public class RuleController {
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<PointsDTO> setSilverTitleReward(@RequestBody PointsDTO points) {
 		KieSession kieSession = initializeKieSession("entityDefinerRulesSession");
-		silverTitle.setRewardPoints(points.getValue());
-		kieSession.insert(silverTitle);
+		Title newTitle = new Title(silverTitle.getAcquirePoints(), silverTitle.getSavePoints(), points.getValue(), Rank.SILVER);
+		kieSession.insert(newTitle);
 		kieSession.fireAllRules();
 		kieSession.dispose();
+		silverTitle.setRewardPoints(points.getValue());
 		ruleService.setTitleRewardPoints(Rank.SILVER, points.getValue());
 		kieSession.setGlobal("silverTitle", silverTitle);
 		return new ResponseEntity<>(new PointsDTO(silverTitle.getRewardPoints()), HttpStatus.OK);
@@ -387,10 +382,11 @@ public class RuleController {
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<PointsDTO> setGoldTitleAcquire(@RequestBody PointsDTO points) {
 		KieSession kieSession = initializeKieSession("entityDefinerRulesSession");
-		goldTitle.setAcquirePoints(points.getValue());
-		kieSession.insert(goldTitle);
+		Title newTitle = new Title(points.getValue(), goldTitle.getSavePoints(), goldTitle.getRewardPoints(), Rank.GOLD);
+		kieSession.insert(newTitle);
 		kieSession.fireAllRules();
 		kieSession.dispose();
+		goldTitle.setAcquirePoints(points.getValue());
 		ruleService.setTitleAcquirePoints(Rank.GOLD, points.getValue());
 		return new ResponseEntity<>(new PointsDTO(goldTitle.getAcquirePoints()), HttpStatus.OK);
 	}
@@ -399,10 +395,11 @@ public class RuleController {
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<PointsDTO> setGoldTitleSave(@RequestBody PointsDTO points) {
 		KieSession kieSession = initializeKieSession("entityDefinerRulesSession");
-		goldTitle.setSavePoints(points.getValue());
-		kieSession.insert(goldTitle);
+		Title newTitle = new Title(goldTitle.getAcquirePoints(), points.getValue(), goldTitle.getRewardPoints(), Rank.GOLD);
+		kieSession.insert(newTitle);
 		kieSession.fireAllRules();
 		kieSession.dispose();
+		goldTitle.setSavePoints(points.getValue());
 		ruleService.setTitleSavePoints(Rank.GOLD, points.getValue());
 		return new ResponseEntity<>(new PointsDTO(goldTitle.getSavePoints()), HttpStatus.OK);
 	}
@@ -411,10 +408,11 @@ public class RuleController {
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<PointsDTO> setGoldTitleReward(@RequestBody PointsDTO points) {
 		KieSession kieSession = initializeKieSession("entityDefinerRulesSession");
-		goldTitle.setRewardPoints(points.getValue());
-		kieSession.insert(goldTitle);
+		Title newTitle = new Title(goldTitle.getAcquirePoints(), goldTitle.getSavePoints(), points.getValue(), Rank.GOLD);
+		kieSession.insert(newTitle);
 		kieSession.fireAllRules();
 		kieSession.dispose();
+		goldTitle.setRewardPoints(points.getValue());
 		ruleService.setTitleRewardPoints(Rank.GOLD, points.getValue());
 		return new ResponseEntity<>(new PointsDTO(goldTitle.getRewardPoints()), HttpStatus.OK);
 	}
@@ -457,12 +455,16 @@ public class RuleController {
 	
 	private KieSession initializeKieSession(String sessionName){
 		KieSession kieSession = kieContainer.newKieSession(sessionName);
-		kieSession.setGlobal("bronzeImmunity", bronzeImmunity);
-		kieSession.setGlobal("silverImmunity", silverImmunity);
-		kieSession.setGlobal("goldImmunity", goldImmunity);
-		kieSession.setGlobal("bronzeTitle", bronzeTitle);
-		kieSession.setGlobal("silverTitle", silverTitle);
-		kieSession.setGlobal("goldTitle", goldTitle);
+		TitleFactory titleFactory = new TitleFactory(
+				goldTitle,
+				silverTitle,
+				bronzeTitle);
+		ImmunityFactory immunityFactory = new ImmunityFactory(
+				bronzeImmunity,
+				silverImmunity,
+				goldImmunity);
+		kieSession.setGlobal("titleFactory", titleFactory);
+		kieSession.setGlobal("immunityFactory", immunityFactory);
 		return kieSession;
 	}
 	
@@ -483,5 +485,38 @@ public class RuleController {
         
         return kieHelper.build().newKieSession();
     }
+	
+	public Immunity bronzeImmunity() {
+		return new Immunity (ruleService.getImmunityPoints(Rank.BRONZE), Rank.BRONZE);
+	}
+	
+	public Immunity silverImmunity() {
+		return new Immunity (ruleService.getImmunityPoints(Rank.SILVER), Rank.SILVER);
+	}
+	
+	public Immunity goldImmunity() {
+		return new Immunity(ruleService.getImmunityPoints(Rank.GOLD), Rank.GOLD);
+	}
+	
+	public Title bronzeTitle() {
+		int acquirePoints = ruleService.getTitleAcquirePoints(Rank.BRONZE);
+		int savePoints = ruleService.getTitleSavePoints(Rank.BRONZE);
+		int rewardPoints = ruleService.getTitleRewardPoints(Rank.BRONZE);
+		return new Title(acquirePoints, savePoints, rewardPoints, Rank.BRONZE);
+	}
+	
+	public Title silverTitle() {
+		int acquirePoints = ruleService.getTitleAcquirePoints(Rank.SILVER);
+		int savePoints = ruleService.getTitleSavePoints(Rank.SILVER);
+		int rewardPoints = ruleService.getTitleRewardPoints(Rank.SILVER);
+		return new Title(acquirePoints, savePoints, rewardPoints, Rank.SILVER);
+	}
+	
+	public Title goldTitle() {
+		int acquirePoints = ruleService.getTitleAcquirePoints(Rank.GOLD);
+		int savePoints = ruleService.getTitleSavePoints(Rank.GOLD);
+		int rewardPoints = ruleService.getTitleRewardPoints(Rank.GOLD);
+		return new Title(acquirePoints, savePoints, rewardPoints, Rank.GOLD);
+	}
 	
 }

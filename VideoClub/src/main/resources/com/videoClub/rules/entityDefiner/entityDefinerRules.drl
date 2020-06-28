@@ -6,123 +6,101 @@ import com.videoClub.bean.*;
 import com.videoClub.model.enumeration.*;
 import com.videoClub.exception.*;
 
-global BronzeImmunity bronzeImmunity;
-global SilverImmunity silverImmunity;
-global GoldImmunity goldImmunity;
-global BronzeTitle bronzeTitle;
-global SilverTitle silverTitle;
-global GoldTitle goldTitle;
+global Immunity bronzeImmunity;
+global Immunity silverImmunity;
+global Immunity goldImmunity;
+global Title bronzeTitle;
+global Title silverTitle;
+global Title goldTitle;
 
-rule "Invalid BronzeTitle : AcquirePoints"
+rule "Invalid title rule"
     when
-        $bt : BronzeTitle( AcquirePoints < 30
+		invalidAcquiredBronzeTitle() or 
+		invalidAcquiredSilverTitle() or
+		invalidAcquiredGoldTitle() or
+		invalidBronzeTitleSave() or 
+		invalidSilverTitleSave() or 
+		invalidGoldTitleSave() or
+		invalidBronzeTitleReward() or
+		invalidSilverTitleReward() or
+		invalidGoldTitleReward();
+    then
+    	throw new InvalidTitle();
+end
+
+rule "Invalid immunity"
+    when
+        invalidBronzeImmunity() or
+        invalidSilverImmunity() or
+        invalidGoldImmunity();
+    then
+        throw new InvalidImmunity();
+end
+
+
+
+query invalidAcquiredBronzeTitle()
+	Title( titleRank == Rank.BRONZE && (AcquirePoints < 30
         	|| AcquirePoints >= silverTitle.getAcquirePoints()
-        	|| AcquirePoints <= SavePoints );
-    then
-    	$bt.setAcquirePoints(bronzeTitle.getAcquirePoints());
-        throw new InvalidTitle();
+        	|| AcquirePoints <= SavePoints) );
 end
 
-rule "Invalid BronzeTitle : SavePoints"
-    when
-        $bt : BronzeTitle( SavePoints >= silverTitle.getSavePoints()
-        	|| SavePoints >= AcquirePoints );
-    then
-    	$bt.setSavePoints(bronzeTitle.getSavePoints());
-        throw new InvalidTitle();
-end
-
-rule "Invalid BronzeTitle : RewardPoints"
-    when
-        $bt : BronzeTitle( RewardPoints >= silverTitle.getRewardPoints()
-        	|| RewardPoints > 600 || RewardPoints < 30 );
-    then
-    	$bt.setRewardPoints(bronzeTitle.getRewardPoints());
-        throw new InvalidTitle();
-end
-
-rule "Invalid SilverTitle : AcquirePoints"
-    when
-        $st : SilverTitle( AcquirePoints >= goldTitle.getAcquirePoints()
+query invalidAcquiredSilverTitle()
+	Title( titleRank == Rank.SILVER && (AcquirePoints >= goldTitle.getAcquirePoints()
         	|| AcquirePoints <= bronzeTitle.getAcquirePoints()
-        	|| AcquirePoints <= SavePoints );
-    then
-    	$st.setAcquirePoints(silverTitle.getAcquirePoints());
-        throw new InvalidTitle();
+        	|| AcquirePoints <= SavePoints) );
 end
 
-rule "Invalid SilverTitle : SavePoints"
-    when
-        $st : SilverTitle( SavePoints >= goldTitle.getSavePoints()
-        	|| SavePoints <= bronzeTitle.getSavePoints()
-        	|| SavePoints >= AcquirePoints );
-    then
-    	$st.setSavePoints(silverTitle.getSavePoints());
-        throw new InvalidTitle();
-end
-
-rule "Invalid SilverTitle : RewardPoints"
-    when
-        $st : SilverTitle( RewardPoints >= goldTitle.getRewardPoints()
-        	|| RewardPoints <= bronzeTitle.getRewardPoints()
-        	|| RewardPoints > 600 || RewardPoints < 30 );
-    then
-    	$st.setRewardPoints(silverTitle.getRewardPoints());
-        throw new InvalidTitle();
-end
-
-rule "Invalid GoldTitle : AcquirePoints"
-    when
-        $gt : GoldTitle( AcquirePoints > 10000
+query invalidAcquiredGoldTitle()
+	Title( titleRank == Rank.GOLD && (AcquirePoints > 10000
         	|| AcquirePoints <= silverTitle.getAcquirePoints()
-        	|| AcquirePoints <= SavePoints );
-    then
-    	$gt.setAcquirePoints(goldTitle.getAcquirePoints());
-        throw new InvalidTitle();
+        	|| AcquirePoints <= SavePoints) );
 end
 
-rule "Invalid GoldTitle : SavePoints"
-    when
-        $gt : GoldTitle( SavePoints > 5000
+query invalidBronzeTitleSave()
+	Title( titleRank == Rank.BRONZE && (SavePoints >= silverTitle.getSavePoints()
+        	|| SavePoints >= AcquirePoints) );
+end
+
+query invalidSilverTitleSave()
+	Title( titleRank == Rank.SILVER && (SavePoints >= goldTitle.getSavePoints()
+        	|| SavePoints <= bronzeTitle.getSavePoints()
+        	|| SavePoints >= AcquirePoints) );
+end
+
+query invalidGoldTitleSave()
+	Title( titleRank == Rank.GOLD && (SavePoints > 5000
         	|| SavePoints <= silverTitle.getSavePoints()
-        	|| SavePoints >= AcquirePoints );
-    then
-    	$gt.setSavePoints(goldTitle.getSavePoints());
-        throw new InvalidTitle();
+        	|| SavePoints >= AcquirePoints) );
 end
 
-rule "Invalid GoldTitle : RewardPoints"
-    when
-        $gt : GoldTitle( RewardPoints <= silverTitle.getRewardPoints()
-        	|| RewardPoints > 600 || RewardPoints < 30 );
-    then
-    	$gt.setRewardPoints(goldTitle.getRewardPoints());
-        throw new InvalidTitle();
+query invalidBronzeTitleReward()
+	Title( titleRank == Rank.BRONZE && (RewardPoints >= silverTitle.getRewardPoints()
+        	|| RewardPoints > 600 || RewardPoints < 30) );
 end
 
-rule "Invalid BronzeImmunity"
-    when
-        $bi : BronzeImmunity( AcquirePoints < 5
-        	|| AcquirePoints >= silverImmunity.getAcquirePoints() );
-    then
-    	$bi.setAcquirePoints(bronzeImmunity.getAcquirePoints());
-        throw new InvalidImmunity();
+query invalidSilverTitleReward()
+	Title( titleRank == Rank.SILVER && (RewardPoints >= goldTitle.getRewardPoints()
+        	|| RewardPoints <= bronzeTitle.getRewardPoints()
+        	|| RewardPoints > 600 || RewardPoints < 30) );
 end
 
-rule "Invalid SilverImmunity"
-    when
-        $si : SilverImmunity( AcquirePoints <= bronzeImmunity.getAcquirePoints()
-        	|| AcquirePoints >= goldImmunity.getAcquirePoints() );
-    then
-    	$si.setAcquirePoints(silverImmunity.getAcquirePoints());
-        throw new InvalidImmunity();
+query invalidGoldTitleReward()
+	Title( titleRank == Rank.GOLD && (RewardPoints <= silverTitle.getRewardPoints()
+        	|| RewardPoints > 600 || RewardPoints < 30) );
 end
 
-rule "Invalid GoldImmunity"
-    when
-        $gi : GoldImmunity( AcquirePoints > 1000
-        	|| AcquirePoints <= silverImmunity.getAcquirePoints());
-    then
-    	$gi.setAcquirePoints(goldImmunity.getAcquirePoints());
-        throw new InvalidImmunity();
+query invalidBronzeImmunity()
+	Immunity( immunityRank == Rank.BRONZE && (AcquirePoints < 5
+        	|| AcquirePoints >= silverImmunity.getAcquirePoints()) );
+end
+
+query invalidSilverImmunity()
+	Immunity( immunityRank == Rank.SILVER && (AcquirePoints <= bronzeImmunity.getAcquirePoints()
+        	|| AcquirePoints >= goldImmunity.getAcquirePoints()) );
+end
+
+query invalidGoldImmunity()
+	Immunity( immunityRank == Rank.GOLD && (AcquirePoints > 1000
+        	|| AcquirePoints <= silverImmunity.getAcquirePoints()));
 end

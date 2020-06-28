@@ -22,12 +22,12 @@ end
 rule "Obtain last 24h of purchases"
 	when
 		$r: ReportDTO( );
-		Number($n : doubleValue ) from accumulate(
-			PurchaseEvent($p: purchase.getPrice())
-			over window:time(24h), sum($p)
-			)
+		//Number($n : doubleValue ) from accumulate(
+		//	PurchaseEvent($p: purchase.getPrice())
+			//over window:time(24h), sum($p)
+			//)
 	then
-		$r.setEarned($n);
+		//$r.setEarned($n);
 		update($r);
 end
 
