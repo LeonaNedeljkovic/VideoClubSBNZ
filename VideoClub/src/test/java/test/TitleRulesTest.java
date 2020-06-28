@@ -14,12 +14,10 @@ import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
-import com.videoClub.bean.BronzeImmunity;
-import com.videoClub.bean.BronzeTitle;
-import com.videoClub.bean.GoldImmunity;
-import com.videoClub.bean.GoldTitle;
-import com.videoClub.bean.SilverImmunity;
-import com.videoClub.bean.SilverTitle;
+import com.videoClub.bean.Immunity;
+import com.videoClub.bean.Title;
+import com.videoClub.factory.ImmunityFactory;
+import com.videoClub.factory.TitleFactory;
 import com.videoClub.model.Action;
 import com.videoClub.model.Film;
 import com.videoClub.model.Notification;
@@ -134,36 +132,40 @@ public class TitleRulesTest {
 	public KieSession initializeKieSession(){
 		KieContainer kieContainer = KieServices.Factory.get().getKieClasspathContainer();
 		KieSession kieSession = kieContainer.newKieSession("titleRulesSession");
-		kieSession.setGlobal("bronzeImmunity", generateBronzeImmunity());
-		kieSession.setGlobal("silverImmunity", generateSilverImmunity());
-		kieSession.setGlobal("goldImmunity", generateGoldImmunity());
-		kieSession.setGlobal("bronzeTitle", generateBronzeTitle());
-		kieSession.setGlobal("silverTitle", generateSilverTitle());
-		kieSession.setGlobal("goldTitle", generateGoldTitle());
+		TitleFactory titleFactory = new TitleFactory(
+				generateGoldTitle(),
+				generateSilverTitle(),
+				generateBronzeTitle());
+		ImmunityFactory immunityFactory = new ImmunityFactory(
+				generateBronzeImmunity(),
+				generateSilverImmunity(),
+				generateGoldImmunity());
+		kieSession.setGlobal("titleFactory", titleFactory);
+		kieSession.setGlobal("immunityFactory", immunityFactory);
 		return kieSession;
 	}
 	
-	public BronzeImmunity generateBronzeImmunity(){
-		return new BronzeImmunity(15);
+	public Immunity generateBronzeImmunity(){
+		return new Immunity(15, Rank.BRONZE);
 	}
 	
-	public SilverImmunity generateSilverImmunity(){
-		return new SilverImmunity(30);
+	public Immunity generateSilverImmunity(){
+		return new Immunity(30, Rank.SILVER);
 	}
 
-	public GoldImmunity generateGoldImmunity(){
-		return new GoldImmunity(50);
+	public Immunity generateGoldImmunity(){
+		return new Immunity(50, Rank.GOLD);
 	}
 	
-	public BronzeTitle generateBronzeTitle(){
-		return new BronzeTitle(180, 100, 120);
+	public Title generateBronzeTitle(){
+		return new Title(180, 100, 120, Rank.BRONZE);
 	}
 	
-	public SilverTitle generateSilverTitle(){
-		return new SilverTitle(300, 200, 180);
+	public Title generateSilverTitle(){
+		return new Title(300, 200, 180, Rank.SILVER);
 	}
 
-	public GoldTitle generateGoldTitle(){
-		return new GoldTitle(600, 400, 300);
+	public Title generateGoldTitle(){
+		return new Title(600, 400, 300, Rank.GOLD);
 	}
 }

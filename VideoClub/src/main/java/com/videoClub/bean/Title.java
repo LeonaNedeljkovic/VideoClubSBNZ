@@ -1,22 +1,23 @@
 package com.videoClub.bean;
 
-import org.springframework.stereotype.Component;
+import com.videoClub.model.enumeration.Rank;
 
-@Component
-public class SilverTitle {
-	
+public class Title {
+
 	private int AcquirePoints;
 	private int SavePoints;
 	private int RewardPoints;
+	private Rank titleRank;
 	
-	public SilverTitle(int acquirePoints, int savePoints, int rewardPoints) {
+	public Title(int acquirePoints, int savePoints, int rewardPoints, Rank titleRank) {
 		super();
 		AcquirePoints = acquirePoints;
 		SavePoints = savePoints;
 		RewardPoints = rewardPoints;
+		this.titleRank = titleRank;
 	}
 
-	public SilverTitle() {
+	public Title() {
 		super();
 	}
 
@@ -42,5 +43,13 @@ public class SilverTitle {
 
 	public void setRewardPoints(int rewardPoints) {
 		RewardPoints = rewardPoints;
+	}
+
+	public Rank getTitleRank() {
+		return titleRank;
+	}
+
+	public void setTitleRank(Rank titleRank) {
+		this.titleRank = titleRank;
 	}
 }
