@@ -1,0 +1,16 @@
+//created on: Jun 29, 2020
+package com.videoClub.rules.ageClassification
+
+import com.videoClub.model.*;
+import com.videoClub.model.enumeration.*;
+import com.videoClub.factory.AgeClassifierFactory;
+
+global AgeClassifierFactory ageClassifierFactory;
+
+rule "Classify user by age"
+	no-loop
+    when
+        $user : RegisteredUser( $age : age );
+    then
+        $user.setAgeCategory(ageClassifierFactory.getAgeCategory($age));
+end

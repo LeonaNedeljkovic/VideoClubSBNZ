@@ -1,8 +1,8 @@
 //created on: May 18, 2020
 package com.videoClub.rules.entityDefiner
 
-import com.videoClub.model.*;
-import com.videoClub.bean.*;
+import com.videoClub.model.drl.Title;
+import com.videoClub.model.drl.Immunity;
 import com.videoClub.model.enumeration.*;
 import com.videoClub.exception.*;
 

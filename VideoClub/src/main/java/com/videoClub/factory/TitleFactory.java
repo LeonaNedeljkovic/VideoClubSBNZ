@@ -1,6 +1,6 @@
 package com.videoClub.factory;
 
-import com.videoClub.bean.Title;
+import com.videoClub.model.drl.Title;
 import com.videoClub.model.enumeration.Rank;
 
 public class TitleFactory {

@@ -1564,3 +1564,9 @@ INSERT INTO purchase (id, date, discount, price, purchased_minutes, offer_id, us
 INSERT INTO purchase (id, date, discount, price, purchased_minutes, offer_id, user_id) VALUES (12, '2020-05-05 00:00', 0, 3, 200, 2, 15) ON DUPLICATE KEY UPDATE id = 12;
 
 
+INSERT INTO age_classifier (id, age_category, start_age, end_age) VALUES (1, 'CHILD', 0, 12) ON DUPLICATE KEY UPDATE id = 1;
+INSERT INTO age_classifier (id, age_category, start_age, end_age) VALUES (2, 'TEEN', 13, 19) ON DUPLICATE KEY UPDATE id = 2;
+INSERT INTO age_classifier (id, age_category, start_age, end_age) VALUES (3, 'YOUNG_ADULT', 20, 35) ON DUPLICATE KEY UPDATE id = 3;
+INSERT INTO age_classifier (id, age_category, start_age, end_age) VALUES (4, 'ADULT', 36, 60) ON DUPLICATE KEY UPDATE id = 4;
+INSERT INTO age_classifier (id, age_category, start_age, end_age) VALUES (5, 'ELDER', 61, 150) ON DUPLICATE KEY UPDATE id = 5;
+

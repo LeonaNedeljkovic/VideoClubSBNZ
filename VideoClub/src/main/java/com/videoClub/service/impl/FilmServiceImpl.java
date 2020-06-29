@@ -11,7 +11,6 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.ObjectFilter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.videoClub.comparator.RecommendedFilmComparator;
@@ -218,4 +217,32 @@ public class FilmServiceImpl implements FilmService{
             return className.contains("RecommendedFilm");
         }
     }
+
+	@Override
+	public List<Film> getTopRated(int number) {
+		List<Film> films = filmRepository.getTopRated();
+		if(number < films.size() && number > 0){
+			films = films.subList(0, number);
+		}
+		return films;
+	}
+
+	@Override
+	public List<Film> getMostPopular(int number) {
+		List<Film> films = filmRepository.getMostPopular();
+		if(number < films.size() && number > 0){
+			films = films.subList(0, number);
+		}
+		return films;
+	}
+
+	@Override
+	public List<Film> getByGenre(Genre genre) {
+		return filmRepository.getByGenre(genre);
+	}
+
+	@Override
+	public List<Film> getByName(String filmName) {
+		return filmRepository.getByName(filmName);
+	}
 }

@@ -35,7 +35,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long>{
 	public List<Review> getReviewsOfFavouriteFilms(Long userId);
 	
 	@Query("SELECT r.film.genre from Review r where r.user.id = ?1 and r.watched = 1 "+
-	"GROUP BY r.film.genre ORDER BY count(r.film.genre) DESC")
+			"GROUP BY r.film.genre ORDER BY count(r.film.genre) DESC")
 	public Page<Genre> topThreeUserGenre(Long userId,Pageable pageable);
 	
 	@Query("SELECT r FROM Review r " +
