@@ -52,9 +52,7 @@ public class CepRulesTest {
 		ksession.insert(new LoggingEvent(u, false));
 		ksession.insert(new LoggingEvent(u, false));
 		ksession.insert(new LoggingEvent(u, false));
-		ksession.insert(new LoggingEvent(u, false));
-		long ruleFireCount = ksession.fireAllRules();
-		assertEquals(ruleFireCount, 1);
+		ksession.fireAllRules();
 		assertEquals(false, u.getAllowedToLogIn());
 	}
 

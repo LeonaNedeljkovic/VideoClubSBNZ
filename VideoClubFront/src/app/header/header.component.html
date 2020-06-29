@@ -1,0 +1,27 @@
+<div class="header">
+    <div class="appInfo">
+      <div>
+        <label class="title">Video Club</label>
+      </div>
+    
+    </div>
+  <!-- ovde treba pogledati da li je korisnik ulogovan, ako nije prikazati mu log in i register button, a ako 
+  jetse onda ovaj dole meni -->
+  
+  <div id="notRegistrated">
+    
+    <button class="myStyle" id="loginButton" (click)="open()">Login</button>
+    
+    <button class="myStyle" id="registerButton" (click)="openReg()">Register</button>
+  </div>
+  <div class="userInfo">
+     
+    <div ngbDropdown class="nav-item" id="registrated">
+      <img src="assets/images/user.jpg">
+      <a class="nav-item btn" id="userDropdown" ngbDropdownToggle>{{username}}</a>
+      <div ngbDropdownMenu aria-labelledby="userDropdown">
+        <button class="dropdown-item" id="logoutItem" (click)="logout()">Log out</button>
+      </div>     
+    </div>
+  </div>
+  </div>

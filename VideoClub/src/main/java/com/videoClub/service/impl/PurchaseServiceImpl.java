@@ -45,8 +45,8 @@ public class PurchaseServiceImpl implements PurchaseService{
 	private KieSession cepPurchaseSession;
 	
 	@Autowired
-	@Qualifier(value = "cepConfigKsessionRealtimeClock")
-	private KieSession cepConfigKsessionRealtimeClock;
+	@Qualifier(value = "cepReportSession")
+	private KieSession cepReportSession;
 	
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	private DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
@@ -72,7 +72,7 @@ public class PurchaseServiceImpl implements PurchaseService{
 			}
 			kieSession.fireAllRules();
 			kieSession.dispose();
-			cepConfigKsessionRealtimeClock.insert(new PurchaseEvent(purchase,user));
+			cepReportSession.insert(new PurchaseEvent(purchase,user));
 			return purchaseRepository.save(purchase);
 		}
 		throw new TooManyPurchasesFromUser();

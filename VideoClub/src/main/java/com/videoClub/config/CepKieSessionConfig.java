@@ -23,9 +23,9 @@ public class CepKieSessionConfig {
 		return kieContainer.newKieSession("cepPurchaseSession");
 	}
 	
-	@Bean(name = "cepConfigKsessionRealtimeClock")
+	@Bean(name = "cepReportSession")
 	public KieSession cepConfigKsessionRealtimeClock() {
-		return kieContainer.newKieSession("cepConfigKsessionRealtimeClock");
+		return kieContainer.newKieSession("cepReportSession");
 	}
 
 
