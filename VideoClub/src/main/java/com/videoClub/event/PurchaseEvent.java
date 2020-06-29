@@ -1,7 +1,6 @@
 package com.videoClub.event;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import org.kie.api.definition.type.Expires;
 import org.kie.api.definition.type.Role;

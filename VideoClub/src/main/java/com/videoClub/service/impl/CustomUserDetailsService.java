@@ -1,9 +1,15 @@
 package com.videoClub.service.impl;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,10 +24,9 @@ import org.springframework.stereotype.Service;
 import com.videoClub.dto.UserDto;
 import com.videoClub.model.Administrator;
 import com.videoClub.model.Authority;
-import com.videoClub.model.Purchase;
 import com.videoClub.model.RegisteredUser;
-import com.videoClub.model.Review;
 import com.videoClub.model.User;
+import com.videoClub.model.enumeration.Rank;
 import com.videoClub.model.enumeration.UserRole;
 import com.videoClub.repository.UserRepository;
 
@@ -36,6 +41,12 @@ public class CustomUserDetailsService implements UserDetailsService {
 
 	@Autowired
 	private AuthenticationManager authenticationManager;
+	
+	@Autowired
+	private KieContainer kieContainer;
+	
+	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	private DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 	public boolean saveUser(User ru) {
 		this.userRepository.save(ru);
@@ -110,21 +121,27 @@ public class CustomUserDetailsService implements UserDetailsService {
 			RegisteredUser newUser = new RegisteredUser();
 			Authority a = new Authority();
 			a.setName(UserRole.ROLE_REGISTERED_USER);
-			newUser.setReviews(new ArrayList<Review>());
-			newUser.setPurchases(new ArrayList<Purchase>());
-			newUser.setImmunityPoints(0);
-			newUser.setAvailableMinutes(0);
-			newUser.setTitle(null);
-			newUser.setImmunity(null);
-			newUser.setAction(null);
 			List<Authority> authorities = new ArrayList<>();
 			authorities.add(a);
+			
 			newUser.setAuthorities(authorities);
-			newUser.setId(user.getId());
 			newUser.setEmail(user.getEmail());
 			newUser.setUsername(user.getUsername());
 			newUser.setPassword(this.encodePassword(user.getPassword()));
 			newUser.setLastPasswordResetDate(new Timestamp(System.currentTimeMillis()));
+			newUser.setRegistryDate(LocalDateTime.parse(sdf.format(new Date()),df));
+			newUser.setImmunityPoints(0);
+			newUser.setAvailableMinutes(60);
+			newUser.setTitle(Rank.NONE);
+			newUser.setImmunity(Rank.NONE);
+			newUser.setAllowedToPurchase(true);
+			newUser.setAllowedToLogIn(true);
+			
+			KieSession kieSession = kieContainer.newKieSession("ageClassificationRulesSession");
+			kieSession.insert(newUser);
+			kieSession.fireAllRules();
+			kieSession.dispose();
+			
 			this.userRepository.save(newUser);
 		}else {
 			Administrator newUser = new Administrator();
@@ -133,15 +150,12 @@ public class CustomUserDetailsService implements UserDetailsService {
 			List<Authority> authorities = new ArrayList<>();
 			authorities.add(a);
 			newUser.setAuthorities(authorities);
-			newUser.setId(user.getId());
 			newUser.setEmail(user.getEmail());
 			newUser.setUsername(user.getUsername());
 			newUser.setPassword(this.encodePassword(user.getPassword()));
 			newUser.setLastPasswordResetDate(new Timestamp(System.currentTimeMillis()));
 			this.userRepository.save(newUser);
 		}
-		
-		
 		return true;
 	}
 	

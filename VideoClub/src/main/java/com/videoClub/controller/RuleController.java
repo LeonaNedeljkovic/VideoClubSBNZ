@@ -30,17 +30,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.videoClub.bean.Immunity;
-import com.videoClub.bean.Title;
+import com.videoClub.model.drl.Immunity;
+import com.videoClub.model.drl.Title;
 import com.videoClub.dto.PointsDTO;
 import com.videoClub.dto.ReportDTO;
 import com.videoClub.factory.ImmunityFactory;
 import com.videoClub.factory.TitleFactory;
+import com.videoClub.model.AgeClassifier;
 import com.videoClub.model.Film;
 import com.videoClub.model.Purchase;
 import com.videoClub.model.RegisteredUser;
 import com.videoClub.model.User;
 import com.videoClub.model.enumeration.Rank;
+import com.videoClub.service.AgeClassifierService;
 import com.videoClub.service.FilmService;
 import com.videoClub.service.PurchaseService;
 import com.videoClub.service.RuleService;
@@ -48,7 +50,6 @@ import com.videoClub.service.UserService;
 import com.videoClub.template.FilmAgeRestrictionTemplate;
 import com.videoClub.template.FreeMinutes;
 import com.videoClub.template.GenreAgeRestrictionTemplate;
-import com.videoClub.template.UserAgeCategoryTemplate;
 
 @RestController
 @RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -68,28 +69,48 @@ public class RuleController {
 	private PurchaseService purchaseService;
 	
 	@Autowired
+	private AgeClassifierService ageClassifierService;
+	
+	@Autowired
 	private KieContainer kieContainer;
 	
 	@Autowired
 	@Qualifier(value = "cepConfigKsessionRealtimeClock")
 	private KieSession cepConfigKsessionRealtimeClock;
 	
+	@Autowired
+	@Qualifier(value = "bronzeImmunity")
+	private Immunity bronzeImmunity;
+	
+	@Autowired
+	@Qualifier(value = "silverImmunity")
+	private Immunity silverImmunity;
+	
+	@Autowired
+	@Qualifier(value = "goldImmunity")
+	private Immunity goldImmunity;
+	
+	@Autowired
+	@Qualifier(value = "bronzeTitle")
+	private Title bronzeTitle;
+	
+	@Autowired
+	@Qualifier(value = "silverTitle")
+	private Title silverTitle;
+	
+	@Autowired
+	@Qualifier(value = "goldTitle")
+	private Title goldTitle;
+	
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	private DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 	
-	private Immunity bronzeImmunity = bronzeImmunity();
-	private Immunity silverImmunity = silverImmunity();
-	private Immunity goldImmunity = goldImmunity();
-	private Title bronzeTitle = bronzeTitle();
-	private Title silverTitle = silverTitle();
-	private Title goldTitle = goldTitle();
-	
 	@PutMapping(value = "/classify_user/age", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public ResponseEntity<List<User>> classifyUserByAge(@RequestBody List<UserAgeCategoryTemplate> freeMinutes) {
+	public ResponseEntity<List<User>> classifyUserByAge(@RequestBody List<AgeClassifier> ageClassifiers) {
 		InputStream template = RuleController.class.getResourceAsStream("/templates/classifyUserByAge.drt");
 		ObjectDataCompiler converter = new ObjectDataCompiler();
-	    String drl = converter.compile(freeMinutes, template);
+	    String drl = converter.compile(ageClassifiers, template);
 	    KieSession ksession = initializeKieSessionFromDRL(drl);
 	    List<User> users = userService.findAll();
 	    for(User user : users){
@@ -99,6 +120,7 @@ public class RuleController {
 		}
 	    ksession.fireAllRules();
         ksession.dispose();
+        ageClassifierService.saveAll(ageClassifiers);
         return new ResponseEntity<>(userService.save(users), HttpStatus.OK);
 	}
 	
@@ -485,38 +507,4 @@ public class RuleController {
         
         return kieHelper.build().newKieSession();
     }
-	
-	public Immunity bronzeImmunity() {
-		return new Immunity (ruleService.getImmunityPoints(Rank.BRONZE), Rank.BRONZE);
-	}
-	
-	public Immunity silverImmunity() {
-		return new Immunity (ruleService.getImmunityPoints(Rank.SILVER), Rank.SILVER);
-	}
-	
-	public Immunity goldImmunity() {
-		return new Immunity(ruleService.getImmunityPoints(Rank.GOLD), Rank.GOLD);
-	}
-	
-	public Title bronzeTitle() {
-		int acquirePoints = ruleService.getTitleAcquirePoints(Rank.BRONZE);
-		int savePoints = ruleService.getTitleSavePoints(Rank.BRONZE);
-		int rewardPoints = ruleService.getTitleRewardPoints(Rank.BRONZE);
-		return new Title(acquirePoints, savePoints, rewardPoints, Rank.BRONZE);
-	}
-	
-	public Title silverTitle() {
-		int acquirePoints = ruleService.getTitleAcquirePoints(Rank.SILVER);
-		int savePoints = ruleService.getTitleSavePoints(Rank.SILVER);
-		int rewardPoints = ruleService.getTitleRewardPoints(Rank.SILVER);
-		return new Title(acquirePoints, savePoints, rewardPoints, Rank.SILVER);
-	}
-	
-	public Title goldTitle() {
-		int acquirePoints = ruleService.getTitleAcquirePoints(Rank.GOLD);
-		int savePoints = ruleService.getTitleSavePoints(Rank.GOLD);
-		int rewardPoints = ruleService.getTitleRewardPoints(Rank.GOLD);
-		return new Title(acquirePoints, savePoints, rewardPoints, Rank.GOLD);
-	}
-	
 }

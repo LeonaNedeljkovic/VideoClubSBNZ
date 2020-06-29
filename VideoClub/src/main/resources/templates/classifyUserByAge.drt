@@ -1,11 +1,12 @@
 template header
-minAge
-maxAge
+id
+startAge
+endAge
 ageCategory
 
 package com.ruletemplate.classifyUserByAge;
 
-import com.videoClub.template.UserAgeCategoryTemplate;
+import com.videoClub.model.AgeClassifier;
 import com.videoClub.model.RegisteredUser;
 import com.videoClub.model.enumeration.AgeCategory;
 
@@ -14,7 +15,7 @@ template "classify-user-by-age-rules"
 rule "Classify User By Age_@{row.rowNumber}"
 no-loop true
 when
-    $user: RegisteredUser( age >= @{minAge} && age <= @{maxAge} )
+    $user: RegisteredUser( age >= @{startAge} && age <= @{endAge} )
 then
     $user.setAgeCategory(AgeCategory.@{ageCategory});
 end

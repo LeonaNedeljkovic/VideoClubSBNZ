@@ -7,8 +7,8 @@ import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
-import com.videoClub.bean.Immunity;
-import com.videoClub.bean.Title;
+import com.videoClub.model.drl.Immunity;
+import com.videoClub.model.drl.Title;
 import com.videoClub.exception.InvalidImmunity;
 import com.videoClub.exception.InvalidTitle;
 import com.videoClub.model.enumeration.Rank;

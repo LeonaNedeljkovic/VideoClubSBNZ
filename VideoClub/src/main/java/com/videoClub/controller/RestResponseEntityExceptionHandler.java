@@ -106,4 +106,9 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
     protected ResponseEntity<MessageDto> handleRestrictedAgeCategory(RestrictedAgeCategory e) {
 		return new ResponseEntity<>(new MessageDto("Restricted Age Category", e.getMessage()), HttpStatus.OK);
     }
+    
+    @ExceptionHandler(value = AgeCategoryException.class)
+    protected ResponseEntity<MessageDto> handleAgeCategoryException(AgeCategoryException e) {
+		return new ResponseEntity<>(new MessageDto("Age Category Exception", e.getMessage()), HttpStatus.OK);
+    }
 }

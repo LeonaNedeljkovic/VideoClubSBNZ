@@ -10,6 +10,7 @@ import java.util.List;
 import org.junit.Test;
 
 import com.videoClub.model.Action;
+import com.videoClub.model.AgeClassifier;
 import com.videoClub.model.Film;
 import com.videoClub.model.Notification;
 import com.videoClub.model.Purchase;
@@ -21,7 +22,6 @@ import com.videoClub.model.enumeration.Rank;
 import com.videoClub.template.FilmAgeRestrictionTemplate;
 import com.videoClub.template.FreeMinutes;
 import com.videoClub.template.GenreAgeRestrictionTemplate;
-import com.videoClub.template.UserAgeCategoryTemplate;
 
 import static org.junit.Assert.*;
 
@@ -47,13 +47,13 @@ public class TemplatesTest {
         
         InputStream template = TemplatesTest.class.getResourceAsStream("/templates/classifyUserByAge.drt");
         
-        List<UserAgeCategoryTemplate> data = new ArrayList<UserAgeCategoryTemplate>();
+        List<AgeClassifier> data = new ArrayList<AgeClassifier>();
         
-        data.add(new UserAgeCategoryTemplate(0, 11, AgeCategory.CHILD));
-        data.add(new UserAgeCategoryTemplate(12, 18, AgeCategory.TEEN));
-        data.add(new UserAgeCategoryTemplate(19, 35, AgeCategory.YOUNG_ADULT));
-        data.add(new UserAgeCategoryTemplate(36, 65, AgeCategory.ADULT));
-        data.add(new UserAgeCategoryTemplate(66, 150, AgeCategory.ELDER));
+        data.add(new AgeClassifier(1L, 0, 11, AgeCategory.CHILD));
+        data.add(new AgeClassifier(2L, 12, 18, AgeCategory.TEEN));
+        data.add(new AgeClassifier(3L, 19, 35, AgeCategory.YOUNG_ADULT));
+        data.add(new AgeClassifier(4L, 36, 65, AgeCategory.ADULT));
+        data.add(new AgeClassifier(5L, 66, 150, AgeCategory.ELDER));
         
         ObjectDataCompiler converter = new ObjectDataCompiler();
         String drl = converter.compile(data, template);

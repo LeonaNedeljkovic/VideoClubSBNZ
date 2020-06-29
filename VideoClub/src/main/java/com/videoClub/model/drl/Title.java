@@ -1,4 +1,4 @@
-package com.videoClub.bean;
+package com.videoClub.model.drl;
 
 import com.videoClub.model.enumeration.Rank;
 

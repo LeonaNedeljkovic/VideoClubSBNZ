@@ -22,6 +22,7 @@ import com.videoClub.exception.NotLoggedIn;
 import com.videoClub.model.Film;
 import com.videoClub.model.RegisteredUser;
 import com.videoClub.model.drl.RecommendedFilm;
+import com.videoClub.model.enumeration.Genre;
 import com.videoClub.service.FilmService;
 import com.videoClub.service.impl.CustomUserDetailsService;
 
@@ -65,7 +66,7 @@ public class FilmController {
 		return new ResponseEntity<>(filmService.saveFilmToFavourites(id, user), HttpStatus.OK);
 	}
 	
-	@GetMapping(value = "/film/recommended", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "/films/recommended", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('ROLE_REGISTERED_USER')")
 	public ResponseEntity<List<RecommendedFilm>> getRecommended() {
 		RegisteredUser user = (RegisteredUser) this.customUserDetailsService.loadUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
@@ -73,6 +74,30 @@ public class FilmController {
 			throw new NotLoggedIn();
 		}
 		return new ResponseEntity<>(filmService.getRecommendedFilms(user), HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/films/top_rated/{number}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('ROLE_REGISTERED_USER')")
+	public ResponseEntity<List<Film>> getTopRated(@PathVariable(value = "number") Integer number) {
+		return new ResponseEntity<>(filmService.getTopRated(number), HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/films/most_popular/{number}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('ROLE_REGISTERED_USER')")
+	public ResponseEntity<List<Film>> getMostPopular(@PathVariable(value = "number") Integer number) {
+		return new ResponseEntity<>(filmService.getMostPopular(number), HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/films/search/genre/{genre}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('ROLE_REGISTERED_USER')")
+	public ResponseEntity<List<Film>> getByGenre(@PathVariable(value = "genre") String genre) {
+		return new ResponseEntity<>(filmService.getByGenre(Genre.valueOf(genre)), HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/films/search/name/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('ROLE_REGISTERED_USER')")
+	public ResponseEntity<List<Film>> getByName(@PathVariable(value = "name") String name) {
+		return new ResponseEntity<>(filmService.getByName(name), HttpStatus.OK);
 	}
 	
 	@GetMapping(value = "/film/{id}", produces = MediaType.APPLICATION_JSON_VALUE)

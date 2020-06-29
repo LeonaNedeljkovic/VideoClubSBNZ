@@ -7,14 +7,17 @@ import com.videoClub.model.Film;
 import com.videoClub.model.RegisteredUser;
 import com.videoClub.model.User;
 import com.videoClub.model.drl.RecommendedFilm;
+import com.videoClub.model.enumeration.Genre;
 
 public interface FilmService {
 
 	public Film save(FilmDTO filmDTO);
 	public Film getOne(Long id);
 	public List<Film> getAll();
-	//public List<VideoContent> getByActors();
-	//public List<VideoContent> getByDirector(Long directorId);
+	public List<Film> getTopRated(int number);
+	public List<Film> getMostPopular(int number);
+	public List<Film> getByGenre(Genre genre);
+	public List<Film> getByName(String filmName);
 	public void delete(Long id);
 	public Film rateFilm(Long filmId, Integer rate, RegisteredUser user);
 	public List<Film> saveFilmToFavourites(Long filmId, User user);

@@ -1,6 +1,6 @@
 package com.videoClub.factory;
 
-import com.videoClub.bean.Immunity;
+import com.videoClub.model.drl.Immunity;
 import com.videoClub.model.enumeration.Rank;
 
 public class ImmunityFactory {
