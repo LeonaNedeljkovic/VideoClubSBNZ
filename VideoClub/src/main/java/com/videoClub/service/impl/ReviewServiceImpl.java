@@ -39,8 +39,8 @@ public class ReviewServiceImpl implements ReviewService{
 	private KieContainer kieContainer;
 	
 	@Autowired
-	@Qualifier(value = "cepConfigKsessionRealtimeClock")
-	private KieSession cepConfigKsessionRealtimeClock;
+	@Qualifier(value = "cepReportSession")
+	private KieSession cepReportSession;
 	
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	private DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
@@ -76,7 +76,7 @@ public class ReviewServiceImpl implements ReviewService{
 			review.getTimeIntervals().add(interval);
 			kieSession.insert(interval);
 		}
-		cepConfigKsessionRealtimeClock.insert(new FilmWatchEvent(filmService.getOne(reviewDTO.getVideoContentId())));
+		cepReportSession.insert(new FilmWatchEvent(filmService.getOne(reviewDTO.getVideoContentId())));
 		kieSession.insert(user);
 		kieSession.fireAllRules();
 		kieSession.dispose();

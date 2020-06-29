@@ -13,27 +13,25 @@ end
 rule "More than 3 logging in unsuccessfully in 1 minute from one user"
     when
         $t1: LoggingEvent($userId: user.id, $user : user, successful == false)
-        Number(intValue >= 3) from accumulate(
-            $t2: LoggingEvent(
-                this != $t1, 
-                successful == false,
-                user.id == $userId, 
-                this meets[1m] $t1
-            ),
-            count($t2)
-        )
-        not (SuspiciousUserEvent(user.id == $userId, reason == "Many unsuccessful logging in from same username"))
+        Number(intValue>=3 ) from accumulate(
+			$l: LoggingEvent(user.id == $userId, successful == false)
+			over window:time(1m), count($l)
+		)
+		not (SuspiciousUserEvent(user.id == $userId, reason == "Many unsuccessful logging in from same username"))
     then
     	System.out.println("Many unsuccessful logging in from same username");
     	$user.setAllowedToLogIn(false);
-        insert(new SuspiciousUserEvent($user, "Many unsuccessful logging in from same username"));
-        
+    	insert(new SuspiciousUserEvent($user, "Many unsuccessful logging in from same username"));    
 end
 
 rule "Successful logging in"
     when
-        $t1: LoggingEvent($userId: user.id, $user : user, successful == true)
-        not (SuspiciousUserEvent(user.id == $userId, reason == "Many unsuccessful logging in from same username"))
+        $t1: LoggingEvent($userId: user.id, $user : user)
+        Number(intValue < 3 ) from accumulate(
+			$l: LoggingEvent(user.id == $userId, successful == false)
+			over window:time(1m), count($l)
+		)
+		not (SuspiciousUserEvent(user.id == $userId, reason == "Many unsuccessful logging in from same username"))
     then
     	System.out.println("User fine 1");
     	$user.setAllowedToLogIn(true);

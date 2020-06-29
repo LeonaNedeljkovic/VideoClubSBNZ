@@ -24,6 +24,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -53,7 +54,7 @@ import com.videoClub.template.GenreAgeRestrictionTemplate;
 
 @RestController
 @RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
-//@CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*")
+@CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*")
 public class RuleController {
 	
 	@Autowired
@@ -75,8 +76,8 @@ public class RuleController {
 	private KieContainer kieContainer;
 	
 	@Autowired
-	@Qualifier(value = "cepConfigKsessionRealtimeClock")
-	private KieSession cepConfigKsessionRealtimeClock;
+	@Qualifier(value = "cepReportSession")
+	private KieSession cepReportSession;
 	
 	@Autowired
 	@Qualifier(value = "bronzeImmunity")
@@ -462,17 +463,17 @@ public class RuleController {
 		userService.save(users);
 	}
 	
-	@Scheduled(cron="0 0 * * * *")
+	@Scheduled(cron="* * * * * *")
 	public void fireReportRules() {
 		ReportDTO reportDTO = new ReportDTO(0.0,LocalDate.now(),null,0L);
-		FactHandle factHandle = cepConfigKsessionRealtimeClock.insert(reportDTO);
-		cepConfigKsessionRealtimeClock.fireAllRules();
+		FactHandle factHandle = cepReportSession.insert(reportDTO);
+		cepReportSession.fireAllRules();
 		System.out.println("Earned in last 24h "+reportDTO.getEarned());
 		if(reportDTO.getFilm() != null) {
 			System.out.println("Most watched film is "+ reportDTO.getFilm().getName());
 		}
 		System.out.println("Number of views in the last 24h "+reportDTO.getNumberOfViews());
-		cepConfigKsessionRealtimeClock.delete(factHandle);
+		cepReportSession.delete(factHandle);
 	}
 	
 	private KieSession initializeKieSession(String sessionName){

@@ -17,6 +17,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,7 +37,7 @@ import com.videoClub.service.impl.CustomUserDetailsService;
 
 @RestController
 @RequestMapping(value = "/auth")
-//@CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*")
+@CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*")
 public class AuthenticationController {
 
 	@Autowired
@@ -93,13 +94,13 @@ public class AuthenticationController {
 				kieSession.fireAllRules();
 				userService.save(loggingEvent.getUser());
 				if(loggingEvent.getUser().getAllowedToLogIn() == false) {
-					return new ResponseEntity<>(new MessageDto("Not allowed to login.", "You can not login after three failed attempts. Try again after 3 minutes."), HttpStatus.FORBIDDEN);
+					return new ResponseEntity<>(new MessageDto("Not allowed to login.", "You can not login after three failed attempts. Try again after 3 minutes."), HttpStatus.OK);
 				}
 			}
-			return new ResponseEntity<>(new MessageDto("Wrong username or password.", "Error"), HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(new MessageDto("Wrong username or password.", "Error"), HttpStatus.OK);
 		} catch (DisabledException e) {
 			return new ResponseEntity<>(new MessageDto("Account is not verified. Check your email.", "Error"),
-					HttpStatus.FORBIDDEN);
+					HttpStatus.OK);
 		}
 
 		User user = (User) authentication.getPrincipal();
@@ -128,7 +129,7 @@ public class AuthenticationController {
 			// Vrati token kao odgovor na uspesno autentifikaciju
 			return new ResponseEntity<>(new UserTokenState(jwt, expiresIn, userType), HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>(new MessageDto("Not allowed to login.", "You can not login after three failed attempts. Try again after 3 minutes."), HttpStatus.FORBIDDEN);
+			return new ResponseEntity<>(new MessageDto("Not allowed to login.", "You can not login after three failed attempts. Try again after 3 minutes."), HttpStatus.OK);
 		}
 	}
 

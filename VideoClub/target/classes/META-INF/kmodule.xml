@@ -38,6 +38,7 @@
         <ksession name="ageClassificationRulesSession"/>
     </kbase>
     <kbase name="cepReport" eventProcessingMode="stream" packages="com.videoClub.rules.cepReport">
+    	<ksession name="cepReportSession"/>
         <ksession name="cepConfigKsessionRealtimeClock" clockType="realtime"/>
         <ksession name="cepConfigKsessionPseudoClock" clockType="pseudo"/>
     </kbase>
