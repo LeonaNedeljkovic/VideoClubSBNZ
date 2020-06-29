@@ -44,12 +44,12 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 	
 	@ExceptionHandler(value = NotLoggedIn.class)
     protected ResponseEntity<MessageDto> handleNotLoggedIn(NotLoggedIn e) {
-		return new ResponseEntity<>(new MessageDto("Not Logged In", e.getMessage()), HttpStatus.FORBIDDEN);
+		return new ResponseEntity<>(new MessageDto("Not Logged In", e.getMessage()), HttpStatus.OK);
     }
 	
 	@ExceptionHandler(value = EntityForbidden.class)
     protected ResponseEntity<MessageDto> handleEntityForbidden(EntityForbidden e) {
-		return new ResponseEntity<>(new MessageDto("Entity Forbidden", e.getMessage()), HttpStatus.FORBIDDEN);
+		return new ResponseEntity<>(new MessageDto("Entity Forbidden", e.getMessage()), HttpStatus.OK);
     }
 	
 	@ExceptionHandler(value = NotEnoughMinutes.class)

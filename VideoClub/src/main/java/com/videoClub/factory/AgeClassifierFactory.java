@@ -1,5 +1,7 @@
 package com.videoClub.factory;
 
+import java.util.List;
+
 import com.videoClub.model.AgeClassifier;
 import com.videoClub.model.enumeration.AgeCategory;
 
@@ -11,14 +13,25 @@ public class AgeClassifierFactory {
 	private AgeClassifier adultClassifier;
 	private AgeClassifier elderClassifier;
 	
-	public AgeClassifierFactory(AgeClassifier childClassifier, AgeClassifier teenClassifier,
-			AgeClassifier youngAdultClassifier, AgeClassifier adultClassifier, AgeClassifier elderClassifier) {
+	public AgeClassifierFactory(List<AgeClassifier> classifiers) {
 		super();
-		this.childClassifier = childClassifier;
-		this.teenClassifier = teenClassifier;
-		this.youngAdultClassifier = youngAdultClassifier;
-		this.adultClassifier = adultClassifier;
-		this.elderClassifier = elderClassifier;
+		for(AgeClassifier ac : classifiers){
+			if(ac.getAgeCategory().equals(AgeCategory.CHILD)){
+				this.childClassifier = ac;
+			}
+			else if(ac.getAgeCategory().equals(AgeCategory.TEEN)){
+				this.teenClassifier = ac;
+			}
+			else if(ac.getAgeCategory().equals(AgeCategory.YOUNG_ADULT)){
+				this.youngAdultClassifier = ac;
+			}
+			else if(ac.getAgeCategory().equals(AgeCategory.ADULT)){
+				this.adultClassifier = ac;
+			}
+			else{
+				this.elderClassifier = ac;
+			}
+		}
 	}
 
 	public AgeClassifierFactory() {

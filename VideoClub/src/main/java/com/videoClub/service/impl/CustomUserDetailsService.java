@@ -22,13 +22,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.videoClub.dto.UserDto;
+import com.videoClub.factory.AgeClassifierFactory;
 import com.videoClub.model.Administrator;
+import com.videoClub.model.AgeClassifier;
 import com.videoClub.model.Authority;
 import com.videoClub.model.RegisteredUser;
 import com.videoClub.model.User;
 import com.videoClub.model.enumeration.Rank;
 import com.videoClub.model.enumeration.UserRole;
 import com.videoClub.repository.UserRepository;
+import com.videoClub.service.AgeClassifierService;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -43,10 +46,13 @@ public class CustomUserDetailsService implements UserDetailsService {
 	private AuthenticationManager authenticationManager;
 	
 	@Autowired
+	private AgeClassifierService ageClassifierService;
+	
+	@Autowired
 	private KieContainer kieContainer;
 	
-	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-	private DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+	private DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
 	public boolean saveUser(User ru) {
 		this.userRepository.save(ru);
@@ -136,8 +142,11 @@ public class CustomUserDetailsService implements UserDetailsService {
 			newUser.setImmunity(Rank.NONE);
 			newUser.setAllowedToPurchase(true);
 			newUser.setAllowedToLogIn(true);
+			newUser.setAge(user.getAge());
+			newUser.setGender(user.getGender());
 			
 			KieSession kieSession = kieContainer.newKieSession("ageClassificationRulesSession");
+			kieSession.setGlobal("ageClassifierFactory", initializeAgeClassifier());
 			kieSession.insert(newUser);
 			kieSession.fireAllRules();
 			kieSession.dispose();
@@ -157,6 +166,11 @@ public class CustomUserDetailsService implements UserDetailsService {
 			this.userRepository.save(newUser);
 		}
 		return true;
+	}
+	
+	public AgeClassifierFactory initializeAgeClassifier(){
+		List<AgeClassifier> classifiers = ageClassifierService.getAll();
+		return new AgeClassifierFactory(classifiers);
 	}
 	
 	public Boolean editUser(UserDto userDto) {
