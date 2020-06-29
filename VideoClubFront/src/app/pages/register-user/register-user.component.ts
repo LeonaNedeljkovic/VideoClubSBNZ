@@ -33,18 +33,17 @@ export class RegisterUserComponent implements OnInit {
   register():void{
     this.user.enabled = false;
     if (this.user.name != undefined && this.user.surname != undefined && this.user.email != undefined &&
-      this.user.username != undefined && this.user.password!=undefined){
+      this.user.username != undefined && this.user.password!=undefined && this.user.age!=undefined){
 
       if (this.user.password==this.repeatedPassword){
         if (this.validateEmail(this.user.email) == true){
-          console.log('validan je email');
+         var e = document.getElementById("chosen");
+         let indexToFind = (<HTMLSelectElement> e);
+         this.user.gender= indexToFind.options[indexToFind.selectedIndex].text;
           this.registerUserService.register(this.user).subscribe(
             (registered:boolean) => {
-              console.log("nestooo");
               if(registered){
-                console.log("is registered in");
-                this.message = "Successful registration, congratulations! Please go to email to verify your registration!",
-                "success";
+                this.message = "Successful registration, congratulations!";
                 this.type = 'success';
           
               }

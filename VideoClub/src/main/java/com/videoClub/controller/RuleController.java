@@ -463,7 +463,7 @@ public class RuleController {
 		userService.save(users);
 	}
 	
-	@Scheduled(cron="* * * * * *")
+	@Scheduled(cron="0 0 * * * *")
 	public void fireReportRules() {
 		ReportDTO reportDTO = new ReportDTO(0.0,LocalDate.now(),null,0L);
 		FactHandle factHandle = cepReportSession.insert(reportDTO);

@@ -8,6 +8,8 @@ export class UserModel {
     email: string;
     password: string;
     enabled: boolean;
+    age: number;
+    gender: string;
     authorities: Set<Authority>;
 
     constructor(){
