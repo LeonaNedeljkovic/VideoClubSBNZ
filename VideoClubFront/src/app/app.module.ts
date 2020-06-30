@@ -16,6 +16,8 @@ import { LoginComponent } from './pages/login/login.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { RegisterUserComponent } from './pages/register-user/register-user.component';
 import { DatePipe } from '@angular/common';
+import { ShowFilmsComponent } from './components/films/show-films/show-films.component';
+import { SearchFilmsComponent } from './components/films/search-films/search-films.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +26,9 @@ import { DatePipe } from '@angular/common';
     MenuBarComponent,
     LoginComponent,
     DashboardComponent,
-    RegisterUserComponent
+    RegisterUserComponent,
+    ShowFilmsComponent,
+    SearchFilmsComponent
   ],
   imports: [
     NgbModule,

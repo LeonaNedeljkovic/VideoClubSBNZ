@@ -79,25 +79,21 @@ public class FilmController {
 	}
 	
 	@GetMapping(value = "/films/top_rated/{number}", produces = MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthorize("hasRole('ROLE_REGISTERED_USER')")
 	public ResponseEntity<List<Film>> getTopRated(@PathVariable(value = "number") Integer number) {
 		return new ResponseEntity<>(filmService.getTopRated(number), HttpStatus.OK);
 	}
 	
 	@GetMapping(value = "/films/most_popular/{number}", produces = MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthorize("hasRole('ROLE_REGISTERED_USER')")
 	public ResponseEntity<List<Film>> getMostPopular(@PathVariable(value = "number") Integer number) {
 		return new ResponseEntity<>(filmService.getMostPopular(number), HttpStatus.OK);
 	}
 	
 	@GetMapping(value = "/films/search/genre/{genre}", produces = MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthorize("hasRole('ROLE_REGISTERED_USER')")
 	public ResponseEntity<List<Film>> getByGenre(@PathVariable(value = "genre") String genre) {
 		return new ResponseEntity<>(filmService.getByGenre(Genre.valueOf(genre)), HttpStatus.OK);
 	}
 	
 	@GetMapping(value = "/films/search/name/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthorize("hasRole('ROLE_REGISTERED_USER')")
 	public ResponseEntity<List<Film>> getByName(@PathVariable(value = "name") String name) {
 		return new ResponseEntity<>(filmService.getByName(name), HttpStatus.OK);
 	}

@@ -11,59 +11,40 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.css', './general.scss']
+  styleUrls: ['./header.component.css' ]
 })
 export class HeaderComponent implements OnInit {
 
   loggedUser: CurrentUser;
   username: string;
+  loggedIn: boolean = false;
+  activePage: String;
 
 
   //moze da se user povuce iz storage-a; uloga i username, ne ceo user, jer se cuva token 
   constructor(private _router: Router, private modalService: NgbModal, private AuthenticationService: AuthenticationService) { }
 
   ngOnInit() {
+    this.activePage = "home";
     this.loggedUser = JSON.parse(
       localStorage.getItem('currentUser'));
       console.log(this.loggedUser);
 
-    var login: HTMLElement = document.getElementById('loginButton');
-    var notRegistrated: HTMLElement = document.getElementById('notRegistrated');
-    var registrated: HTMLElement = document.getElementById('registrated');
-
 
     if (this.loggedUser == null) {
-      //alert('niko nije ulogovan');
-      //login.hidden = false;
-      //register.hidden = false;
-      //logout.hidden = true;
-      //edit.hidden = true;
-      console.log("SDSD");
-      notRegistrated.hidden = false;
-      registrated.hidden = true;
-      registrated.hidden = true;
+      this.loggedIn = false;
 
     } else {
-      notRegistrated.hidden = true;
-      registrated.hidden = false;
-      if (this.loggedUser.userRoleName === "ROLE_ADMIN") {
-        notRegistrated.hidden = true;
-        login.hidden = true;
-      } else {
-        login.hidden = true;
-      }
-
+      this.loggedIn = true;
     }
-
   }
 
-  open() {
+  login() {
     console.log('login called');
     const modalRef = this.modalService.open(LoginComponent);
     
   }
-  openReg() {
-
+  register() {
     const modalRef = this.modalService.open(RegisterUserComponent);
     //modalRef.componentInstance.name = 'Login';
   }

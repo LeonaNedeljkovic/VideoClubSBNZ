@@ -1,27 +1,26 @@
-<div class="header">
-    <div class="appInfo">
-      <div>
-        <label class="title">Video Club</label>
-      </div>
-    
-    </div>
-  <!-- ovde treba pogledati da li je korisnik ulogovan, ako nije prikazati mu log in i register button, a ako 
-  jetse onda ovaj dole meni -->
-  
-  <div id="notRegistrated">
-    
-    <button class="myStyle" id="loginButton" (click)="open()">Login</button>
-    
-    <button class="myStyle" id="registerButton" (click)="openReg()">Register</button>
-  </div>
-  <div class="userInfo">
-     
-    <div ngbDropdown class="nav-item" id="registrated">
-      <img src="assets/images/user.jpg">
-      <a class="nav-item btn" id="userDropdown" ngbDropdownToggle>{{username}}</a>
-      <div ngbDropdownMenu aria-labelledby="userDropdown">
-        <button class="dropdown-item" id="logoutItem" (click)="logout()">Log out</button>
-      </div>     
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>MovieHunter</title>
+</head>
+<body>
+<!-- START PAGE SOURCE -->
+<div id="shell">
+  <div id="header">
+    <h1 id="logo">Video Club</h1>
+    <div id="navigation">
+      <ul *ngIf="loggedIn==false">
+        <li><a class="active">HOME</a></li>
+        <li><a (click)="login()">LOG IN</a></li>
+        <li><a (click)="register()">REGISTER</a></li>
+      </ul>
+      <ul *ngIf="loggedIn==true">
+        <li><a class="active">HOME</a></li>
+        <li><a (click)="logout()">LOG OUT</a></li>
+      </ul>
     </div>
   </div>
-  </div>
+</div>
+<!-- END PAGE SOURCE -->
+</body>
+</html>

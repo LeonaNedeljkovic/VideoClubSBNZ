@@ -3,6 +3,8 @@ import { Routes, RouterModule } from '@angular/router';
 import { LoginComponent } from './pages/login/login.component';
 import { RegisterUserComponent } from './pages/register-user/register-user.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { ShowFilmsComponent } from './components/films/show-films/show-films.component';
+import { SearchFilmsComponent } from './components/films/search-films/search-films.component';
 
 
 
@@ -19,9 +21,13 @@ const routes: Routes = [
   {
     path: 'dashboard',
     component: DashboardComponent,
+    children: [
+      { path: 'films-show', component: ShowFilmsComponent },
+      { path: 'films-search', component: SearchFilmsComponent }
+    ] 
   },
 
-  {path: '**', redirectTo: 'dashboard'}
+  {path: '**', redirectTo: 'dashboard/films-show'}
 ];
 
 @NgModule({
