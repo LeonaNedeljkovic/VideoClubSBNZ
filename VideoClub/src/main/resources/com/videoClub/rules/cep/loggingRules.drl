@@ -12,7 +12,7 @@ end
 
 rule "More than 3 logging in unsuccessfully in 1 minute from one user"
     when
-        $t1: LoggingEvent($userId: user.id, $user : user, successful == false)
+        $t1: LoggingEvent($userId: user.id, $user : user)
         Number(intValue>=3 ) from accumulate(
 			$l: LoggingEvent(user.id == $userId, successful == false)
 			over window:time(1m), count($l)
