@@ -1,18 +1,10 @@
 import { Authority } from './authority.model';
-
-export class UserModel {
+export class User  {
     id: string;
-    name: string;
-    surname: string;
     username: string;
-    email: string;
     password: string;
-    enabled: boolean;
-    age: number;
-    gender: string;
+    email: string;
+    lastPasswordResetDate: string;
     authorities: Set<Authority>;
-
-    constructor(){
-      
-    }
-  }
+    allowedToLogin: boolean;   
+}

@@ -33,7 +33,7 @@ public class NotificationController {
 	@Autowired
 	private CustomUserDetailsService customUserDetailsService;
 	
-	@PutMapping(value = "/notification/open/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "/notification/open/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('ROLE_REGISTERED_USER')")
 	public ResponseEntity<Notification> openNotification(@PathVariable(value = "id") Long id) {
 		RegisteredUser user = (RegisteredUser) this.customUserDetailsService.loadUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
