@@ -26,6 +26,7 @@
     </kbase>
     <kbase name="cepLogging" eventProcessingMode="stream" packages="com.videoClub.rules.cep">
         <ksession name="cepRulesSession"/>
+        <ksession name="cepLoginKsessionPseudoClock" clockType="pseudo"/>
     </kbase>
    <kbase name="cepPurchase" eventProcessingMode="stream" packages="com.videoClub.rules.cepPurchase">
         <ksession name="cepPurchaseSession"/>
