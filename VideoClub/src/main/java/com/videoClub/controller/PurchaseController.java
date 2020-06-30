@@ -33,7 +33,7 @@ public class PurchaseController {
 	@Autowired
 	private CustomUserDetailsService customUserDetailsService;
 	
-	@PostMapping(value = "/purchase/{offerId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "/purchase/{offerId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('ROLE_REGISTERED_USER')")
 	public ResponseEntity<Purchase> createPurchase(@PathVariable(value = "offerId") Long offerId) {
 		RegisteredUser user = (RegisteredUser) this.customUserDetailsService.loadUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());

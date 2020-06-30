@@ -3,7 +3,7 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import { map } from "rxjs/operators";
 import { Message } from '@angular/compiler/src/i18n/i18n_ast';
-import { UserModel } from 'src/app/model/user.model';
+import { UserDto } from 'src/app/dto/user.dto';
 
 @Injectable({providedIn: 'root'})
 export class RegisterUserService {
@@ -16,7 +16,7 @@ export class RegisterUserService {
     
    
   }
-  register = (data: UserModel): Observable<boolean> => {
+  register = (data: UserDto): Observable<boolean> => {
 
     var user = {};
     var loggedUser = JSON.parse(
