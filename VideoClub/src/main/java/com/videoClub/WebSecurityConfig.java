@@ -112,8 +112,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		.antMatchers(HttpMethod.GET,"/api/gold_title/acquire_points").permitAll()
 		.antMatchers(HttpMethod.GET,"/api/gold_title/save_points").permitAll()
 		.antMatchers(HttpMethod.GET,"/api/gold_title/reward_points").permitAll()
-		.antMatchers(HttpMethod.GET,"/api/video_content/{id}").permitAll()
-		.antMatchers(HttpMethod.GET,"/api/video_contents").permitAll()
+		.antMatchers(HttpMethod.GET,"/api/film/{id}").permitAll()
+		.antMatchers(HttpMethod.GET,"/api/films").permitAll()
+		.antMatchers(HttpMethod.GET,"/api/films/top_rated/{number}").permitAll()
+		.antMatchers(HttpMethod.GET,"/api/films/most_popular/{number}").permitAll()
+		.antMatchers(HttpMethod.GET,"/api/films/search/genre/{genre}").permitAll()
+		.antMatchers(HttpMethod.GET,"/api/films/search/name/{name}").permitAll()
 		
 		// every request needs to be authorized
 		.anyRequest().authenticated().and()
