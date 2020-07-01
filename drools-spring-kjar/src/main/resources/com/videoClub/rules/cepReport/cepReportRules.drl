@@ -1,0 +1,75 @@
+package com.videoClub.rules.cepReport
+
+import com.videoClub.event.*;
+import com.videoClub.model.*;
+import com.videoClub.dto.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+declare FilmNumber
+	@role(event)
+    @expires(24h)
+    film: Film
+    numTimes: int
+end
+
+declare window numberOfViews
+	@doc("Number of views in the last 24h")
+	FilmWatchEvent() over window:time( 24h )
+end
+
+rule "Obtain last 24h of purchases"
+	when
+		$r: ReportDTO( );
+		Number($n : doubleValue ) from accumulate(
+			PurchaseEvent($p: purchase.getPrice())
+			over window:time(24h), sum($p)
+			)
+	then
+		$r.setEarned($n);
+		update($r);
+end
+
+rule "New film event added"
+	when
+		$e : FilmWatchEvent($f: film);
+		not FilmNumber($f.getName() == film.getName())
+	then
+		insert(new FilmNumber($f, 1));
+end
+
+
+rule "Film already existed in the memory"
+	when
+		$e : FilmWatchEvent($f: film);
+		$filmNumber: FilmNumber($f.getName() == film.getName())
+	then
+		$filmNumber.setNumTimes($filmNumber.getNumTimes()+1);
+		update($filmNumber);
+end
+
+rule "Get most watched film in the last 24h"
+	when
+		$r: ReportDTO( );
+		$allFilms : List($allFilms.size>0) from collect(FilmNumber());
+		$filmNumber: FilmNumber() from $allFilms;
+		not FilmNumber(numTimes > $filmNumber.getNumTimes()) from $allFilms;
+	then
+		$r.setFilm($filmNumber.getFilm());
+		update($r);
+end
+
+rule "number of views in the last 24h"
+	when
+		$r: ReportDTO( );
+		accumulate(
+			FilmNumber() from window numberOfViews,
+			$cnt: count(1)
+		)
+	then
+		$r.setNumberOfViews($cnt);
+		update($r);
+end
+
+

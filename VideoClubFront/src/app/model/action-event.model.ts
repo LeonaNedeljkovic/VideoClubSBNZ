@@ -1,7 +1,7 @@
 import { Action } from './action.model';
 
 export class ActionEvent{
-    id: number;
+    id: string;
     startDate: string;
     endDate: string;
     name: string;

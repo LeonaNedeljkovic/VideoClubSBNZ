@@ -1,0 +1,106 @@
+//created on: May 18, 2020
+package com.videoClub.rules.review
+
+import com.videoClub.model.*;
+import com.videoClub.model.enumeration.*;
+import com.videoClub.exception.*;
+
+rule "Invalid TimeInterval"
+	salience 20
+    when
+        TimeInterval( $film : review.getFilm(), startMinute > endMinute 
+        	|| startMinute < 0 || endMinute > $film.getDuration() );
+    then
+		throw new InvalidParameters();
+end
+
+rule "Film restricted"
+	salience 20
+    when
+    	RegisteredUser( $ageCategory : ageCategory );
+        TimeInterval( review.getFilm().getRestrictedAgeCategories() contains $ageCategory );
+    then
+		throw new RestrictedAgeCategory();
+end
+
+rule "Review with FreeContent action that matches content genre"
+	no-loop
+    when
+        $ti:TimeInterval( $review : review);
+        RegisteredUser( $actions : action );
+        Number(intValue > 0) from accumulate(
+        	$fc:FreeContent( freeGenres contains $review.getFilm().getGenre() ) from $actions,
+        	count($fc)
+        );
+    then
+		System.out.println("Review with FreeContent action that matches content genre FIRED");
+		delete($ti);
+		insert($review);
+end
+
+rule "Review without FreeContent when user do not have enough minutes"
+	no-loop
+    when
+        TimeInterval( $review : review, 
+        	review.getUser().getAvailableMinutes() < (endMinute - startMinute) ) and not
+        FreeContent( freeGenres contains $review.getFilm().getGenre() );
+    then
+		throw new NotEnoughMinutes();
+end
+
+rule "Review without FreeContent when user have enough minutes"
+	no-loop
+    when
+    	$ti:TimeInterval( $review : review, $end:endMinute, $start:startMinute,
+        	 review.getUser().getAvailableMinutes() >= (endMinute - startMinute) );
+        $user : RegisteredUser( $actions : action );
+        Number(intValue == 0) from accumulate(
+        	$fc:FreeContent( freeGenres contains $review.getFilm().getGenre() ) from $actions,
+        	count($fc)
+        );
+    then
+		System.out.println("Review without FreeContent when user have enough minutes FIRED");
+		$user.setAvailableMinutes($user.getAvailableMinutes() - ($end-$start));
+		delete($ti);
+		insert($review);
+end
+
+rule "Review watched"
+    when
+        $review : Review( watched == false, getWatchedDuration() >= 90 );
+    then
+		System.out.println("Review watched FIRED");
+		$review.setWatched(true);
+		update($review);
+end
+
+rule "Invalid rate"
+	salience 10
+    when
+        Review( rate < 0 || rate > 5 );
+    then
+		throw new InvalidRate();
+end
+
+rule "Film rated but not watched"
+    when
+        Review( watched == false, rate >= 1 && rate <= 5 );
+    then
+		throw new FilmNotReviewed();
+end
+
+rule "Film added to favourites but not watched"
+	salience 20
+    when
+        Review( watched == false, film memberOf user.getFavouriteFilms() );
+    then
+		throw new FilmNotReviewed();
+end
+
+rule "Film added to favourites without rate 5"
+	salience 10
+    when
+        $review : Review( watched == true, rate != 5, film memberOf user.getFavouriteFilms() );
+    then
+		throw new ReviewNotRated();
+end

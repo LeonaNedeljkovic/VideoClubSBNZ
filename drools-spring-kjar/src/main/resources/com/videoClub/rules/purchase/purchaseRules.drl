@@ -1,0 +1,44 @@
+//created on: May 18, 2020
+package com.videoClub.rules.purchase
+
+import com.videoClub.model.*;
+import com.videoClub.model.enumeration.*;
+import com.videoClub.exception.*;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
+rule "Purchase with discount"
+    when
+        $purchase : Purchase( $offer : offer );
+        $user : RegisteredUser( $actions : action );
+        Number(intValue > 0, $discount : intValue) from accumulate(
+        	Discount ( $amount : getAmountInteger(), discountOffers contains $offer )
+        	from $actions,
+        	sum( $amount));
+    then
+    	BigDecimal bd = new BigDecimal($offer.getPrice()*($discount / 100.0)).setScale(2, RoundingMode.HALF_UP);
+        $purchase.setDiscount($discount);
+        $purchase.setPrice($offer.getPrice()-bd.doubleValue());
+        $user.setAvailableMinutes($user.getAvailableMinutes() + $offer.getMinutes());
+        $user.setImmunityPoints($user.getImmunityPoints() + (int)$offer.getPrice());
+        update($purchase);
+        update($user);
+
+end
+
+rule "Purchase without discount"
+    when
+        $purchase : Purchase( $offer : offer );
+        $user : RegisteredUser( $actions : action );
+        Number(intValue == 0, $discount : intValue) from accumulate(
+        	Discount ( $amount : getAmountInteger(), discountOffers contains $offer )
+        	from $actions,
+        	sum( $amount));
+    then
+    	$purchase.setDiscount(0);
+        $purchase.setPrice($offer.getPrice());
+        $user.setAvailableMinutes($user.getAvailableMinutes() + $offer.getMinutes());
+        $user.setImmunityPoints($user.getImmunityPoints() + (int)$offer.getPrice());
+        update($purchase);
+        update($user);
+end

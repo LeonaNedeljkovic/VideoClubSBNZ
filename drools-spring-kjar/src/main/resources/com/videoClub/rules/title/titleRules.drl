@@ -1,0 +1,82 @@
+//created on: May 20, 2020
+package com.videoClub.rules.title
+
+import com.videoClub.model.*;
+import com.videoClub.factory.*;
+import com.videoClub.model.enumeration.*;
+import com.videoClub.exception.*;
+
+global ImmunityFactory immunityFactory;
+global TitleFactory titleFactory;
+
+rule "Save title rule"
+	salience $purchasedMinutes * 100
+	no-loop
+    when
+    	$user : RegisteredUser( $id : id, title != Rank.NONE );
+        $total : Number( $purchasedMinutes : intValue ) from accumulate(
+         	Purchase( $minutes : purchasedMinutes, user.getId() == $id ),
+         	sum( $minutes ) );
+         RegisteredUser( id == $id, title == titleFactory.savedTitle($purchasedMinutes, title) );
+    then
+		$user.setAvailableMinutes($user.getAvailableMinutes() + titleFactory.getRewardPoints($user.getTitle()));
+		System.out.println($user.getUsername() + " saved "+$user.getTitle()+" title with " + $purchasedMinutes + 
+		" purchased minutes.");
+		delete($user);
+end
+
+rule "Acquire title rule"
+	salience $purchasedMinutes * 50
+	no-loop
+    when
+    	$user : RegisteredUser( $id : id );
+        $total : Number( intValue >= titleFactory.getAcquirePoints(Rank.BRONZE),
+        	$purchasedMinutes : intValue ) from accumulate(
+         		Purchase( $minutes : purchasedMinutes, user.getId() == $id ),
+         		sum( $minutes ) );
+    then
+		$user.setTitle(titleFactory.acquiredTitle($purchasedMinutes));
+		$user.setAvailableMinutes($user.getAvailableMinutes() + titleFactory.getRewardPoints($user.getTitle()));
+		System.out.println($user.getUsername() + " acquired "+$user.getTitle()+" title");
+		delete($user);
+end
+
+rule "Acquire immunity rule"
+	salience $purchasedMinutes + 30
+	no-loop
+    when
+    	$user : RegisteredUser( $id : id, title != Rank.NONE,
+    		title.equalsOrHigher(immunityFactory.acquiredImmunity(immunityPoints)) );
+    	$total : Number( $purchasedMinutes : intValue ) from accumulate(
+         		Purchase( $minutes : purchasedMinutes, user.getId() == $id ),
+         		sum( $minutes ) );
+    then
+    	$user.setImmunity($user.getTitle());
+    	$user.setImmunityPoints($user.getImmunityPoints() - immunityFactory.getAcquirePoints($user.getImmunity()));
+		System.out.println($user.getUsername() + " acquired "+$user.getImmunity()+" immunity.");
+		update($user);
+end
+
+rule "Save title with immunity rule"
+	salience $purchasedMinutes + 20
+    when
+    	$user : RegisteredUser( $id : id, immunity != Rank.NONE );
+    	$total : Number( $purchasedMinutes : intValue ) from accumulate(
+         		Purchase( $minutes : purchasedMinutes, user.getId() == $id ),
+         		sum( $minutes ) );
+    then
+    	$user.setAvailableMinutes($user.getAvailableMinutes() + titleFactory.getRewardPoints($user.getTitle()));
+		System.out.println($user.getUsername() + " saved "+$user.getTitle()+" title with immunity. "); 
+end
+
+rule "Lose title rule"
+	salience $purchasedMinutes
+    when
+    	$user : RegisteredUser( $id : id, immunity == Rank.NONE, title != Rank.NONE, $title : title );
+        $total : Number( intValue < titleFactory.getSavePoints($title), $purchasedMinutes : intValue ) from accumulate(
+         	Purchase( $minutes : purchasedMinutes, user.getId() == $id ),
+         	sum( $minutes ) );
+    then
+		$user.setTitle($user.getTitle().getLowerRank());
+		System.out.println($user.getUsername()+" lost "+$user.getTitle().getHigherRank()+" title. Current title: "+$user.getTitle());
+end
