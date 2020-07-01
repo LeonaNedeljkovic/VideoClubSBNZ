@@ -18,6 +18,7 @@ import { RegisterUserComponent } from './pages/register-user/register-user.compo
 import { DatePipe } from '@angular/common';
 import { ShowFilmsComponent } from './components/films/show-films/show-films.component';
 import { SearchFilmsComponent } from './components/films/search-films/search-films.component';
+import { DetailsFilmComponent } from './components/films/details-film/details-film.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { SearchFilmsComponent } from './components/films/search-films/search-fil
     DashboardComponent,
     RegisterUserComponent,
     ShowFilmsComponent,
-    SearchFilmsComponent
+    SearchFilmsComponent,
+    DetailsFilmComponent
   ],
   imports: [
     NgbModule,

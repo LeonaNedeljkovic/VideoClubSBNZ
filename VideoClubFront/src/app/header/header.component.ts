@@ -49,14 +49,10 @@ export class HeaderComponent implements OnInit {
     //modalRef.componentInstance.name = 'Login';
   }
 
-
-
   logout() {
-    console.log("OVDE");
-   
     this.AuthenticationService.logout();
     localStorage.removeItem('currentUser');
-    this._router.navigate(['/dashboard']);
+    this._router.navigate(['/dashboard/films-show']);
     location.reload();
   }
 

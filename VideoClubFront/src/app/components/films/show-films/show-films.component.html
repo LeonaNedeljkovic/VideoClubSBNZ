@@ -5,7 +5,22 @@
 <div id="shell">
   <div id="sub-navigation">
     <ul>
-      <li><div class="search"><label for="search-field">GENRE:</label><select class="search-field" [(ngModel)]="searchedGenre" name="search field"><option>HORROR</option><option>COMEDY</option></select>
+      <li><div class="search"><label for="search-field">GENRE:</label>
+        <select class="search-field" [(ngModel)]="searchedGenre" name="search field">
+          <option>ACTION</option>
+          <option>ADVENTURE</option>
+          <option>ANIMATED</option>
+          <option>COMEDY</option>
+          <option>DOCUMENTARY</option>
+          <option>DRAMA</option>
+          <option>HISTORICAL</option>
+          <option>HORROR</option>
+          <option>MUSIC</option>
+          <option>SCIFI</option>
+          <option>THRILLER</option>
+          <option>WESTERN</option>
+          <option>FAMILY</option>
+        </select>
         <input type="submit" value="GO!" class="search-button" (click)="filter()"/></div></li>
     </ul>
     <div class="search">
@@ -18,6 +33,35 @@
   </div>
   <div id="main">
     <div id="content">
+      <div class="box" *ngIf="loggedIn == true">
+        <div class="head">
+          <h2 id="recommended">RECOMMENDED FOR YOU</h2>
+          <p class="text-right"><a (click)="seeAll('recommended')">See all</a></p>
+        </div>
+        <div *ngFor="let recommended of recommendedFilms" >
+          <div class="movie">
+            <div class="movie-image"><a href="#" ><img src="{{recommended.film.poster}}" alt="" /></a> </div>
+            <div class="rating">
+              <p class="film-name">{{recommended.film.name}}</p>
+              <div class="rating-show">
+                <span class="star" *ngIf="recommended.film.rating >= 1">&#x2605;</span>
+                <span class="star" *ngIf="1 > recommended.film.rating">&#x2606;</span>
+                <span class="star" *ngIf="recommended.film.rating >= 1.5">&#x2605;</span>
+                <span class="star" *ngIf="1.5 > recommended.film.rating">&#x2606;</span>
+                <span class="star" *ngIf="recommended.film.rating >= 2.5">&#x2605;</span>
+                <span class="star" *ngIf="2.5 > recommended.film.rating">&#x2606;</span>
+                <span class="star" *ngIf="recommended.film.rating >= 3.5">&#x2605;</span>
+                <span class="star" *ngIf="3.5 > recommended.film.rating">&#x2606;</span>
+                <span class="star" *ngIf="recommended.film.rating >= 4.5">&#x2605;</span>
+                <span class="star" *ngIf="4.5 > recommended.film.rating">&#x2606;</span>
+              </div>
+              <div class="film-name"><button class="transparentButton" type="input" (click)="moreInfo(recommended.film.id)">More Info</button></div>
+            </div>
+          </div>
+        </div>
+      <div class="cl">&nbsp;</div>
+      </div>
+
       <div class="box">
         <div class="head">
           <h2 id="mostPopular">MOST POPULAR</h2>
@@ -28,9 +72,19 @@
             <div class="movie-image"><a href="#" ><img src="{{film.poster}}" alt="" /></a> </div>
             <div class="rating">
               <p class="film-name">{{film.name}}</p>
-              <div class="stars">
-                <div class="stars-in"> </div>
+              <div class="rating-show">
+                <span class="star" *ngIf="film.rating >= 1">&#x2605;</span>
+                <span class="star" *ngIf="1 > film.rating">&#x2606;</span>
+                <span class="star" *ngIf="film.rating >= 1.5">&#x2605;</span>
+                <span class="star" *ngIf="1.5 > film.rating">&#x2606;</span>
+                <span class="star" *ngIf="film.rating >= 2.5">&#x2605;</span>
+                <span class="star" *ngIf="2.5 > film.rating">&#x2606;</span>
+                <span class="star" *ngIf="film.rating >= 3.5">&#x2605;</span>
+                <span class="star" *ngIf="3.5 > film.rating">&#x2606;</span>
+                <span class="star" *ngIf="film.rating >= 4.5">&#x2605;</span>
+                <span class="star" *ngIf="4.5 > film.rating">&#x2606;</span>
               </div>
+              <div class="film-name"><button class="transparentButton" type="input" (click)="moreInfo(film.id)">More Info</button></div>
             </div>
           </div>
         </div>
@@ -46,9 +100,19 @@
             <div class="movie-image"><a href="#" ><img src="{{film.poster}}" alt="" /></a> </div>
             <div class="rating">
               <p class="film-name">{{film.name}}</p>
-              <div class="stars">
-                <div class="stars-in"> </div>
+              <div class="rating-show">
+                <span class="star" *ngIf="film.rating >= 1">&#x2605;</span>
+                <span class="star" *ngIf="1 > film.rating">&#x2606;</span>
+                <span class="star" *ngIf="film.rating >= 1.5">&#x2605;</span>
+                <span class="star" *ngIf="1.5 > film.rating">&#x2606;</span>
+                <span class="star" *ngIf="film.rating >= 2.5">&#x2605;</span>
+                <span class="star" *ngIf="2.5 > film.rating">&#x2606;</span>
+                <span class="star" *ngIf="film.rating >= 3.5">&#x2605;</span>
+                <span class="star" *ngIf="3.5 > film.rating">&#x2606;</span>
+                <span class="star" *ngIf="film.rating >= 4.5">&#x2605;</span>
+                <span class="star" *ngIf="4.5 > film.rating">&#x2606;</span>
               </div>
+              <div class="film-name"><button class="transparentButton" type="input" (click)="moreInfo(film.id)">More Info</button></div>
             </div>
           </div>
         </div>

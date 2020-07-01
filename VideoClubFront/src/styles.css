@@ -238,12 +238,14 @@ a:not([href]){
 	float:left;
 	display:inline;
 	position:relative;
+	height: auto;
 }
 .box .movie {
 	width:160px;
 	float:left;
 	display:inline;
 	position:relative;
+	height: 350px;
 }
 .movie-image {
 	width:150px;
@@ -346,6 +348,16 @@ a:not([href]){
 	float:right;
 }
 
+.transparentButton{
+    width: 80%;
+	border-color: #f2a223;
+	border-style: solid;
+    color:white;
+	padding: 2px;
+	background-color: transparent;
+	font-size: 10px;
+}
+
 
 @media(max-width: 767px) {
 	.map {
@@ -354,4 +366,15 @@ a:not([href]){
 	.legend {
 		display: none;
 	}
+}
+
+.star{
+	font-size: 25px;
+	color: #f2a223;
+}
+
+.rating-show{
+  width: 100%;
+  text-align: center;
+  position: relative;
 }

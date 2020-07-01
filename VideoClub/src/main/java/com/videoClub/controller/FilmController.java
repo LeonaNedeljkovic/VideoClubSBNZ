@@ -68,14 +68,14 @@ public class FilmController {
 		return new ResponseEntity<>(filmService.saveFilmToFavourites(id, user), HttpStatus.OK);
 	}
 	
-	@GetMapping(value = "/films/recommended", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "/films/recommended/{number}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('ROLE_REGISTERED_USER')")
-	public ResponseEntity<List<RecommendedFilm>> getRecommended() {
+	public ResponseEntity<List<RecommendedFilm>> getRecommended(@PathVariable(value = "number") Integer number) {
 		RegisteredUser user = (RegisteredUser) this.customUserDetailsService.loadUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 		if(user == null){
 			throw new NotLoggedIn();
 		}
-		return new ResponseEntity<>(filmService.getRecommendedFilms(user), HttpStatus.OK);
+		return new ResponseEntity<>(filmService.getRecommendedFilms(user, number), HttpStatus.OK);
 	}
 	
 	@GetMapping(value = "/films/top_rated/{number}", produces = MediaType.APPLICATION_JSON_VALUE)
