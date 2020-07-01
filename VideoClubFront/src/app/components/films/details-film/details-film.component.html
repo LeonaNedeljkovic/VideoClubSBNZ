@@ -1,0 +1,47 @@
+<div class="container">
+    <div class="row">
+      <h2 style="text-align: center; width: 100%;">{{film.name}}</h2>
+      <div class="info-container">
+        <table class="info-table">
+          <tbody>
+            <tr>
+              <td>Director: </td><td>{{film.director.name}} {{film.director.surname}}</td>
+            </tr>
+            <tr>
+              <td>Screenwriter: </td><td>{{film.writtenBy.name}} {{film.writtenBy.surname}}</td>
+            </tr>
+          </tbody>
+        </table>
+        <br/>
+        <table class="info-table">
+          <tbody>
+            <tr>
+              <td>Actors: </td>
+            </tr>
+            <tr *ngFor="let actor of film.actors; let i = index">
+              <td>{{actor.name}} {{actor.surname}}</td>
+            </tr>
+          </tbody>
+        </table>
+        <button name="watch-film" class="transparentButton" type="input" (click)="hello()">Watch Film</button>
+      </div>
+      <div class="info-container" >
+        <div><img class="poster" src="{{film.poster}}" /></div>
+        <div class="rating-show">
+          <span class="star" *ngIf="film.rating >= 1">&#x2605;</span>
+          <span class="star" *ngIf="1 > film.rating">&#x2606;</span>
+          <span class="star" *ngIf="film.rating >= 1.5">&#x2605;</span>
+          <span class="star" *ngIf="1.5 > film.rating">&#x2606;</span>
+          <span class="star" *ngIf="film.rating >= 2.5">&#x2605;</span>
+          <span class="star" *ngIf="2.5 > film.rating">&#x2606;</span>
+          <span class="star" *ngIf="film.rating >= 3.5">&#x2605;</span>
+          <span class="star" *ngIf="3.5 > film.rating">&#x2606;</span>
+          <span class="star" *ngIf="film.rating >= 4.5">&#x2605;</span>
+          <span class="star" *ngIf="4.5 > film.rating">&#x2606;</span>
+        </div>
+        <div><p style="text-align: center; width: 100%; padding-top:10px; padding-bottom:0px;"><b>Rating: {{film.rating}}</b></p></div>
+        <button name="rate-film" class="orangeButton" type="input" (click)="hello()">Rate Film</button>
+        <button name="favourite-film" class="transparentButton" type="input" (click)="hello()">Add to favourites</button>
+      </div>
+    </div>
+  </div> 

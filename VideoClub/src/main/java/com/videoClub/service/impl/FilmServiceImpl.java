@@ -152,7 +152,7 @@ public class FilmServiceImpl implements FilmService{
 	}
 
 	@Override
-	public List<RecommendedFilm> getRecommendedFilms(RegisteredUser user) {
+	public List<RecommendedFilm> getRecommendedFilms(RegisteredUser user, int number) {
 		List<Film> unwatched = filmRepository.getUnwatchedFilms(user.getId());
 		KieSession kieSession = kieContainer.newKieSession("filmRecommendationRulesSession");
 		kieSession.getAgenda().getAgendaGroup("user-flags").setFocus();
@@ -183,8 +183,8 @@ public class FilmServiceImpl implements FilmService{
 		Collections.sort(recommendedFilms, new RecommendedFilmComparator());
 		recommendedFilms = recommendedFilms.stream().filter(recommendedFilm -> recommendedFilm.getRecommendPoints() > 0)
                 .collect(Collectors.toList());
-		if(recommendedFilms.size() > 15) {
-			recommendedFilms = recommendedFilms.subList(0, 14);
+		if(recommendedFilms.size() > number) {
+			recommendedFilms = recommendedFilms.subList(0, number);
 		}
 		return recommendedFilms;
 	}

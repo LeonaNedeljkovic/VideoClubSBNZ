@@ -42,8 +42,8 @@ export class FilmService {
         })  );
     }
 
-    filmsRecommended = (): Observable<RecommendedFilm[]> => {
-    return this.http.get<RecommendedFilm[]>(`/api/films/recommended`).pipe(
+    filmsRecommended = (num: number): Observable<RecommendedFilm[]> => {
+    return this.http.get<RecommendedFilm[]>(`/api/films/recommended/${num}`).pipe(
       map( (res: any) => {
           return res;
       })  );

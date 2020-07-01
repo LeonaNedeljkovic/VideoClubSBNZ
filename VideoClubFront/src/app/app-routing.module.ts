@@ -5,6 +5,7 @@ import { RegisterUserComponent } from './pages/register-user/register-user.compo
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { ShowFilmsComponent } from './components/films/show-films/show-films.component';
 import { SearchFilmsComponent } from './components/films/search-films/search-films.component';
+import { DetailsFilmComponent } from './components/films/details-film/details-film.component';
 
 
 
@@ -23,7 +24,8 @@ const routes: Routes = [
     component: DashboardComponent,
     children: [
       { path: 'films-show', component: ShowFilmsComponent },
-      { path: 'films-search', component: SearchFilmsComponent }
+      { path: 'films-search', component: SearchFilmsComponent },
+      { path: 'film-details', component: DetailsFilmComponent }
     ] 
   },
 

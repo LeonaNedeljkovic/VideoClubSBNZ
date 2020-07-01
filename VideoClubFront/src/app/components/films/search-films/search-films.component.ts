@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FilmService } from 'src/app/services/film.service';
 import { Film } from 'src/app/model/film.model';
+import { RecommendedFilm } from 'src/app/model/recommended-film.model';
+import { Router } from '@angular/router';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { DetailsFilmComponent } from '../details-film/details-film.component';
 
 @Component({
   selector: 'app-search-films',
@@ -13,7 +17,7 @@ export class SearchFilmsComponent implements OnInit {
   private searchedFilm : string;
   private searchedGenre : string;
 
-  constructor(private filmService: FilmService) { }
+  constructor(private modalService: NgbModal, private router: Router, private filmService: FilmService) { }
 
   ngOnInit() {
     this.initializeFilms();
@@ -26,6 +30,9 @@ export class SearchFilmsComponent implements OnInit {
     }
     else if(parameter == 'mostPopular'){
       this.showAllMostPopular();
+    }
+    else if(parameter == 'recommended'){
+      this.showAllRecommended();
     }
     else if(parameter == 'search'){
       var search = localStorage.getItem('searchdParameter');
@@ -55,6 +62,18 @@ export class SearchFilmsComponent implements OnInit {
     )
   }
 
+  showAllRecommended(){
+    this.filmService.filmsRecommended(100).subscribe(
+      (films:RecommendedFilm[]) => {
+        let recommendedFilms : Film[] = [];
+        films.forEach(element => {
+          recommendedFilms.push(element.film);
+        });
+        this.films = recommendedFilms;
+      }
+    )
+  }
+
   showSearchedByName(){
     this.filmService.getByName(this.searchedFilm).subscribe(
       (films:Film[]) => {
@@ -69,6 +88,15 @@ export class SearchFilmsComponent implements OnInit {
         this.films = films;
       }
     )
+  }
+
+  mainpage(){
+    this.router.navigate(['dashboard/films-show']);
+  }
+
+  moreInfo(id:number){
+    localStorage.setItem('film-details', id.toString());
+    const modalRef = this.modalService.open(DetailsFilmComponent);
   }
 
 }

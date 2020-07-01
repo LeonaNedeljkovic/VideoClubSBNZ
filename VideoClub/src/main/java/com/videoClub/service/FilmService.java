@@ -21,6 +21,6 @@ public interface FilmService {
 	public void delete(Long id);
 	public Film rateFilm(Long filmId, Integer rate, RegisteredUser user);
 	public List<Film> saveFilmToFavourites(Long filmId, User user);
-	public List<RecommendedFilm> getRecommendedFilms(RegisteredUser user);
+	public List<RecommendedFilm> getRecommendedFilms(RegisteredUser user, int number);
 	public List<Film> save(List<Film> films);
 }
