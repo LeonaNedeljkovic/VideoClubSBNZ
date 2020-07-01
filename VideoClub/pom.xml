@@ -95,6 +95,12 @@
     </dependency>
     
     <dependency>
+			<groupId>org.kie</groupId>
+			<artifactId>kie-ci</artifactId>
+			<version>${runtime.version}</version>
+	</dependency>
+    
+    <dependency>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-security</artifactId>
 	</dependency>
@@ -116,5 +122,12 @@
       <artifactId>jbpm-test</artifactId>
       <version>${runtime.version}</version>
     </dependency>
+    
+    <dependency>
+	  		<groupId>sbnz.integracija</groupId>
+	  		<artifactId>drools-spring-kjar</artifactId>
+	  		<type>jar</type>
+	  		<version>0.0.1-SNAPSHOT</version>
+  	</dependency>
   </dependencies>
 </project>

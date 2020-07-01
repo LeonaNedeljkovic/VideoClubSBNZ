@@ -1,0 +1,27 @@
+template header
+title
+amount
+ageCategory
+header
+body
+
+package com.ruletemplate.FreeMinutesByTitle;
+
+import com.videoClub.template.FreeMinutes;
+import com.videoClub.model.RegisteredUser;
+import com.videoClub.model.Notification;
+import com.videoClub.model.enumeration.AgeCategory;
+import com.videoClub.model.enumeration.Rank;
+
+template "free-minutes-by-title-rules"
+
+rule "Free Minutes for User: Title rank_@{row.rowNumber}"
+no-loop true
+when
+    $user: RegisteredUser( title == Rank.@{title} )
+then
+    $user.setAvailableMinutes($user.getAvailableMinutes()+@{amount});
+    $user.getNotifications().add(new Notification("@{header}","@{body}",false, $user));
+end
+
+end template

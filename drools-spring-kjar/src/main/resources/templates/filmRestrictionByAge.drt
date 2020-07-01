@@ -1,0 +1,21 @@
+template header
+ageCategory
+id
+
+package com.ruletemplate.restrictFilmsById;
+
+import com.videoClub.template.FilmAgeRestrictionTemplate;
+import com.videoClub.model.*;
+import com.videoClub.model.enumeration.AgeCategory;
+
+template "restrict-film-by-age-category-rules"
+
+rule "Restrict film age category_@{row.rowNumber}"
+no-loop true
+when
+    $film: Film( id == @{id} )
+then
+    $film.addNewRestrictedAgeCategory(AgeCategory.@{ageCategory});
+end
+
+end template
