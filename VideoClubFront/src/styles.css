@@ -358,6 +358,16 @@ a:not([href]){
 	font-size: 10px;
 }
 
+.orangeButton{
+    width: 80%;
+	border-style: none;
+	color:black;
+	background-color:#f2a223;
+	padding: 2px;
+	font-size: 10px;
+	font-weight:bold;
+}
+
 
 @media(max-width: 767px) {
 	.map {
@@ -377,4 +387,18 @@ a:not([href]){
   width: 100%;
   text-align: center;
   position: relative;
+}
+
+.red-text{
+	color:red;
+	font-size: 15px;
+	text-align: center;
+	width: 100%;
+}
+
+.green-text{
+	color:green;
+	font-size: 15px;
+	text-align: center;
+	width: 100%;
 }

@@ -1,6 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { FilmService } from 'src/app/services/film.service';
 import { Film } from 'src/app/model/film.model';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Router } from '@angular/router';
+import { RatingComponent } from '../../reviews/rating/rating.component';
+import { CreateReviewComponent } from '../../reviews/create-review/create-review.component';
+import { ReviewDetails } from 'src/app/dto/review-details';
+import { Review } from 'src/app/model/review.model';
+import { ReviewService } from 'src/app/services/review.service';
 
 @Component({
   selector: 'app-details-film',
@@ -9,50 +16,63 @@ import { Film } from 'src/app/model/film.model';
 })
 export class DetailsFilmComponent implements OnInit {
 
-  private film : Film;
+  private film : Film = null;
+  private loggedIn : boolean = false;
+  private id : number;
+  private reviewDetails : ReviewDetails = null;
+  private reviews : Review[] = [];
 
-  constructor(private filmService : FilmService) { }
+  constructor(private modalService: NgbModal, private router: Router, private filmService : FilmService, private reviewService : ReviewService) { }
 
   ngOnInit() {
-    var id : number = +(localStorage.getItem('film-details'));
-    this.getFilm(id);
+    this.id = +(localStorage.getItem('film-details'));
+    this.getFilm();
+
+    var loogedUser = JSON.parse(localStorage.getItem('currentUser'));
+    if(loogedUser != null){
+      this.loggedIn = true;
+    }
+    this.initReviewDetails();
   }
 
-  getFilm(id:number){
-    this.filmService.getFilmInfo(id).subscribe(
+  getFilm(){
+    this.filmService.getFilmInfo(this.id).subscribe(
       (film:Film) => {
         this.film = film;
-        this.initializeRating();
       }
     )
   }
 
-  initializeRating(){
-    if(this.film.rating >= 1 && this.film.rating < 1.5){
-      var elem1 = document.getElementById('star1');
-      elem1.style.content = "&#x2605;";
+  rateFilm(){
+    if(this.loggedIn){
+      localStorage.setItem('film-rate', this.id.toString());
+      const modalRef = this.modalService.open(RatingComponent);
     }
-    else if(this.film.rating >= 1.5 && this.film.rating < 2.5){
-      document.getElementById('star1').style.content = "&#x2605;";
-      document.getElementById('star2').style.content = "&#x2605;";
+  }
+
+  watchFilm(){
+    const modalRef = this.modalService.open(CreateReviewComponent);
+  }
+
+  initReviewDetails(){
+    if(this.loggedIn){
+      this.reviewService.getReviewDetails(this.id.toString()).subscribe(
+        (details:ReviewDetails) => {
+          this.reviewDetails = details;
+        }
+      )
     }
-    else if(this.film.rating >= 2.5 && this.film.rating < 3.5){
-      document.getElementById('star1').style.content = "&#x2605;";
-      document.getElementById('star2').style.content = "&#x2605;";
-      document.getElementById('star3').style.content = "&#x2605;";
+    else{
+      this.reviewDetails = {startedWatching:false, addedToFavourites:false, watched:false, rate:0};
     }
-    else if(this.film.rating >= 3.5 && this.film.rating < 4.5){
-      document.getElementById("star1").style.content = "&#x2605;";
-      document.getElementById("star2").style.content = "&#x2605;";
-      document.getElementById("star3").style.content = "&#x2605;";
-      document.getElementById("star4").style.content = "&#x2605;";
-    }
-    else if(this.film.rating >= 4.5){
-      document.getElementById("star1").style.content = "&#x2605;";
-      document.getElementById("star2").style.content = "&#x2605;";
-      document.getElementById("star3").style.content = "&#x2605;";
-      document.getElementById("star4").style.content = "&#x2605;";
-      document.getElementById("star5").style.content = "&#x2605;";
+  }
+
+  favourites(id:string){
+    if(this.loggedIn){
+      this.filmService.addToFavourites(this.id.toString()).subscribe(
+        
+      )
+      location.reload();
     }
   }
 

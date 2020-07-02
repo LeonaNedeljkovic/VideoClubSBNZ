@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.videoClub.dto.ReviewDTO;
+import com.videoClub.dto.ReviewDetailsDTO;
 import com.videoClub.model.RegisteredUser;
 import com.videoClub.model.Review;
 import com.videoClub.model.enumeration.AgeCategory;
@@ -18,4 +19,5 @@ public interface ReviewService {
 	public Review save(Review review);
 	List<Review> getReviewsOfFavouriteFilms(Long userId);
 	public List<Review> getReviewsByAgeAndGender(Long userId, AgeCategory category, Gender gender);
+	ReviewDetailsDTO getReviewDetails(RegisteredUser user, Long filmId);
 }

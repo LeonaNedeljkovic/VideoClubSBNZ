@@ -37,7 +37,7 @@
             </div>
             <div  >
               <div class="movie" *ngFor="let film of films">
-                <div class="movie-image"><a href="#" ><img src="{{film.poster}}" /></a> </div>
+                <div class="movie-image"><a (click)="watchFilm(film.id)" ><img src="{{film.poster}}" /></a> </div>
                 <div class="rating">
                   <p class="film-name">{{film.name}}</p>
                   <div class="rating-show">

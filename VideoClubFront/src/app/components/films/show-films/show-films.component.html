@@ -40,7 +40,7 @@
         </div>
         <div *ngFor="let recommended of recommendedFilms" >
           <div class="movie">
-            <div class="movie-image"><a href="#" ><img src="{{recommended.film.poster}}" alt="" /></a> </div>
+            <div class="movie-image"><a (click)="watchFilm(recommended.film.id)" ><img src="{{recommended.film.poster}}" alt="" /></a> </div>
             <div class="rating">
               <p class="film-name">{{recommended.film.name}}</p>
               <div class="rating-show">
@@ -69,7 +69,7 @@
         </div>
         <div *ngFor="let film of mostPopularFilms" >
           <div class="movie">
-            <div class="movie-image"><a href="#" ><img src="{{film.poster}}" alt="" /></a> </div>
+            <div class="movie-image"><a (click)="watchFilm(film.id)" ><img src="{{film.poster}}" alt="" /></a> </div>
             <div class="rating">
               <p class="film-name">{{film.name}}</p>
               <div class="rating-show">
@@ -97,7 +97,7 @@
         </div>
         <div *ngFor="let film of topRatedFilms" >
           <div class="movie">
-            <div class="movie-image"><a href="#" ><img src="{{film.poster}}" alt="" /></a> </div>
+            <div class="movie-image"><a (click)="watchFilm(film.id)" ><img src="{{film.poster}}" alt="" /></a> </div>
             <div class="rating">
               <p class="film-name">{{film.name}}</p>
               <div class="rating-show">

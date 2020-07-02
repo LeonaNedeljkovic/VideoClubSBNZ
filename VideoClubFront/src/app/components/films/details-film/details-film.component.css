@@ -106,3 +106,13 @@ textarea {
      content: "\2605";
      position: absolute;
   }
+
+  .green-td{
+    color:green;
+    font-size: 12px;
+  }
+
+  .red-td{
+    color:red;
+    font-size: 12px;
+  }
