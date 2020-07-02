@@ -6,6 +6,9 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { ShowFilmsComponent } from './components/films/show-films/show-films.component';
 import { SearchFilmsComponent } from './components/films/search-films/search-films.component';
 import { DetailsFilmComponent } from './components/films/details-film/details-film.component';
+import { RatingComponent } from './components/reviews/rating/rating.component';
+import { CreateReviewComponent } from './components/reviews/create-review/create-review.component';
+import { MyReviewsComponent } from './components/reviews/my-reviews/my-reviews.component';
 
 
 
@@ -14,6 +17,14 @@ const routes: Routes = [
  {
     path: 'login',
     component: LoginComponent,
+  },
+  {
+    path: 'rating',
+    component: RatingComponent,
+  },
+  {
+    path: 'review',
+    component: CreateReviewComponent,
   },
   {
     path: 'registerUser',
@@ -25,7 +36,8 @@ const routes: Routes = [
     children: [
       { path: 'films-show', component: ShowFilmsComponent },
       { path: 'films-search', component: SearchFilmsComponent },
-      { path: 'film-details', component: DetailsFilmComponent }
+      { path: 'film-details', component: DetailsFilmComponent },
+      { path: 'reviews', component: MyReviewsComponent }
     ] 
   },
 

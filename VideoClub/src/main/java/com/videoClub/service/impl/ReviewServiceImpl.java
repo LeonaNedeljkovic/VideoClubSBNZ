@@ -14,9 +14,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.videoClub.dto.ReviewDTO;
+import com.videoClub.dto.ReviewDetailsDTO;
 import com.videoClub.event.FilmWatchEvent;
 import com.videoClub.exception.EntityNotFound;
 import com.videoClub.model.Action;
+import com.videoClub.model.Film;
 import com.videoClub.model.RegisteredUser;
 import com.videoClub.model.Review;
 import com.videoClub.model.TimeInterval;
@@ -81,6 +83,29 @@ public class ReviewServiceImpl implements ReviewService{
 		kieSession.fireAllRules();
 		kieSession.dispose();
 		return reviewRepository.save(review);
+	}
+	
+	@Override
+	public ReviewDetailsDTO getReviewDetails(RegisteredUser user, Long filmId){
+		ReviewDetailsDTO details = new ReviewDetailsDTO(false, false, 0, false);
+		for(Review review : user.getReviews()){
+			if(review.getFilm().getId() == filmId){
+				details.setStartedWatching(true);
+				if(review.isWatched()){
+					details.setWatched(true);
+				}
+				else{
+					details.setWatched(false);
+				}
+				details.setRate(review.getRate());
+			}
+		}
+		for(Film film : user.getFavouriteFilms()){
+			if(film.getId() == filmId){
+				details.setAddedToFavourites(true);
+			}
+		}
+		return details;
 	}
 	
 	@Override

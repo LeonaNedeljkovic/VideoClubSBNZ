@@ -15,10 +15,10 @@
         <li><a (click)="register()">REGISTER</a></li>
       </ul>
       <ul *ngIf="loggedIn==true">
-        <li><a class="active">HOME</a></li>
-        <li><a >OFFERS</a></li>
-        <li><a >ACTIONS</a></li>
-        <li><a >MY PROFILE</a></li>
+        <li><a [class.active]="activePage==='home'" (click)="home()">HOME</a></li>
+        <li><a [class.active]="activePage==='offers'" (click)="offers()">OFFERS</a></li>
+        <li><a [class.active]="activePage==='actions'" (click)="actions()">ACTIONS</a></li>
+        <li><a [class.active]="activePage==='profile'" (click)="profile()">MY PROFILE</a></li>
         <li><a >NOTIFICATIONS</a></li>
         <li><a (click)="logout()">LOG OUT</a></li>
       </ul>

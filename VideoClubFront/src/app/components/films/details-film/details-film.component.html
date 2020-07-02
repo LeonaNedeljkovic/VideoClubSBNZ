@@ -23,7 +23,32 @@
             </tr>
           </tbody>
         </table>
-        <button name="watch-film" class="transparentButton" type="input" (click)="hello()">Watch Film</button>
+        <br/>
+        <p>Duration: {{film.duration}}min</p>
+        <table class="info-table">
+          <tbody *ngIf="reviewDetails.startedWatching === true">
+            <tr *ngIf="reviewDetails.watched === true">
+              <td class="green-td">&#x2611; Watched</td>
+            </tr>
+            <tr *ngIf="reviewDetails.watched === false">
+              <td>&#x2612; Not watched to the end</td>
+            </tr>
+            <tr *ngIf="reviewDetails.rate == 0">
+              <td >&#x2612; Not rated</td>
+            </tr>
+            <tr *ngIf="reviewDetails.rate > 0">
+              <td class="green-td">&#x2611; Rate: {{reviewDetails.rate}}</td>
+            </tr>
+            <tr *ngIf="reviewDetails.addedToFavourites === false">
+              <td>&#x2612; Not added to favourites</td>
+            </tr>
+            <tr *ngIf="reviewDetails.addedToFavourites === true">
+              <td class="green-td">&#x2611; Added to favourites</td>
+            </tr>
+          </tbody>
+        </table>
+        <br/>
+        <button name="watch-film" class="transparentButton" type="input" (click)="watchFilm()">Watch Film</button>
       </div>
       <div class="info-container" >
         <div><img class="poster" src="{{film.poster}}" /></div>
@@ -40,8 +65,10 @@
           <span class="star" *ngIf="4.5 > film.rating">&#x2606;</span>
         </div>
         <div><p style="text-align: center; width: 100%; padding-top:10px; padding-bottom:0px;"><b>Rating: {{film.rating}}</b></p></div>
-        <button name="rate-film" class="orangeButton" type="input" (click)="hello()">Rate Film</button>
-        <button name="favourite-film" class="transparentButton" type="input" (click)="hello()">Add to favourites</button>
+        <button *ngIf="reviewDetails.watched === true" class="orangeButton" type="input" (click)="rateFilm()">Rate Film</button>
+        <button *ngIf="reviewDetails.watched === false" class="orangeButton" type="input" disabled> Rate Film</button>
+        <button *ngIf="reviewDetails.rate == 5" class="transparentButton" type="input" (click)="favourites()">Add to favourites</button>
+        <button *ngIf="5 > reviewDetails.rate" class="transparentButton" type="input" disabled>Add to favourites</button>
       </div>
     </div>
   </div> 

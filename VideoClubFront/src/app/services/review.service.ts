@@ -7,6 +7,7 @@ import { Action } from '../model/action.model';
 import { MessageDto } from '../dto/message.dto';
 import { ReviewDto } from '../dto/review.dto';
 import { Review } from '../model/review.model';
+import { ReviewDetails } from '../dto/review-details';
 
 @Injectable({providedIn: 'root'})
 export class ReviewService {
@@ -35,5 +36,12 @@ export class ReviewService {
               return res;
           })  );
     }
+
+    getReviewDetails = (id:string): Observable<ReviewDetails> => {
+      return this.http.get<Review>(`/api/review/details/${id}`).pipe(
+        map( (res: any) => {
+            return res;
+        })  );
+  }
 
 }

@@ -34,6 +34,7 @@ export class RegisterUserComponent implements OnInit {
     this.user.enabled = false;
     if (this.user.name != undefined && this.user.surname != undefined && this.user.email != undefined &&
       this.user.username != undefined && this.user.password!=undefined && this.user.age!=undefined){
+
       if (this.user.password==this.repeatedPassword){
         if (this.validateEmail(this.user.email) == true){
          var e = document.getElementById("chosen");
@@ -61,10 +62,13 @@ export class RegisterUserComponent implements OnInit {
         }
         
       }else {
+        
         this.message = 'Passwords must match.';
         this.type = 'danger';
       }
+      
   }else {
+   
     this.message = 'Please fill all fields.';
     this.type = 'danger';
   }

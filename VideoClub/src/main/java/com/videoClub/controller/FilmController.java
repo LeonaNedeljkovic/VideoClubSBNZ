@@ -50,7 +50,7 @@ public class FilmController {
 		return null;
 	}
 	
-	@GetMapping(value = "/film/rate/{id}/{rate}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "/film/rate/{id}/{rate}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Film> rateFilm(@PathVariable(value = "id") Long id, @PathVariable(value = "rate") Integer rate) {
 		RegisteredUser user = (RegisteredUser) this.customUserDetailsService.loadUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 		if(user == null){
@@ -59,7 +59,21 @@ public class FilmController {
 		return new ResponseEntity<>(filmService.rateFilm(id, rate, user), HttpStatus.OK);
 	}
 	
-	@GetMapping(value = "/film/favourites/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "/film/favourites/exists/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Boolean> checkIfFavourite(@PathVariable(value = "id") Long id) {
+		RegisteredUser user = (RegisteredUser) this.customUserDetailsService.loadUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+		if(user == null){
+			throw new NotLoggedIn();
+		}
+		for(Film film : user.getFavouriteFilms()){
+			if(film.getId() == id){
+				return new ResponseEntity<>(true, HttpStatus.OK);
+			}
+		}
+		return new ResponseEntity<>(false, HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/film/favourites/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<Film>> addToFavourites(@PathVariable(value = "id") Long id) {
 		RegisteredUser user = (RegisteredUser) this.customUserDetailsService.loadUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 		if(user == null){

@@ -42,6 +42,13 @@ export class FilmService {
         })  );
     }
 
+    checkIfFavourite = (id: string): Observable<boolean> => {
+        return this.http.get<boolean>(`/api/film/favourites/exists/${id}`).pipe(
+          map( (res: any) => {
+              return res;
+          })  );
+      }
+
     filmsRecommended = (num: number): Observable<RecommendedFilm[]> => {
     return this.http.get<RecommendedFilm[]>(`/api/films/recommended/${num}`).pipe(
       map( (res: any) => {

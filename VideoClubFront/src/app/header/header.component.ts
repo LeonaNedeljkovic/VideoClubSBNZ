@@ -18,24 +18,32 @@ export class HeaderComponent implements OnInit {
   loggedUser: CurrentUser;
   username: string;
   loggedIn: boolean = false;
-  activePage: String;
+  activePage: string;
 
 
   //moze da se user povuce iz storage-a; uloga i username, ne ceo user, jer se cuva token 
   constructor(private _router: Router, private modalService: NgbModal, private AuthenticationService: AuthenticationService) { }
 
   ngOnInit() {
-    this.activePage = "home";
     this.loggedUser = JSON.parse(
       localStorage.getItem('currentUser'));
-      console.log(this.loggedUser);
-
-
     if (this.loggedUser == null) {
       this.loggedIn = false;
-
     } else {
       this.loggedIn = true;
+    }
+    this.reloadActiveUrl();
+  }
+
+  reloadActiveUrl(){
+    if(this._router.url === '/dashboard/films-show'){
+      this.activePage = "home";
+    }
+    else if(this._router.url === '/dashboard/films-search'){
+      this.activePage = "home";
+    }
+    else if(this._router.url === '/dashboard/reviews'){
+      this.activePage = "profile";
     }
   }
 
@@ -46,14 +54,23 @@ export class HeaderComponent implements OnInit {
   }
   register() {
     const modalRef = this.modalService.open(RegisterUserComponent);
-    //modalRef.componentInstance.name = 'Login';
+  }
+
+  home(){
+    this.activePage = "home";
+    this._router.navigate(['/dashboard/films-show']);
   }
 
   logout() {
     this.AuthenticationService.logout();
     localStorage.removeItem('currentUser');
-    this._router.navigate(['/dashboard/films-show']);
+    this.home();
     location.reload();
+  }
+
+  profile(){
+    this.activePage = "profile";
+    this._router.navigate(['/dashboard/reviews']);
   }
 
 }

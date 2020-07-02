@@ -19,6 +19,9 @@ import { DatePipe } from '@angular/common';
 import { ShowFilmsComponent } from './components/films/show-films/show-films.component';
 import { SearchFilmsComponent } from './components/films/search-films/search-films.component';
 import { DetailsFilmComponent } from './components/films/details-film/details-film.component';
+import { RatingComponent } from './components/reviews/rating/rating.component';
+import { CreateReviewComponent } from './components/reviews/create-review/create-review.component';
+import { MyReviewsComponent } from './components/reviews/my-reviews/my-reviews.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +33,10 @@ import { DetailsFilmComponent } from './components/films/details-film/details-fi
     RegisterUserComponent,
     ShowFilmsComponent,
     SearchFilmsComponent,
-    DetailsFilmComponent
+    DetailsFilmComponent,
+    RatingComponent,
+    CreateReviewComponent,
+    MyReviewsComponent
   ],
   imports: [
     NgbModule,

@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { RecommendedFilm } from 'src/app/model/recommended-film.model';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DetailsFilmComponent } from '../details-film/details-film.component';
+import { CreateReviewComponent } from '../../reviews/create-review/create-review.component';
 
 @Component({
   selector: 'app-show-films',
@@ -85,6 +86,11 @@ export class ShowFilmsComponent implements OnInit {
   moreInfo(id:number){
     localStorage.setItem('film-details', id.toString());
     const modalRef = this.modalService.open(DetailsFilmComponent);
+  }
+
+  watchFilm(id:number){
+    localStorage.setItem('film-review', id.toString());
+    const modalRef = this.modalService.open(CreateReviewComponent);
   }
 
 }

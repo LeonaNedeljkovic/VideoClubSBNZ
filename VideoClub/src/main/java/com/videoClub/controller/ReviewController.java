@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.videoClub.dto.ReviewDTO;
+import com.videoClub.dto.ReviewDetailsDTO;
 import com.videoClub.exception.EntityForbidden;
 import com.videoClub.exception.NotLoggedIn;
 import com.videoClub.model.RegisteredUser;
@@ -67,6 +68,16 @@ public class ReviewController {
 			throw new EntityForbidden();
 		}
 		return new ResponseEntity<>(review, HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/review/details/{filmId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('ROLE_REGISTERED_USER')")
+	public ResponseEntity<ReviewDetailsDTO> getReviewDetails(@PathVariable(value = "filmId") Long filmId) {
+		RegisteredUser user = (RegisteredUser) this.customUserDetailsService.loadUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+		if(user == null){
+			throw new NotLoggedIn();
+		}
+		return new ResponseEntity<>(reviewService.getReviewDetails(user, filmId), HttpStatus.OK);
 	}
 	
 }
