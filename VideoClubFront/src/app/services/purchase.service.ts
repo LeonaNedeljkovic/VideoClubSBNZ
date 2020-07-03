@@ -17,8 +17,17 @@ export class PurchaseService {
     createPurchase = (offerId: string): Observable<Purchase> => {
       return this.http.get<Purchase>(`/api/purchase/create/${offerId}`).pipe(
         map( (res: any) => {
-            return res;
-        })  );
+          let message2 = res && res['message'];
+          if(message2){
+            console.log(res['message']);
+            console.log(res['result']);
+            localStorage.setItem('messagePurchase', JSON.stringify({
+              message: res['message'],
+              result: res['result']
+            }));
+          }
+          return res;
+        }) );
     }
 
     getPurchase = (id:string): Observable<Purchase> => {

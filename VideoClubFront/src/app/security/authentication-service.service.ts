@@ -4,6 +4,7 @@ import {Observable} from 'rxjs';
 import { map } from "rxjs/operators";
 import { JwtUtilsService } from './jwt-utils.service';
 import { RegistedUser } from '../model/registered-user.model';
+import { Message } from '../dto/message';
 
 
 @Injectable()
@@ -16,16 +17,26 @@ export class AuthenticationService {
 
   
 
-  login(username: string, password: string) {
+  login(username: string, password: string) : Observable<any> {
     var headers: HttpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this.http.post(this.loginPath, JSON.stringify({ username, password }), { headers }).pipe(
+    return this.http.post<any>(this.loginPath, JSON.stringify({ username, password }), { headers }).pipe(
       map( ((res: any) => {
           let token = res && res['accessToken'];
+          let message2 = res && res['message'];
           if (token) {
             localStorage.setItem('currentUser', JSON.stringify({
               role: res['role'],
               token: res['accessToken']
             }));
+          }
+          if(message2){
+            console.log(res['message']);
+            console.log(res['result']);
+            localStorage.setItem('message2', JSON.stringify({
+              message: res['message'],
+              result: res['result']
+            }));
+            
           }  
       }) 
       )  

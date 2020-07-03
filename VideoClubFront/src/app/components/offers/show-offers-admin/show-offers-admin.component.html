@@ -1,0 +1,18 @@
+<div class="container">    
+    <table class="table table-striped">
+        <thead>
+            <th></th>
+            <th>Minutes</th>
+            <th>Price</th>       
+        </thead>
+        <tbody>
+            <tr *ngFor="let offer of offers">
+                <td>{{offer.id}}</td>
+                <td>{{offer.minutes}}</td>
+                <td>{{offer.price}}</td>
+                <td><button class="orangeButton" (click)="update(offer)">Update</button></td>
+                <td><button class="orangeButton" (click)="delete(offer)">Delete</button></td>
+            </tr>
+        </tbody>
+    </table>
+</div>

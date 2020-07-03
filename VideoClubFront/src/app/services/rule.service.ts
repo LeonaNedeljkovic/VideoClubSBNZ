@@ -12,6 +12,7 @@ import { Film } from '../model/film.model';
 import { FilmAgeRestrictionTemplate } from '../model/film-age-restriction-template.model';
 import { FreeMinutes } from '../model/free-minutes.model';
 import { PointsDto } from '../dto/points.dto';
+import { Report } from '../model/report.model';
 
 @Injectable({providedIn: 'root'})
 export class RuleService {
@@ -141,6 +142,13 @@ export class RuleService {
 
     getGoldTitleReward = (): Observable<PointsDto> => {
         return this.http.get<PointsDto>("/api/gold_title/reward_points").pipe(
+          map( (res: any) => {
+              return res;
+          })  );
+    }
+
+    getAllReports = (): Observable<Report[]> => {
+        return this.http.get<PointsDto>("/api/reports/all").pipe(
           map( (res: any) => {
               return res;
           })  );

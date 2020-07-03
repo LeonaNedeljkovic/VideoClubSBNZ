@@ -80,7 +80,8 @@ public class Film {
 	@Enumerated(EnumType.STRING)
 	private List<AgeCategory> restrictedAgeCategories = new ArrayList<AgeCategory>();
 	
-	@OneToMany(mappedBy = "film", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JsonIgnore
+	@OneToMany(mappedBy = "film_report", fetch = FetchType.LAZY)
 	private List<Report> reports = new ArrayList<Report>();
 
 
@@ -211,6 +212,16 @@ public class Film {
 		this.restrictedAgeCategories = restrictedAgeCategories;
 	}
 	
+	
+	
+	public List<Report> getReports() {
+		return reports;
+	}
+
+	public void setReports(List<Report> reports) {
+		this.reports = reports;
+	}
+
 	public void addNewRestrictedAgeCategory(AgeCategory category){
 		if(!(restrictedAgeCategories.contains(category))){
 			restrictedAgeCategories.add(category);

@@ -27,11 +27,18 @@
       </ul>
       <ul *ngIf="loggedIn==true && loggedUser.role === 'ROLE_ADMIN'">
         <li><a [class.active]="activePage==='home'" (click)="home()">HOME</a></li>
-        <li><a [class.active]="activePage==='offers'" (click)="offers()">OFFERS</a></li>
+        <li><div class="dropdown">
+          <a [class.active]="activePage==='offers'" id="dropdown-a">OFFERS</a>
+            <div class="dropdown-content">
+              <a [class.active]="activePage==='create-offer'" (click)= "createOffer()">Create offer</a>
+              <a [class.active]="activePage==='show-all-offers'" (click)= "showAllOffers()">Show all offers</a>
+            </div>
+          </div></li>
         <li><a [class.active]="activePage==='actions'" (click)="actions()">ACTIONS</a></li>
+        <li><a [class.active]="activePage==='report'" (click)="report()">REPORTS</a></li>
         <li><a [class.active]="activePage==='profile'" (click)="profile()">MY PROFILE</a></li>
         <li><div class="dropdown">
-        <a [class.active]="activePage==='profile'" id="dropdown-a">ACTORS</a>
+        <a [class.active]="activePage==='actors'" id="dropdown-a">ACTORS</a>
           <div class="dropdown-content">
             <a [class.active]="activePage==='add-actor'" (click)= "addActor()">Add actor</a>
             <a [class.active]="activePage==='show-all-actors'" (click)= "showAllActors()">View all</a>

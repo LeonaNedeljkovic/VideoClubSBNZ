@@ -3,6 +3,7 @@ package com.videoClub.service;
 import java.util.List;
 
 import com.videoClub.dto.FilmDTO;
+import com.videoClub.dto.MessageDto;
 import com.videoClub.model.Film;
 import com.videoClub.model.RegisteredUser;
 import com.videoClub.model.User;
@@ -11,7 +12,7 @@ import com.videoClub.model.enumeration.Genre;
 
 public interface FilmService {
 
-	public Film save(FilmDTO filmDTO);
+	public MessageDto save(FilmDTO filmDTO);
 	public Film getOne(Long id);
 	public List<Film> getAll();
 	public List<Film> getTopRated(int number);
