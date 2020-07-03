@@ -19,6 +19,7 @@ export class HeaderComponent implements OnInit {
   username: string;
   loggedIn: boolean = false;
   activePage: string;
+  
 
 
   //moze da se user povuce iz storage-a; uloga i username, ne ceo user, jer se cuva token 
@@ -71,6 +72,21 @@ export class HeaderComponent implements OnInit {
   profile(){
     this.activePage = "profile";
     this._router.navigate(['/dashboard/reviews']);
+  }
+
+  addActor(){
+    this.activePage = "add-actor";
+    this._router.navigate(['/dashboard/add-actor']);
+  }
+
+  showAllActors(){
+    this.activePage = "show-all-actors";
+    this._router.navigate(['/dashboard/show-all-actors']);
+  }
+
+  createFilm(){
+    this.activePage="create-film";
+    this._router.navigate(['dashboard/create-film']);
   }
 
 }

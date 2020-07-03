@@ -33,7 +33,7 @@
   </div>
   <div id="main">
     <div id="content">
-      <div class="box" *ngIf="loggedIn == true">
+      <div class="box" *ngIf="loggedIn == true && loggedUser.role == 'ROLE_REGISTERED_USER'">
         <div class="head">
           <h2 id="recommended">RECOMMENDED FOR YOU</h2>
           <p class="text-right"><a (click)="seeAll('recommended')">See all</a></p>

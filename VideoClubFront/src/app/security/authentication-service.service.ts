@@ -22,7 +22,7 @@ export class AuthenticationService {
           let token = res && res['accessToken'];
           if (token) {
             localStorage.setItem('currentUser', JSON.stringify({
-              userRoleName: res['userRoleName'],
+              role: res['role'],
               token: res['accessToken']
             }));
           }  

@@ -14,11 +14,27 @@
         <li><a (click)="login()">LOG IN</a></li>
         <li><a (click)="register()">REGISTER</a></li>
       </ul>
-      <ul *ngIf="loggedIn==true">
+      <ul *ngIf="loggedIn==true && loggedUser.role === 'ROLE_REGISTERED_USER'">
         <li><a [class.active]="activePage==='home'" (click)="home()">HOME</a></li>
         <li><a [class.active]="activePage==='offers'" (click)="offers()">OFFERS</a></li>
         <li><a [class.active]="activePage==='actions'" (click)="actions()">ACTIONS</a></li>
         <li><a [class.active]="activePage==='profile'" (click)="profile()">MY PROFILE</a></li>
+        <li><a >NOTIFICATIONS</a></li>
+        <li><a (click)="logout()">LOG OUT</a></li>
+      </ul>
+      <ul *ngIf="loggedIn==true && loggedUser.role === 'ROLE_ADMIN'">
+        <li><a [class.active]="activePage==='home'" (click)="home()">HOME</a></li>
+        <li><a [class.active]="activePage==='offers'" (click)="offers()">OFFERS</a></li>
+        <li><a [class.active]="activePage==='actions'" (click)="actions()">ACTIONS</a></li>
+        <li><a [class.active]="activePage==='profile'" (click)="profile()">MY PROFILE</a></li>
+        <li><div class="dropdown">
+        <a [class.active]="activePage==='profile'" id="dropdown-a">ACTORS</a>
+          <div class="dropdown-content">
+            <a [class.active]="activePage==='add-actor'" (click)= "addActor()">Add actor</a>
+            <a [class.active]="activePage==='show-all-actors'" (click)= "showAllActors()">View all</a>
+          </div>
+        </div></li>
+        <li><a (click)=createFilm()>FILM</a></li>
         <li><a >NOTIFICATIONS</a></li>
         <li><a (click)="logout()">LOG OUT</a></li>
       </ul>

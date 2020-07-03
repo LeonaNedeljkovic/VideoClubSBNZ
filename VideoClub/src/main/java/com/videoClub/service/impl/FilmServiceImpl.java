@@ -25,6 +25,7 @@ import com.videoClub.model.Review;
 import com.videoClub.model.User;
 import com.videoClub.model.drl.RecommendedFilm;
 import com.videoClub.model.enumeration.Genre;
+import com.videoClub.repository.ArtistRepository;
 import com.videoClub.repository.FilmRepository;
 import com.videoClub.service.ArtistService;
 import com.videoClub.service.FilmService;
@@ -60,21 +61,25 @@ public class FilmServiceImpl implements FilmService{
 		}
 		film.setActors(actors);
 		film.setDirector(artistService.getOne(filmDTO.getDirectorId()));
+		film.setWrittenBy(artistService.getOne(filmDTO.getWrittenId()));
 		film.setName(filmDTO.getName());
 		film.setDescription(filmDTO.getDescription());
 		film.setDuration(filmDTO.getDuration());
 		film.setYear(filmDTO.getYear());
 		film.setGenre(Genre.valueOf(filmDTO.getGenre()));
 		film.setRating(0);
+		film.setPoster(filmDTO.getPoster());
 		for(RegisteredUser registeredUser: userService.getAllRegisteredUsers()) {
 			for(Review r: registeredUser.getReviews()) {
 				kieSession.insert(r);
 			}
 		}
 		for(Film f: filmRepository.findAll()) {
+			System.out.println(f.getName());
 			kieSession.insert(f);
 		}
 		for(Artist artist: film.getActors()) {
+			System.out.println(artist.getName());
 			kieSession.insert(artist);
 		}
 		kieSession.insert(film.getDirector());
