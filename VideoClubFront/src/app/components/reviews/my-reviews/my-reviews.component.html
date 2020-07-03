@@ -2,7 +2,13 @@
     <!-- START PAGE SOURCE -->
     <div id="shell">
       <div id="sub-navigation">
-        
+        <p>ABOUT YOU</p>
+        <table class="info-table">
+            <tbody>
+              <tr><th>Username</th><th>Emal</th><th>Age</th><th>Age Category</th><th>Gender</th><th>Available minutes</th><th>Immunity Points</th><th>Title</th><th>Immunity</th></tr>
+              <tr><td>{{user.username}}</td><td>{{user.email}}</td><td>{{user.age}}</td><td>{{user.ageCategory}}</td><td>{{user.gender}}</td><td>{{user.availableMinutes}}</td><td>{{user.immunityPoints}}</td><td>{{user.title}}</td><td>{{user.immunity}}</td></tr>
+            </tbody>
+        </table>
       </div>
       <div id="main">
         <div id="content">

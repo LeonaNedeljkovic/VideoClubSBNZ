@@ -4,3 +4,26 @@
 	height: 35px;
 	text-align: center;
 }
+
+.info-table{
+    border:none;
+    color:white;
+    background-color:#1b1d1f;
+    padding-top: 50px;
+    padding-bottom: 50px;
+  }
+  
+  .info-table td{
+    padding:5px;
+    width: 11%;
+    font-size: 15px;
+    text-align: center;
+  }
+
+  .info-table th{
+    padding:5px;
+    width: 11%;
+    font-size: 17px;
+    text-align: center;
+    color: #f2a223;
+  }

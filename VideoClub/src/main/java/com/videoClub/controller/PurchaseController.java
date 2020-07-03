@@ -11,7 +11,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,7 +32,7 @@ public class PurchaseController {
 	@Autowired
 	private CustomUserDetailsService customUserDetailsService;
 	
-	@GetMapping(value = "/purchase/{offerId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "/purchase/create/{offerId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('ROLE_REGISTERED_USER')")
 	public ResponseEntity<Purchase> createPurchase(@PathVariable(value = "offerId") Long offerId) {
 		RegisteredUser user = (RegisteredUser) this.customUserDetailsService.loadUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());

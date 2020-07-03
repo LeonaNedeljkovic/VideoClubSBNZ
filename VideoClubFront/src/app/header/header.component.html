@@ -16,10 +16,13 @@
       </ul>
       <ul *ngIf="loggedIn==true">
         <li><a [class.active]="activePage==='home'" (click)="home()">HOME</a></li>
+        <li><a class="dropdown">NOTIFICATIONS<span class="badge" *ngIf="unopenedNotifications() > 0">{{unopenedNotifications()}}</span>
+          <div class="dropdown-content" *ngIf="unopenedNotifications() > 0  || notifications.length >0">
+            <div class="notification" *ngFor="let notification of notifications" (click)="openNotification(notification.header, notification.body, notification.id, notification.opened)"><h2>{{notification.header}}</h2><p>{{notification.body}}</p></div></div>
+        </a></li>
+        <li><a [class.active]="activePage==='profile'" (click)="profile()">MY PROFILE</a></li>
         <li><a [class.active]="activePage==='offers'" (click)="offers()">OFFERS</a></li>
         <li><a [class.active]="activePage==='actions'" (click)="actions()">ACTIONS</a></li>
-        <li><a [class.active]="activePage==='profile'" (click)="profile()">MY PROFILE</a></li>
-        <li><a >NOTIFICATIONS</a></li>
         <li><a (click)="logout()">LOG OUT</a></li>
       </ul>
     </div>

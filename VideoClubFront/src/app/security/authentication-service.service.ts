@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-
+import {Observable} from 'rxjs';
 import { map } from "rxjs/operators";
 import { JwtUtilsService } from './jwt-utils.service';
+import { RegistedUser } from '../model/registered-user.model';
 
 
 @Injectable()
 export class AuthenticationService {
 
   private readonly loginPath = "/auth/login";
-  private readonly getUser = "/auth/login";
+  private readonly getUser = "/auth/";
 
   constructor(private http: HttpClient, private jwtUtilsService: JwtUtilsService) { }
 
@@ -57,6 +58,13 @@ export class AuthenticationService {
     else {
       return undefined;
     }
+  }
+
+  getUserInfo = (): Observable<RegistedUser> => {
+    return this.http.get<RegistedUser>("/auth/user").pipe(
+      map( (res: any) => {
+          return res;
+      })  );
   }
 
 }

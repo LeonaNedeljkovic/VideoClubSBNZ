@@ -402,3 +402,36 @@ a:not([href]){
 	text-align: center;
 	width: 100%;
 }
+
+.dropdown {}
+  
+.dropdown-content {
+	display: none;
+	position: absolute;
+	width: 350px;
+	box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+	padding: 12px 16px;
+	background-color: black;
+	z-index:100;
+	max-height: 400px;
+	overflow: auto;
+}
+
+.notification{
+	background-color: black;
+	color: white;
+	position: relative;
+	padding: 10px;
+	z-index:100;
+	max-height: 100px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.notification:hover{
+	background-color: #383838;
+}
+
+.dropdown:hover .dropdown-content {
+	display: block;
+}

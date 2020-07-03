@@ -22,6 +22,8 @@ import { DetailsFilmComponent } from './components/films/details-film/details-fi
 import { RatingComponent } from './components/reviews/rating/rating.component';
 import { CreateReviewComponent } from './components/reviews/create-review/create-review.component';
 import { MyReviewsComponent } from './components/reviews/my-reviews/my-reviews.component';
+import { OffersShowComponent } from './components/offers/offers-show/offers-show.component';
+import { MessageComponent } from './pages/message/message.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +38,9 @@ import { MyReviewsComponent } from './components/reviews/my-reviews/my-reviews.c
     DetailsFilmComponent,
     RatingComponent,
     CreateReviewComponent,
-    MyReviewsComponent
+    MyReviewsComponent,
+    OffersShowComponent,
+    MessageComponent
   ],
   imports: [
     NgbModule,

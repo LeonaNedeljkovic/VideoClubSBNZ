@@ -6,6 +6,7 @@ import { ActionDto } from '../dto/action.dto';
 import { Action } from '../model/action.model';
 import { MessageDto } from '../dto/message.dto';
 import { Offer } from '../model/offer.model';
+import { OfferDto } from '../dto/offer-dto';
 
 @Injectable({providedIn: 'root'})
 export class OfferService {
@@ -40,6 +41,13 @@ export class OfferService {
           map( (res: any) => {
               return res;
           })  );
+    }
+
+    getOffersForUser = (): Observable<OfferDto[]> => {
+      return this.http.get<Offer[]>("/api/offers/actions").pipe(
+        map( (res: any) => {
+            return res;
+        })  );
     }
     
     deleteOffer = (id:string): Observable<MessageDto> => {

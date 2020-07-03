@@ -7,6 +7,10 @@ import { LoginComponent } from '../pages/login/login.component';
 import { RegisterUserComponent } from '../pages/register-user/register-user.component';
 import { CurrentUser } from '../model/currentUser';
 import { Router } from '@angular/router';
+import { Notification } from '../model/notification.model';
+import { NotificationService } from '../services/notification.service';
+import { Message } from '../dto/message';
+import { MessageComponent } from '../pages/message/message.component';
 
 @Component({
   selector: 'app-header',
@@ -19,20 +23,43 @@ export class HeaderComponent implements OnInit {
   username: string;
   loggedIn: boolean = false;
   activePage: string;
+  notifications : Notification[] = [];
 
 
   //moze da se user povuce iz storage-a; uloga i username, ne ceo user, jer se cuva token 
-  constructor(private _router: Router, private modalService: NgbModal, private AuthenticationService: AuthenticationService) { }
+  constructor(private _router: Router, private modalService: NgbModal,
+     private AuthenticationService: AuthenticationService,
+     private notificationService : NotificationService) { }
 
   ngOnInit() {
     this.loggedUser = JSON.parse(
       localStorage.getItem('currentUser'));
     if (this.loggedUser == null) {
       this.loggedIn = false;
+      this.home();
     } else {
       this.loggedIn = true;
+      this.reloadActiveUrl();
     }
-    this.reloadActiveUrl();
+    this.getNotifications();
+  }
+
+  getNotifications(){
+    this.notificationService.getNotifications().subscribe(
+      (notifications:Notification[]) => {
+        this.notifications = notifications;
+      }
+    )
+  }
+
+  unopenedNotifications(){
+    let unopned = 0;
+    this.notifications.forEach(notification => {
+      if(notification.opened === false){
+        unopned++;
+      }
+    });
+    return unopned;
   }
 
   reloadActiveUrl(){
@@ -44,6 +71,9 @@ export class HeaderComponent implements OnInit {
     }
     else if(this._router.url === '/dashboard/reviews'){
       this.activePage = "profile";
+    }
+    else if(this._router.url === '/dashboard/offers'){
+      this.activePage = "offers";
     }
   }
 
@@ -64,13 +94,32 @@ export class HeaderComponent implements OnInit {
   logout() {
     this.AuthenticationService.logout();
     localStorage.removeItem('currentUser');
-    this.home();
     location.reload();
   }
 
   profile(){
     this.activePage = "profile";
     this._router.navigate(['/dashboard/reviews']);
+  }
+
+  offers(){
+    this.activePage = "offers";
+    this._router.navigate(['/dashboard/offers']);
+  }
+
+  openNotification(header:string, body:string, id:string, opened:boolean){
+    let elId = id;
+    var message : Message = {header:header, message:body, color:"green"};
+    localStorage.setItem('message', JSON.stringify(message));
+    const modalRef = this.modalService.open(MessageComponent);
+    if(opened === false){
+      this.notificationService.openNotification(id).subscribe();
+      this.notifications.forEach(element => {
+        if(element.id == elId){
+          element.opened = true;
+        }
+      });
+    }
   }
 
 }
