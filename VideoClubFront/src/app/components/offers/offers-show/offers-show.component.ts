@@ -37,13 +37,24 @@ export class OffersShowComponent implements OnInit {
 
   purchase(offerId:number){
     this.purchaseService.createPurchase(offerId.toString()).subscribe(
-      (purchase:Purchase) => {
+      data => {
+        if(localStorage.getItem("messagePurchase")!=undefined){
+          var message2= JSON.parse(
+            localStorage.getItem('messagePurchase'));
+          var messages : Message = {header:message2['message'], message:message2['result'], color:"green"};
+            localStorage.setItem('message', JSON.stringify(messages));
+            const modalRef = this.modalService.open(MessageComponent);
+            localStorage.removeItem("messagePurchase");
+        }else{
+          var message : Message = {header:"Purchase done!", message:"You have bought minutes successfully!", color:"green"};
+          localStorage.setItem('message', JSON.stringify(message));
+          const modalRef = this.modalService.open(MessageComponent);
+
+        }
         
       }
     )
-    var message : Message = {header:"Purchase done!", message:"You have bought minutes successfully!", color:"green"};
-    localStorage.setItem('message', JSON.stringify(message));
-    const modalRef = this.modalService.open(MessageComponent);
+    
   }
 
 }

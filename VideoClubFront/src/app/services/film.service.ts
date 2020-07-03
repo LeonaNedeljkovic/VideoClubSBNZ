@@ -14,8 +14,8 @@ export class FilmService {
     
   }
 
-    createFilm = (data: FilmDto): Observable<Film> => {
-        return this.http.post<Film>("/api/film", data).pipe(
+    createFilm = (data: FilmDto): Observable<MessageDto> => {
+        return this.http.post<MessageDto>("/api/film", data).pipe(
         map( (res: any) => {
             return res;
         })  );

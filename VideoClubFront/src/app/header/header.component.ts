@@ -137,6 +137,22 @@ export class HeaderComponent implements OnInit {
     this._router.navigate(['dashboard/create-film']);
   }
 
+  createOffer(){
+    this.activePage="create-offer";
+    this._router.navigate(['dashboard/create-offer']);
+  }
+
+  showAllOffers(){
+    this.activePage="show-all-offers";
+    this._router.navigate(['dashboard/show-all-offers']);
+
+  }
+
+  report(){
+    this.activePage="report";
+    this._router.navigate(['dashboard/reports']);
+  }
+
 }
 
 

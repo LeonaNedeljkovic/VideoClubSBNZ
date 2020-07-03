@@ -15,6 +15,10 @@ import { AddActorComponent } from './components/actors/add-actor/add-actor.compo
 import { ShowAllActorsComponent } from './components/actors/show-all-actors/show-all-actors.component';
 import { UpdateArtistComponent } from './components/actors/update-artist/update-artist.component';
 import { CreateFilmComponent } from './components/films/create-film/create-film.component';
+import { CreateOfferComponent } from './components/offers/create-offer/create-offer.component';
+import { ShowOffersAdminComponent } from './components/offers/show-offers-admin/show-offers-admin.component';
+import { UpdateOfferComponent } from './components/offers/update-offer/update-offer.component';
+import { ShowAllReportsComponent } from './components/reports/show-all-reports/show-all-reports.component';
 
 
 
@@ -52,7 +56,11 @@ const routes: Routes = [
       { path: 'add-actor', component: AddActorComponent},
       { path: 'show-all-actors',component:ShowAllActorsComponent},
       {path: 'update-artist',component: UpdateArtistComponent},
-      { path: 'create-film', component:CreateFilmComponent}
+      { path: 'create-film', component:CreateFilmComponent},
+      {path: 'create-offer',component: CreateOfferComponent},
+      { path: 'show-all-offers', component:ShowOffersAdminComponent},
+      { path: 'update-offer', component:UpdateOfferComponent},
+      { path: 'reports', component:ShowAllReportsComponent},
     ] 
   },
 

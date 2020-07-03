@@ -1,0 +1,17 @@
+
+<div class="container">
+    <div class="row">
+      <div class="col-md-3"></div>
+      <div class="col-md-6">
+        <form class="form-signin" (ngSubmit)=" updateOffer()">
+          <h2 class="form-signin-heading">Update offer</h2>
+          <br/>
+          <input type="number" id="minutes" name="minutes" [(ngModel)]="offer.minutes" placeholder="offer.minutes" required autofocus>
+          <div class="break"></div>
+          <input type="number" id="price" name="price" [(ngModel)]="offer.price" placeholder="offer.price" required>
+          <div class="break"></div>
+          <button class="orangeButton" type="submit">Update offer</button>
+        </form>
+    </div>
+    </div>
+</div>

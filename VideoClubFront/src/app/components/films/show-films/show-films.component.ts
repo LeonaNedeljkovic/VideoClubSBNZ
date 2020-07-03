@@ -20,12 +20,14 @@ export class ShowFilmsComponent implements OnInit {
   private searchedFilm : string;
   private searchedGenre : string;
   private loggedIn : boolean  = false;
+  private loggedUser = JSON.parse(localStorage.getItem('currentUser'));
 
   constructor(private modalService: NgbModal, private router: Router, private filmService: FilmService) { }
 
   ngOnInit() {
     var loogedUser = JSON.parse(localStorage.getItem('currentUser'));
     if(loogedUser != null){
+      this.loggedUser = JSON.parse(localStorage.getItem('currentUser'));
       this.loggedIn = true;
       this.initializeRecommended(6);
     }

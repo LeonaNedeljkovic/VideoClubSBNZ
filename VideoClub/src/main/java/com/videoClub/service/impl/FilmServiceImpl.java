@@ -51,7 +51,7 @@ public class FilmServiceImpl implements FilmService{
 	
 
 	@Override
-	public Film save(FilmDTO filmDTO) {
+	public MessageDto save(FilmDTO filmDTO) {
 		KieSession kieSession = kieContainer.newKieSession("adminRecommendationRulesSession");
 		Film film = new Film();
 		List<Artist> actors = new ArrayList<Artist>();
@@ -86,7 +86,8 @@ public class FilmServiceImpl implements FilmService{
 		kieSession.insert(messageDto);
 		kieSession.fireAllRules();
 		kieSession.dispose();
-		return filmRepository.save(film);
+		filmRepository.save(film);
+		return messageDto;
 	}
 
 	@Override

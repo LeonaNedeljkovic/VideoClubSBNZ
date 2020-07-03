@@ -28,6 +28,10 @@ import { AddActorComponent } from './components/actors/add-actor/add-actor.compo
 import { ShowAllActorsComponent } from './components/actors/show-all-actors/show-all-actors.component';
 import { UpdateArtistComponent } from './components/actors/update-artist/update-artist.component';
 import { CreateFilmComponent } from './components/films/create-film/create-film.component';
+import { CreateOfferComponent } from './components/offers/create-offer/create-offer.component';
+import { UpdateOfferComponent } from './components/offers/update-offer/update-offer.component';
+import { ShowOffersAdminComponent } from './components/offers/show-offers-admin/show-offers-admin.component';
+import { ShowAllReportsComponent } from './components/reports/show-all-reports/show-all-reports.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +52,11 @@ import { CreateFilmComponent } from './components/films/create-film/create-film.
     AddActorComponent,
     ShowAllActorsComponent,
     UpdateArtistComponent,
-    CreateFilmComponent
+    CreateFilmComponent,
+    CreateOfferComponent,
+    UpdateOfferComponent,
+    ShowOffersAdminComponent,
+    ShowAllReportsComponent
   ],
   imports: [
     NgbModule,

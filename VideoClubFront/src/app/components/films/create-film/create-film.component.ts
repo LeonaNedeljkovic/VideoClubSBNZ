@@ -3,6 +3,9 @@ import { FilmService } from 'src/app/services/film.service';
 import { FilmDto } from 'src/app/dto/film.dto';
 import { ArtistService } from 'src/app/services/artist.service';
 import { Artist } from 'src/app/model/artist.model';
+import { Message } from 'src/app/dto/message';
+import { MessageComponent } from 'src/app/pages/message/message.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-create-film',
@@ -25,7 +28,7 @@ export class CreateFilmComponent implements OnInit {
   }
   private artists: Array<Artist>=[];
 
-  constructor(private filmService: FilmService, private artistService: ArtistService) { }
+  constructor(private filmService: FilmService, private artistService: ArtistService, private modalService: NgbModal) { }
 
   ngOnInit() {
     this.artistService.getArtists().subscribe(data => {
@@ -54,9 +57,10 @@ export class CreateFilmComponent implements OnInit {
     this.film.genre= indexToFind4.options[indexToFind4.selectedIndex].text;
 
     this.filmService.createFilm(this.film).subscribe(data => {
-      if(data.name==this.film.name){
-        console.log("USPEHHH");
-      }
+      var message : Message = {header:data.header, message:data.message, color:"green"};
+      localStorage.setItem('message', JSON.stringify(message));
+      const modalRef = this.modalService.open(MessageComponent);
+      localStorage.removeItem("message2");
   });
 }
   }

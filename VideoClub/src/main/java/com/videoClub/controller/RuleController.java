@@ -41,8 +41,10 @@ import com.videoClub.model.AgeClassifier;
 import com.videoClub.model.Film;
 import com.videoClub.model.Purchase;
 import com.videoClub.model.RegisteredUser;
+import com.videoClub.model.Report;
 import com.videoClub.model.User;
 import com.videoClub.model.enumeration.Rank;
+import com.videoClub.repository.ReportRepository;
 import com.videoClub.service.AgeClassifierService;
 import com.videoClub.service.FilmService;
 import com.videoClub.service.PurchaseService;
@@ -444,6 +446,12 @@ public class RuleController {
 		return new ResponseEntity<>(new PointsDTO(goldTitle.getRewardPoints()), HttpStatus.OK);
 	}
 	
+	@GetMapping(value = "/reports/all", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public ResponseEntity<List<Report>> getAllReports() {
+		return new ResponseEntity<>(reportService.getAll(), HttpStatus.OK);
+	}
+	
 	@Scheduled(cron="0 0 0 1 1/1 *")
 	public void fireTitleRules() {
 		List<User> users = userService.findAll();
@@ -466,6 +474,8 @@ public class RuleController {
 		kieSession.dispose();
 		userService.save(users);
 	}
+	
+	
 	
 	@Scheduled(cron="0 0 * * * *")
 	public void fireReportRules() {

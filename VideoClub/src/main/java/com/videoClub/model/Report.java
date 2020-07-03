@@ -1,6 +1,5 @@
 package com.videoClub.model;
 
-import java.time.LocalDate;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -29,14 +28,15 @@ public class Report {
 	private double earned;
 	
 	@Column(name="date")
-	private LocalDate date;
+	private String date;
 	
 	@Column(name="numberOfViews")
 	private Long numberOfViews;
 	
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "film_id")
-	private Film film;
+	@JsonIgnore
+	private Film film_report;
 
 	public Long getId() {
 		return id;
@@ -54,11 +54,11 @@ public class Report {
 		this.earned = earned;
 	}
 
-	public LocalDate getDate() {
+	public String getDate() {
 		return date;
 	}
 
-	public void setDate(LocalDate date) {
+	public void setDate(String date) {
 		this.date = date;
 	}
 
@@ -71,30 +71,30 @@ public class Report {
 	}
 
 	public Film getFilm() {
-		return film;
+		return film_report;
 	}
 
 	public void setFilm(Film film) {
-		this.film = film;
+		this.film_report = film;
 	}
 
-	public Report(Long id, double earned, LocalDate date, Long numberOfViews, Film film) {
+	public Report(Long id, double earned, String date, Long numberOfViews, Film film) {
 		super();
 		this.id = id;
 		this.earned = earned;
 		this.date = date;
 		this.numberOfViews = numberOfViews;
-		this.film = film;
+		this.film_report = film;
 	}
 	
 	
 
-	public Report(double earned, LocalDate date, Long numberOfViews, Film film) {
+	public Report(double earned, String date, Long numberOfViews, Film film) {
 		super();
 		this.earned = earned;
 		this.date = date;
 		this.numberOfViews = numberOfViews;
-		this.film = film;
+		this.film_report = film;
 	}
 
 	public Report() {
