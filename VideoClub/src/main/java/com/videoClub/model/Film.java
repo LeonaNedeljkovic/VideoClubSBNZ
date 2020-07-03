@@ -79,6 +79,10 @@ public class Film {
 	@Column(name = "age_category", nullable = false)
 	@Enumerated(EnumType.STRING)
 	private List<AgeCategory> restrictedAgeCategories = new ArrayList<AgeCategory>();
+	
+	@OneToMany(mappedBy = "film", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private List<Report> reports = new ArrayList<Report>();
+
 
 	public Film() {
 		super();

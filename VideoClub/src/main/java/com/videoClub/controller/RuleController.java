@@ -46,6 +46,7 @@ import com.videoClub.model.enumeration.Rank;
 import com.videoClub.service.AgeClassifierService;
 import com.videoClub.service.FilmService;
 import com.videoClub.service.PurchaseService;
+import com.videoClub.service.ReportService;
 import com.videoClub.service.RuleService;
 import com.videoClub.service.UserService;
 import com.videoClub.template.FilmAgeRestrictionTemplate;
@@ -74,6 +75,9 @@ public class RuleController {
 	
 	@Autowired
 	private KieContainer kieContainer;
+	
+	@Autowired
+	private ReportService reportService;
 	
 	@Autowired
 	@Qualifier(value = "cepReportSession")
@@ -473,6 +477,7 @@ public class RuleController {
 			System.out.println("Most watched film is "+ reportDTO.getFilm().getName());
 		}
 		System.out.println("Number of views in the last 24h "+reportDTO.getNumberOfViews());
+		reportService.save(reportDTO);
 		cepReportSession.delete(factHandle);
 	}
 	

@@ -24,6 +24,10 @@ import { CreateReviewComponent } from './components/reviews/create-review/create
 import { MyReviewsComponent } from './components/reviews/my-reviews/my-reviews.component';
 import { OffersShowComponent } from './components/offers/offers-show/offers-show.component';
 import { MessageComponent } from './pages/message/message.component';
+import { AddActorComponent } from './components/actors/add-actor/add-actor.component';
+import { ShowAllActorsComponent } from './components/actors/show-all-actors/show-all-actors.component';
+import { UpdateArtistComponent } from './components/actors/update-artist/update-artist.component';
+import { CreateFilmComponent } from './components/films/create-film/create-film.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +44,11 @@ import { MessageComponent } from './pages/message/message.component';
     CreateReviewComponent,
     MyReviewsComponent,
     OffersShowComponent,
-    MessageComponent
+    MessageComponent,
+    AddActorComponent,
+    ShowAllActorsComponent,
+    UpdateArtistComponent,
+    CreateFilmComponent
   ],
   imports: [
     NgbModule,

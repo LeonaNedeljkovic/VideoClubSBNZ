@@ -1,0 +1,56 @@
+
+<div class="container">
+        <div class="row">
+          <div class="col-md-3"></div>
+          <div class="col-md-6">
+            <form class="form-signin" (ngSubmit)=" createFilm()">
+              <h2 class="form-signin-heading">Create film</h2>
+              <br/>
+              <input type="text" id="name" name="name" [(ngModel)]="film.name" placeholder="Name" required autofocus>
+              <div class="break"></div>
+              <input type="text" id="desctiption" name="descriptions" [(ngModel)]="film.description" placeholder="Description" required>
+              <div class="break"></div>
+              <select id="chosen">
+                    <option selected>ACTION</option>
+                    <option>ADVENTURE</option>
+                    <option>ANIMATED</option>
+                    <option>COMEDY</option>
+                    <option>DOCUMENTARY</option>
+                    <option>DRAMA</option>
+                    <option>HISTORICAL</option>
+                    <option>HORROR</option>
+                    <option>MUSIC</option>
+                    <option>SCIFI</option>
+                    <option>THRILLER</option>
+                    <option>WESTERN</option>
+                    <option>FAMILY</option>
+                </select>
+              <div class="break"></div>
+              <a>Year</a>
+              <input type="number" id="year" name="year" [(ngModel)]="film.year" placeholder="Year" required autofocus>
+              <div class="break"></div>
+              <a>Actors</a>
+              <select id="actors" multiple>
+                    <option *ngFor="let artist of artists" value="{{artist.id}}">{{artist.name}} {{artist.surname}}</option>
+              </select>
+              <div class="break"></div>
+              <a>Director</a>
+              <select id="director">
+                    <option *ngFor="let artist of artists" value="{{artist.id}}">{{artist.name}} {{artist.surname}}</option>
+              </select>
+              <div class="break"></div>
+              <a>Scenarist</a>
+              <select id="scenarist">
+                    <option *ngFor="let artist of artists" value="{{artist.id}}">{{artist.name}} {{artist.surname}}</option>
+              </select>
+              <div class="break"></div>
+              <a>Duration</a>
+              <input type="number" id="duration" name="duration" [(ngModel)]="film.duration" placeholder="Duration" required>
+              <div class="break"></div>
+              <input type="text" id="poster" name="poster" [(ngModel)]="film.poster" placeholder="Poster" required>
+              <div class="break"></div>
+              <button class="orangeButton" type="submit">Add film</button>
+            </form>
+        </div>
+        </div>
+    </div>

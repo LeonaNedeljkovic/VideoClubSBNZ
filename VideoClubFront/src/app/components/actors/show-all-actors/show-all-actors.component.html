@@ -1,0 +1,17 @@
+<div class="container">    
+    <table class="table table-striped">
+        <thead>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Surname</th>       
+        </thead>
+        <tbody>
+            <tr *ngFor="let artist of allArtists">
+                <td>{{artist.id}}</td>
+                <td>{{artist.name}}</td>
+                <td>{{artist.surname}}</td>
+                <td><button class="orangeButton" (click)="updateArtist(artist)">Update</button></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
