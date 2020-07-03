@@ -12,14 +12,16 @@ public class FilmDTO {
 	private int year;
 	private List<Long> actorIds = new ArrayList<Long>();
 	private Long directorId;
+	private Long writtenId;
 	private int duration;
+	private String poster;
 	
 	public FilmDTO() {
 		super();
 	}
 
 	public FilmDTO(long id, String name, String description, String genre, int year, List<Long> actorIds,
-			Long directorId, int duration) {
+			Long directorId, Long writtenId,int duration, String poster) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -28,7 +30,9 @@ public class FilmDTO {
 		this.year = year;
 		this.actorIds = actorIds;
 		this.directorId = directorId;
+		this.writtenId=writtenId;
 		this.duration = duration;
+		this.poster=poster;
 	}
 
 	public long getId() {
@@ -94,4 +98,24 @@ public class FilmDTO {
 	public void setDuration(int duration) {
 		this.duration = duration;
 	}
+
+	public String getPoster() {
+		return poster;
+	}
+
+	public void setPoster(String poster) {
+		this.poster = poster;
+	}
+
+	public Long getWrittenId() {
+		return writtenId;
+	}
+
+	public void setWrittenId(Long writtenId) {
+		this.writtenId = writtenId;
+	}
+	
+	
+	
+	
 }

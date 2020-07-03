@@ -4,7 +4,9 @@ export class FilmDto {
     description: string;
     genre: string;
     year: number;
-    actorIds: Array<number>;
-    dirctorId: number;
+    actorIds: Array<string>;
+    directorId: string;
     duration: number;
+    poster: string;
+    writtenId: string;
 }

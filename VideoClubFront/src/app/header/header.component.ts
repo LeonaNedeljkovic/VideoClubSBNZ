@@ -122,6 +122,21 @@ export class HeaderComponent implements OnInit {
     }
   }
 
+  addActor(){
+    this.activePage = "add-actor";
+    this._router.navigate(['/dashboard/add-actor']);
+  }
+
+  showAllActors(){
+    this.activePage = "show-all-actors";
+    this._router.navigate(['/dashboard/show-all-actors']);
+  }
+
+  createFilm(){
+    this.activePage="create-film";
+    this._router.navigate(['dashboard/create-film']);
+  }
+
 }
 
 

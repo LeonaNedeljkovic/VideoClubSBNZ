@@ -11,6 +11,10 @@ import { CreateReviewComponent } from './components/reviews/create-review/create
 import { MyReviewsComponent } from './components/reviews/my-reviews/my-reviews.component';
 import { OffersShowComponent } from './components/offers/offers-show/offers-show.component';
 import { MessageComponent } from './pages/message/message.component';
+import { AddActorComponent } from './components/actors/add-actor/add-actor.component';
+import { ShowAllActorsComponent } from './components/actors/show-all-actors/show-all-actors.component';
+import { UpdateArtistComponent } from './components/actors/update-artist/update-artist.component';
+import { CreateFilmComponent } from './components/films/create-film/create-film.component';
 
 
 
@@ -44,7 +48,11 @@ const routes: Routes = [
       { path: 'films-search', component: SearchFilmsComponent },
       { path: 'film-details', component: DetailsFilmComponent },
       { path: 'reviews', component: MyReviewsComponent },
-      { path: 'offers', component: OffersShowComponent }
+      { path: 'offers', component: OffersShowComponent },
+      { path: 'add-actor', component: AddActorComponent},
+      { path: 'show-all-actors',component:ShowAllActorsComponent},
+      {path: 'update-artist',component: UpdateArtistComponent},
+      { path: 'create-film', component:CreateFilmComponent}
     ] 
   },
 

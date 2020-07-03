@@ -60,12 +60,14 @@ public class FilmServiceImpl implements FilmService{
 		}
 		film.setActors(actors);
 		film.setDirector(artistService.getOne(filmDTO.getDirectorId()));
+		film.setWrittenBy(artistService.getOne(filmDTO.getWrittenId()));
 		film.setName(filmDTO.getName());
 		film.setDescription(filmDTO.getDescription());
 		film.setDuration(filmDTO.getDuration());
 		film.setYear(filmDTO.getYear());
 		film.setGenre(Genre.valueOf(filmDTO.getGenre()));
 		film.setRating(0);
+		film.setPoster(filmDTO.getPoster());
 		for(RegisteredUser registeredUser: userService.getAllRegisteredUsers()) {
 			for(Review r: registeredUser.getReviews()) {
 				kieSession.insert(r);
