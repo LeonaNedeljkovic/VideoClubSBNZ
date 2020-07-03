@@ -20,32 +20,86 @@ h2 {
 
 input, textarea, select {
     font-size:12px;
-    font-family:Arial, Helvetica, sans-serif;
-    padding:5px;
-    width: 160px;
-    border:1px solid #413e3e;
+     font-family:Arial, Helvetica, sans-serif;
+     padding:5px;
+     width: 160px;
+     border:1px solid #413e3e;
     background:#000;
     color:white;
     display: inline-block;
-    width:100%;
   }
   textarea {
     overflow:auto;
   }
 
-  .invisible-table{
+  .action-event-table{
     border:none;
     color:white;
     background-color:#1b1d1f;
-    padding:10%;
+    margin-left: 10%;
+    width: 30%;
     font-size: 15px;
-    width: 80%;
   }
 
-  .invisible-table td{
+  .action-event-table td{
     padding: 10px;
-    width:50%;
+  }
+
+  .action-container{
+    background-color:black;
+    padding:5%;
+    border-color:white;
+    border-style: double;
+    margin-top:50px;
+    width:80%;
+    margin-top:10px;
+    margin-left: 10%;
+    margin-right: 10%;
+	position:relative;
+}
+
+.action-table{
+    border:none;
+    color:white;
+    background-color:transparent;
+    margin-left: 1%;
+    width: 90%;
+    font-size: 15px;
     text-align: right;
+  }
+
+  .action-table td{
+    max-width: 50%;
+    padding: 3%;
+  }
+
+  .action-table input, textarea, select {
+    font-size:12px;
+     font-family:Arial, Helvetica, sans-serif;
+     padding:5px;
+     width: 100%;
+     border-color:white;
+    border-style: double;
+    background:#000;
+    color:white;
+    display: inline-block;
+  }
+
+  textarea{
+    font-size:12px;
+    font-family:Arial, Helvetica, sans-serif;
+    padding:5px;
+    width: 100%;
+    border-color:white;
+   border-style: double;
+   background:#000;
+   color:white;
+   display: inline-block;
+   height: 100px;
+  }
+
+  option{
+      background-color: black;
   }
 
   .transparentButton{
@@ -74,15 +128,6 @@ input, textarea, select {
     margin-left: 10%;
     margin-right: 10%;
     margin-top:20px;
-  }
-
-  .orangeButton{
-    width: 30%;
-    margin-left: 35%;
-    background-color: #f2a223;
-    font-size: 15px;
-    font-weight:bold;
-    color:black;
   }
 
   .selected-item{

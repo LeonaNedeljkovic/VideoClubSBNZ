@@ -32,6 +32,8 @@ import { CreateOfferComponent } from './components/offers/create-offer/create-of
 import { UpdateOfferComponent } from './components/offers/update-offer/update-offer.component';
 import { ShowOffersAdminComponent } from './components/offers/show-offers-admin/show-offers-admin.component';
 import { ShowAllReportsComponent } from './components/reports/show-all-reports/show-all-reports.component';
+import { ActionShowComponent } from './components/actions/action-show/action-show.component';
+import { ActionCreateComponent } from './components/actions/action-create/action-create.component';
 
 @NgModule({
   declarations: [
@@ -56,7 +58,9 @@ import { ShowAllReportsComponent } from './components/reports/show-all-reports/s
     CreateOfferComponent,
     UpdateOfferComponent,
     ShowOffersAdminComponent,
-    ShowAllReportsComponent
+    ShowAllReportsComponent,
+    ActionShowComponent,
+    ActionCreateComponent
   ],
   imports: [
     NgbModule,

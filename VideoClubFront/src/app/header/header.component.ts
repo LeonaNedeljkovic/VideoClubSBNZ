@@ -11,6 +11,8 @@ import { Notification } from '../model/notification.model';
 import { NotificationService } from '../services/notification.service';
 import { Message } from '../dto/message';
 import { MessageComponent } from '../pages/message/message.component';
+import { CreateOfferComponent } from '../components/offers/create-offer/create-offer.component';
+import { AddActorComponent } from '../components/actors/add-actor/add-actor.component';
 
 @Component({
   selector: 'app-header',
@@ -63,10 +65,7 @@ export class HeaderComponent implements OnInit {
   }
 
   reloadActiveUrl(){
-    if(this._router.url === '/dashboard/films-show'){
-      this.activePage = "home";
-    }
-    else if(this._router.url === '/dashboard/films-search'){
+    if(this._router.url === '/dashboard/films-show' || this._router.url === '/dashboard/films-search' || this._router.url === 'dashboard/create-film'){
       this.activePage = "home";
     }
     else if(this._router.url === '/dashboard/reviews'){
@@ -74,6 +73,15 @@ export class HeaderComponent implements OnInit {
     }
     else if(this._router.url === '/dashboard/offers'){
       this.activePage = "offers";
+    }
+    else if(this._router.url === '/dashboard/action-show' || this._router.url === '/dashboard/action-create'){
+      this.activePage = "actions";
+    }
+    else if(this._router.url === '/dashboard/reports'){
+      this.activePage="report";
+    }
+    else if(this._router.url === '/dashboard/show-all-actors'){
+      this.activePage="artists";
     }
   }
 
@@ -122,13 +130,23 @@ export class HeaderComponent implements OnInit {
     }
   }
 
+  showActions(){
+    this.activePage = "actions";
+    this._router.navigate(['/dashboard/action-show']);
+  }
+
+  addActions(){
+    this.activePage = "actions";
+    this._router.navigate(['/dashboard/action-create']);
+  }
+
   addActor(){
-    this.activePage = "add-actor";
-    this._router.navigate(['/dashboard/add-actor']);
+    this.activePage = "artists";
+    const modalRef = this.modalService.open(AddActorComponent);
   }
 
   showAllActors(){
-    this.activePage = "show-all-actors";
+    this.activePage = "artists";
     this._router.navigate(['/dashboard/show-all-actors']);
   }
 
@@ -139,7 +157,7 @@ export class HeaderComponent implements OnInit {
 
   createOffer(){
     this.activePage="create-offer";
-    this._router.navigate(['dashboard/create-offer']);
+    const modalRef = this.modalService.open(CreateOfferComponent);
   }
 
   showAllOffers(){

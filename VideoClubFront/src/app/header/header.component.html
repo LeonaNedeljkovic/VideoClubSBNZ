@@ -22,11 +22,18 @@
         </a></li>
         <li><a [class.active]="activePage==='profile'" (click)="profile()">MY PROFILE</a></li>
         <li><a [class.active]="activePage==='offers'" (click)="offers()">OFFERS</a></li>
-        <li><a [class.active]="activePage==='actions'" (click)="actions()">ACTIONS</a></li>
+        <li><a [class.active]="activePage==='actions'" (click)="showActions()">ACTIONS</a></li>
         <li><a (click)="logout()">LOG OUT</a></li>
       </ul>
       <ul *ngIf="loggedIn==true && loggedUser.role === 'ROLE_ADMIN'">
-        <li><a [class.active]="activePage==='home'" (click)="home()">HOME</a></li>
+        <li><div class="dropdown">
+          <a [class.active]="activePage==='home'">FILMS</a>
+          <div class="dropdown-content">
+            <a (click)="home()">View Films</a>
+            <a (click)= "createFilm()">Add new Film</a>
+          </div>
+        </div>
+        </li>
         <li><div class="dropdown">
           <a [class.active]="activePage==='offers'" id="dropdown-a">OFFERS</a>
             <div class="dropdown-content">
@@ -34,18 +41,21 @@
               <a [class.active]="activePage==='show-all-offers'" (click)= "showAllOffers()">Show all offers</a>
             </div>
           </div></li>
-        <li><a [class.active]="activePage==='actions'" (click)="actions()">ACTIONS</a></li>
-        <li><a [class.active]="activePage==='report'" (click)="report()">REPORTS</a></li>
-        <li><a [class.active]="activePage==='profile'" (click)="profile()">MY PROFILE</a></li>
-        <li><div class="dropdown">
-        <a [class.active]="activePage==='actors'" id="dropdown-a">ACTORS</a>
+        <li><div class="dropdown"><a [class.active]="activePage==='actions'" (click)="actions()" id="dropdown-a">ACTIONS</a>
+        <div class="dropdown-content">
+          <a (click)= "showActions()">View Actions</a>
+          <a (click)= "addActions()">Add Action Event</a>
+        </div>
+      </div></li>
+      <li><div class="dropdown">
+        <a [class.active]="activePage==='artists'" id="dropdown-a">ARTISTS</a>
           <div class="dropdown-content">
-            <a [class.active]="activePage==='add-actor'" (click)= "addActor()">Add actor</a>
-            <a [class.active]="activePage==='show-all-actors'" (click)= "showAllActors()">View all</a>
+            <a [class.active]="activePage==='add-actor'" (click)= "addActor()">Add artist</a>
+            <a [class.active]="activePage==='show-all-actors'" (click)= "showAllActors()">View artists</a>
           </div>
         </div></li>
-        <li><a (click)=createFilm()>FILM</a></li>
-        <li><a >NOTIFICATIONS</a></li>
+        <li><a [class.active]="activePage==='report'" (click)="report()">REPORTS</a></li>
+        <li><a [class.active]="activePage==='adminTools'" (click)="adminTools()">ADMIN TOOLS</a></li>
         <li><a (click)="logout()">LOG OUT</a></li>
       </ul>
     </div>

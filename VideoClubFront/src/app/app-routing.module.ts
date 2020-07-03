@@ -19,6 +19,8 @@ import { CreateOfferComponent } from './components/offers/create-offer/create-of
 import { ShowOffersAdminComponent } from './components/offers/show-offers-admin/show-offers-admin.component';
 import { UpdateOfferComponent } from './components/offers/update-offer/update-offer.component';
 import { ShowAllReportsComponent } from './components/reports/show-all-reports/show-all-reports.component';
+import { ActionCreateComponent } from './components/actions/action-create/action-create.component';
+import { ActionShowComponent } from './components/actions/action-show/action-show.component';
 
 
 
@@ -44,6 +46,22 @@ const routes: Routes = [
     path: 'message',
     component: MessageComponent,
   },
+  { 
+    path: 'create-offer',
+    component: CreateOfferComponent
+  },
+  { 
+    path: 'update-offer',
+    component:UpdateOfferComponent
+  },
+  { 
+    path: 'add-actor',
+     component: AddActorComponent
+  },
+  { 
+    path: 'update-artist',
+    component: UpdateArtistComponent
+  },
   {
     path: 'dashboard',
     component: DashboardComponent,
@@ -53,14 +71,12 @@ const routes: Routes = [
       { path: 'film-details', component: DetailsFilmComponent },
       { path: 'reviews', component: MyReviewsComponent },
       { path: 'offers', component: OffersShowComponent },
-      { path: 'add-actor', component: AddActorComponent},
       { path: 'show-all-actors',component:ShowAllActorsComponent},
-      {path: 'update-artist',component: UpdateArtistComponent},
       { path: 'create-film', component:CreateFilmComponent},
-      {path: 'create-offer',component: CreateOfferComponent},
       { path: 'show-all-offers', component:ShowOffersAdminComponent},
-      { path: 'update-offer', component:UpdateOfferComponent},
       { path: 'reports', component:ShowAllReportsComponent},
+      { path: 'action-create', component: ActionCreateComponent },
+      { path: 'action-show', component: ActionShowComponent }
     ] 
   },
 

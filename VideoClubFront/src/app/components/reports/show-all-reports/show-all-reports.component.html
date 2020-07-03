@@ -12,6 +12,7 @@
                 <td>{{report.date}}</td>
                 <td>{{report.numberOfViews}}</td>
                 <td *ngIf = "report.film != null">{{report.film.name}}</td>
+                <td *ngIf = "report.film == null"><p style="color:red;">No reviews</p></td>
             </tr>
         </tbody>
     </table>

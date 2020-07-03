@@ -1,0 +1,45 @@
+<body>
+    <!-- START PAGE SOURCE -->
+    <div id="shell">
+      <div id="sub-navigation">
+        <div *ngIf="actionEvents.length == 0">
+            <h2>Currently there are no action events.</h2>
+        </div>
+      </div>
+        <div>
+            <div *ngFor="let event of actionEvents" class="action-container">
+                <h2>{{event.name}}</h2>
+                    <br/>
+                    <p>Active from: {{event.startDate}} to: {{event.endDate}}</p>
+                    <br/>
+                    <div *ngIf="filterGoldActions(event).length > 0">
+                        <h3 class="gold-text">For users with GOLD title:</h3>
+                        <div *ngFor="let action of filterGoldActions(event)">
+                           <p> <span class="gold-text">&#x265B;</span>{{action.description}}</p>
+                        </div>
+                    </div>
+                    <br/>
+                    <div *ngIf="filterSilverActions(event).length > 0">
+                        <h3 class="silver-text">For users with SILVER title:</h3>
+                        <div *ngFor="let action of filterSilverActions(event)">
+                            <span class="silver-text">&#x265B;</span><p>{{action.description}}</p>
+                        </div>
+                    </div>
+                    <br/>
+                    <div *ngIf="filterBronzeActions(event).length > 0">
+                        <h3 class="bronze-text">For users with BRONZE title:</h3>
+                        <div *ngFor="let action of filterBronzeActions(event)">
+                            <p>{{action.description}}</p>
+                        </div>
+                    </div>
+                    <br/>
+                    <div *ngIf="filterNoneActions(event).length > 0">
+                        <h3 class="white-text">For users without title:</h3>
+                        <div *ngFor="let action of filterNoneActions(event)">
+                            <p>{{action.description}}</p>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+</body>    
