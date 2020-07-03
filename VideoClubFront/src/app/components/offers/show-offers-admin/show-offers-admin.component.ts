@@ -6,6 +6,7 @@ import { Message } from 'src/app/dto/message';
 import { MessageComponent } from 'src/app/pages/message/message.component';
 import { SharedService } from 'src/app/services/shared.service';
 import { Router } from '@angular/router';
+import { UpdateOfferComponent } from '../update-offer/update-offer.component';
 
 @Component({
   selector: 'app-show-offers-admin',
@@ -37,8 +38,7 @@ export class ShowOffersAdminComponent implements OnInit {
 
   update(offer){
     this.sharedService.offerForUpdate=offer;
-    this.router.navigate(['dashboard/update-offer']);
-
+    const modalRef = this.modelService.open(UpdateOfferComponent);
   }
 
 }

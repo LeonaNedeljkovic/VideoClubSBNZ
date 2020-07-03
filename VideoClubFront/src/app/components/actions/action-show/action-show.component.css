@@ -1,0 +1,47 @@
+
+h2 {
+	font-size:20px;
+	color:#f2a223;
+    font-weight:bold;
+    width: 100%;
+    text-align: center;
+}
+
+p{
+    font-size:15px;
+    font-weight:bold;
+}
+
+.action-container{
+    background-color:black;
+    padding:5%;
+    border-color:white;
+    border-style: double;
+    margin-top:50px;
+    width:50%;
+    height:auto;
+    margin-top:50px;
+    margin-left: 25%;
+    margin-right: 25%;
+    position:relative;
+}
+
+.gold-text{
+    color: gold;
+    font-size: 16px;
+}
+
+.silver-text{
+    color:silver;
+    font-size: 16px;
+}
+
+.bronze-text{
+    color:#bf8432;
+    font-size: 16px;
+}
+
+.white-text{
+    color:white;
+    font-size: 16px;
+}

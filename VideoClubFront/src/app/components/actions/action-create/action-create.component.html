@@ -1,0 +1,131 @@
+<body>
+    <!-- START PAGE SOURCE -->
+    <div id="shell">
+      <div id="sub-navigation"></div>
+        <div>
+            <div class="container">
+                <h2>Add New Action Event</h2>
+                <table class="action-event-table">
+                <tbody>
+                  <tr>
+                    <td>Event name:</td>
+                    <td colspan="3" ><input type="text" name="search field" class="search-field" [(ngModel)]="actionEvent.name" /></td>
+                  </tr>
+                  <tr>
+                      <td>From:</td>
+                      <td><input type="date" name="search field" class="search-field" [(ngModel)]="actionEvent.startDate" /></td>
+                      <td>To:</td>
+                      <td><input type="date" name="search field" class="search-field" [(ngModel)]="actionEvent.endDate" /></td>
+                  </tr>
+                  <tr>
+                    <td colspan="4" class="red-text" *ngIf="allowWarnings===true && (actionEvent.startDate == '' || actionEvent.endDate == '')">
+                      Start and end date must be defined.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div *ngFor="let action of actionEvent.actions" class="action-container">
+                <h2>1. Action</h2>
+                <br/>
+                <table class="action-table">
+                  <tbody>
+                    <tr>
+                      <td>Title of user: </td>
+                      <td><select name="search field" class="search-field" [(ngModel)]="action.rank">
+                            <option>GOLD</option>
+                            <option>SILVER</option>
+                            <option>BRONZE</option>
+                            <option>NONE</option>
+                          </select>
+                      </td>
+                      <tr>
+                        <td></td>
+                        <td class="red-text" *ngIf="allowWarnings===true && actionIsUnique(action) === false">
+                          This title rank is already choosen for this type of action.
+                        </td>
+                    </tr>
+                    <tr>
+                      <td>Description: </td>
+                      <td>
+                        <textarea [(ngModel)]="action.description"></textarea>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td class="red-text" *ngIf="allowWarnings===true && action.description == ''">
+                        Description must be added.
+                      </td>
+                    </tr>
+                    <tr>
+                        <td>Action type: </td>
+                        <td><select name="search field" class="search-field" [(ngModel)]="action.actionType" (change)="actionTypeChanged(action)">
+                              <option value="DISCOUNT">Discount</option>
+                              <option value="FREE_CONTENT">Free Content</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr *ngIf="action.actionType === 'DISCOUNT'">
+                      <td>Discount: </td>
+                      <td>
+                        <input type="number" name="search field" class="search-field" [(ngModel)]="action.amount" />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td class="red-text" *ngIf="allowWarnings===true && action.actionType === 'DISCOUNT' && action.amount == 0">
+                        Discount must be a value between 10 and 75.
+                      </td>
+                  </tr>
+                    <tr *ngIf="action.actionType === 'DISCOUNT'">
+                      <td>Discount offers: </td>
+                      <td><select name="search field" class="search-field" (change)="addOffer(action, $event)">
+                        <option *ngFor="let offer of offers" value="{{offer.id}}" >{{offer.minutes}} minutes for {{offer.price}}$</option>
+                      </select>
+                    </td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td class="red-text" *ngIf="allowWarnings===true && action.actionType === 'DISCOUNT' && action.discountOffersIds.length == 0">
+                        At least one offer must be selected.
+                      </td>
+                  </tr>
+                      <tr *ngFor="let selected of getSelectedOffers(action); let i = index">
+                        <td></td>
+                        <td class="selected-item">{{selected.minutes}} minutes for {{selected.price}}$<span class="x" (click)="removeOffer(action, selected.id)">X</span></td>
+                      </tr>
+                    
+                    <tr *ngIf="action.actionType === 'FREE_CONTENT'">
+                      <td>Free genres: </td>
+                      <td><select name="search field" class="search-field" (change)="addGenre(action, $event)">
+                        <option *ngFor="let genre of genres" value="{{genre}}">{{genre}}</option>
+                      </select>
+                    </td>
+                  </tr>
+                    <tr>
+                      <td></td>
+                      <td class="red-text" *ngIf="allowWarnings===true && action.actionType === 'FREE_CONTENT' && action.genres.length == 0">
+                        At least one genre must be selected.
+                      </td>
+                    </tr>
+                    
+                    <tr *ngFor="let freeGenre of action.genres">
+                      <td></td>
+                      <td class="selected-item">{{freeGenre}}<span class="x" (click)="removeGenre(action, freeGenre)">X</span></td>
+                      
+                    </tr>
+                  </tbody>
+                </table>
+                <button class="transparentButton" (click)="removeAction(action)">Remove Action</button>
+              </div>
+              <div><button class="confirm-button" (click)="addAction()">Add New Action</button><button class="confirm-button" (click)="createActionEvent()">Create Action Event</button></div>
+            </div> 
+          <div class="cl">&nbsp;</div>
+        </div>
+      <div id="footer">
+        <p class="lf">Copyright &copy; 2010 <a href="#">SiteName</a> - All Rights Reserved</p>
+        <p class="rf">Design by <a href="http://chocotemplates.com/">ChocoTemplates.com</a></p>
+        <div style="clear:both;"></div>
+      </div>
+    </div>
+    <!-- END PAGE SOURCE -->
+    </body>
