@@ -1,0 +1,23 @@
+<body>
+    <!-- START PAGE SOURCE -->
+    <div id="shell">
+      <div id="sub-navigation"></div>
+        <div >
+            <div class="container" *ngFor="let offer of offers">
+                  <h2>BUY {{offer.minutes}} MINUTES</h2>
+                  <div class="crossed-text" *ngIf="offer.discount > 0">For {{offer.discount}}$</div>
+                  <h3>For {{offer.price}}$</h3>
+                  <br/><br/><br/>
+                  <button class="transparentButton" (click)="purchase(offer.id)">BUY NOW</button>
+            </div> 
+          <div class="cl">&nbsp;</div>
+        </div>
+      <div id="footer">
+        <p class="lf">Copyright &copy; 2010 <a href="#">SiteName</a> - All Rights Reserved</p>
+        <p class="rf">Design by <a href="http://chocotemplates.com/">ChocoTemplates.com</a></p>
+        <div style="clear:both;"></div>
+      </div>
+    </div>
+    <!-- END PAGE SOURCE -->
+    </body>
+    

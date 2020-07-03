@@ -9,6 +9,8 @@ import { DetailsFilmComponent } from './components/films/details-film/details-fi
 import { RatingComponent } from './components/reviews/rating/rating.component';
 import { CreateReviewComponent } from './components/reviews/create-review/create-review.component';
 import { MyReviewsComponent } from './components/reviews/my-reviews/my-reviews.component';
+import { OffersShowComponent } from './components/offers/offers-show/offers-show.component';
+import { MessageComponent } from './pages/message/message.component';
 
 
 
@@ -31,13 +33,18 @@ const routes: Routes = [
     component: RegisterUserComponent,
   },
   {
+    path: 'message',
+    component: MessageComponent,
+  },
+  {
     path: 'dashboard',
     component: DashboardComponent,
     children: [
       { path: 'films-show', component: ShowFilmsComponent },
       { path: 'films-search', component: SearchFilmsComponent },
       { path: 'film-details', component: DetailsFilmComponent },
-      { path: 'reviews', component: MyReviewsComponent }
+      { path: 'reviews', component: MyReviewsComponent },
+      { path: 'offers', component: OffersShowComponent }
     ] 
   },
 

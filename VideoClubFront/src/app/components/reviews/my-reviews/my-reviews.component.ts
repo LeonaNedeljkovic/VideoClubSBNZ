@@ -6,6 +6,8 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RatingComponent } from '../rating/rating.component';
 import { DetailsFilmComponent } from '../../films/details-film/details-film.component';
 import { CreateReviewComponent } from '../create-review/create-review.component';
+import { AuthenticationService } from 'src/app/security/authentication-service.service';
+import { RegistedUser } from 'src/app/model/registered-user.model';
 
 @Component({
   selector: 'app-my-reviews',
@@ -15,11 +17,21 @@ import { CreateReviewComponent } from '../create-review/create-review.component'
 export class MyReviewsComponent implements OnInit {
 
   private reviews : Review[] = [];
+  private user : RegistedUser;
 
-  constructor(private modalService: NgbModal, private reviewService : ReviewService) { }
+  constructor(private modalService: NgbModal, private reviewService : ReviewService, private authService : AuthenticationService) { }
 
   ngOnInit() {
+    this.getUser();
     this.getReviews();
+  }
+
+  getUser(){
+    this.authService.getUserInfo().subscribe(
+      (user : RegistedUser) => {
+        this.user = user;
+      }
+    )
   }
 
   getReviews(){

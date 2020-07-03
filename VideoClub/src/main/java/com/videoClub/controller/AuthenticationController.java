@@ -19,6 +19,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,7 +28,9 @@ import com.videoClub.auth.JwtAuthenticationRequest;
 import com.videoClub.dto.MessageDto;
 import com.videoClub.dto.UserDto;
 import com.videoClub.event.LoggingEvent;
+import com.videoClub.exception.NotLoggedIn;
 import com.videoClub.model.Administrator;
+import com.videoClub.model.RegisteredUser;
 import com.videoClub.model.User;
 import com.videoClub.model.UserTokenState;
 import com.videoClub.model.enumeration.UserRole;
@@ -77,6 +80,16 @@ public class AuthenticationController {
 			return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 		}
 
+	}
+	
+	@GetMapping(value = "/user")
+	@PreAuthorize("hasRole('ROLE_REGISTERED_USER')")
+	public ResponseEntity<RegisteredUser> getUser() {
+		RegisteredUser user = (RegisteredUser) this.userDetailsService.loadUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+		if(user == null){
+			throw new NotLoggedIn();
+		}
+		return new ResponseEntity<>(user, HttpStatus.OK);
 	}
 
 	@PostMapping(value = "/login")

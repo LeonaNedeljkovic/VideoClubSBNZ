@@ -15,7 +15,7 @@ export class PurchaseService {
   }
 
     createPurchase = (offerId: string): Observable<Purchase> => {
-      return this.http.get<Purchase>(`/api/purchase/${offerId}`).pipe(
+      return this.http.get<Purchase>(`/api/purchase/create/${offerId}`).pipe(
         map( (res: any) => {
             return res;
         })  );

@@ -10,14 +10,15 @@ import { Review } from 'src/app/model/review.model';
 })
 export class CreateReviewComponent implements OnInit {
 
-  private review :ReviewDto = {id:"0", startMinute:0, endMinute:0, videoContentId:0};
+  private review :ReviewDto;
   private successMessage : String = "";
   private failureMessage : String = "";
 
   constructor(private reviewService : ReviewService) { }
 
   ngOnInit() {
-    this.review.videoContentId = +(localStorage.getItem('film-review'));
+    console.log(localStorage.getItem('film-review'));
+    this.review = {id:"0", startMinute:0, endMinute:0, videoContentId:+(localStorage.getItem('film-review'))};
   }
 
   watch(){

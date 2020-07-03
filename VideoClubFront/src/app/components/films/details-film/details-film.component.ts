@@ -51,6 +51,7 @@ export class DetailsFilmComponent implements OnInit {
   }
 
   watchFilm(){
+    localStorage.setItem('film-review', this.id.toString());
     const modalRef = this.modalService.open(CreateReviewComponent);
   }
 

@@ -1,0 +1,34 @@
+.container{
+    background-color:#1b1d1f;
+    padding:7%;
+    border-color:white;
+    border-style: double;
+    width: 100%;
+}
+
+h2 {
+	font-size:30px;
+	color:#f2a223;
+    font-weight:bold;
+    text-align: center;
+    width: 100%;
+}
+
+p{
+    font-size: 15px;
+    font-weight:bold;
+    text-align: center;
+    width: 100%;
+}
+
+.transparentButton{
+    width: 30%;
+    background-color: transparent;
+    color:white;
+    border-color: #f2a223;
+    border-style: double;
+    font-weight:bold;
+    padding: 5px;
+    font-size: 15px;
+    margin-left: 35%;
+}
