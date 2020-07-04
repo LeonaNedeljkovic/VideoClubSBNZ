@@ -13,6 +13,14 @@ import { Message } from '../dto/message';
 import { MessageComponent } from '../pages/message/message.component';
 import { CreateOfferComponent } from '../components/offers/create-offer/create-offer.component';
 import { AddActorComponent } from '../components/actors/add-actor/add-actor.component';
+import { AgeFreeMinutesTemplateComponent } from '../components/templates/age-free-minutes-template/age-free-minutes-template.component';
+import { TitleFreeMinutesTemplateComponent } from '../components/templates/title-free-minutes-template/title-free-minutes-template.component';
+import { AgeTitleFreeMinutesTemplateComponent } from '../components/templates/age-title-free-minutes-template/age-title-free-minutes-template.component';
+import { TitleTemplateComponent } from '../components/templates/title-template/title-template.component';
+import { FilmRestrictionTemplateComponent } from '../components/templates/film-restriction-template/film-restriction-template.component';
+import { GenreRestrictionTemplateComponent } from '../components/templates/genre-restriction-template/genre-restriction-template.component';
+import { AgeTemplateComponent } from '../components/templates/age-template/age-template.component';
+import { ImmunityTemplateComponent } from '../components/templates/immunity-template/immunity-template.component';
 
 @Component({
   selector: 'app-header',
@@ -65,13 +73,13 @@ export class HeaderComponent implements OnInit {
   }
 
   reloadActiveUrl(){
-    if(this._router.url === '/dashboard/films-show' || this._router.url === '/dashboard/films-search' || this._router.url === 'dashboard/create-film'){
+    if(this._router.url === '/dashboard/films-show' || this._router.url === '/dashboard/films-search' || this._router.url === '/dashboard/create-film'){
       this.activePage = "home";
     }
     else if(this._router.url === '/dashboard/reviews'){
       this.activePage = "profile";
     }
-    else if(this._router.url === '/dashboard/offers'){
+    else if(this._router.url === '/dashboard/offers' || this._router.url === '/dashboard/show-all-offers'){
       this.activePage = "offers";
     }
     else if(this._router.url === '/dashboard/action-show' || this._router.url === '/dashboard/action-create'){
@@ -151,17 +159,17 @@ export class HeaderComponent implements OnInit {
   }
 
   createFilm(){
-    this.activePage="create-film";
-    this._router.navigate(['dashboard/create-film']);
+    this.activePage="home";
+    this._router.navigate(['/dashboard/create-film']);
   }
 
   createOffer(){
-    this.activePage="create-offer";
+    this.activePage="offers";
     const modalRef = this.modalService.open(CreateOfferComponent);
   }
 
   showAllOffers(){
-    this.activePage="show-all-offers";
+    this.activePage="offers";
     this._router.navigate(['dashboard/show-all-offers']);
 
   }
@@ -169,6 +177,46 @@ export class HeaderComponent implements OnInit {
   report(){
     this.activePage="report";
     this._router.navigate(['dashboard/reports']);
+  }
+
+  freeMinutesByAge(){
+    this.activePage="templates";
+    const modalRef = this.modalService.open(AgeFreeMinutesTemplateComponent);
+  }
+
+  freeMinutesByTitle(){
+    this.activePage="templates";
+    const modalRef = this.modalService.open(TitleFreeMinutesTemplateComponent);
+  }
+
+  freeMinutesByAgeAndTitle(){
+    this.activePage="templates";
+    const modalRef = this.modalService.open(AgeTitleFreeMinutesTemplateComponent);
+  }
+
+  titleTemplaye(){
+    this.activePage="templates";
+    const modalRef = this.modalService.open(TitleTemplateComponent);
+  }
+
+  immunityTemplate(){
+    this.activePage="templates";
+    const modalRef = this.modalService.open(ImmunityTemplateComponent);
+  }
+
+  filmRestriction(){
+    this.activePage="templates";
+    const modalRef = this.modalService.open(FilmRestrictionTemplateComponent);
+  }
+
+  genreRestriction(){
+    this.activePage="templates";
+    const modalRef = this.modalService.open(GenreRestrictionTemplateComponent);
+  }
+
+  ageSettings(){
+    this.activePage="templates";
+    const modalRef = this.modalService.open(AgeTemplateComponent);
   }
 
 }

@@ -48,7 +48,7 @@
           </tbody>
         </table>
         <br/>
-        <button name="watch-film" class="transparentButton" type="input" (click)="watchFilm()">Watch Film</button>
+        <button name="watch-film"  *ngIf="loggedIn==true && loggedUser.role === 'ROLE_REGISTERED_USER'" class="transparentButton" type="input" (click)="watchFilm()">Watch Film</button>
       </div>
       <div class="info-container" >
         <div><img class="poster" src="{{film.poster}}" /></div>
@@ -65,10 +65,10 @@
           <span class="star" *ngIf="4.5 > film.rating">&#x2606;</span>
         </div>
         <div><p style="text-align: center; width: 100%; padding-top:10px; padding-bottom:0px;"><b>Rating: {{film.rating}}</b></p></div>
-        <button *ngIf="reviewDetails.watched === true" class="orangeButton" type="input" (click)="rateFilm()">Rate Film</button>
-        <button *ngIf="reviewDetails.watched === false" class="orangeButton" type="input" disabled> Rate Film</button>
-        <button *ngIf="reviewDetails.rate == 5" class="transparentButton" type="input" (click)="favourites()">Add to favourites</button>
-        <button *ngIf="5 > reviewDetails.rate" class="transparentButton" type="input" disabled>Add to favourites</button>
+        <button *ngIf="loggedIn===true && loggedUser.role === 'ROLE_REGISTERED_USER' && reviewDetails.watched === true" class="orangeButton" type="input" (click)="rateFilm()">Rate Film</button>
+        <button *ngIf="loggedIn===true && loggedUser.role === 'ROLE_REGISTERED_USER' && reviewDetails.watched === false" class="orangeButton" type="input" disabled> Rate Film</button>
+        <button *ngIf="loggedIn===true && loggedUser.role === 'ROLE_REGISTERED_USER' && reviewDetails.rate == 5" class="transparentButton" type="input" (click)="favourites()">Add to favourites</button>
+        <button *ngIf="loggedIn===true && loggedUser.role === 'ROLE_REGISTERED_USER' && 5 > reviewDetails.rate" class="transparentButton" type="input" disabled>Add to favourites</button>
       </div>
     </div>
   </div> 

@@ -8,6 +8,7 @@ import { CreateReviewComponent } from '../../reviews/create-review/create-review
 import { ReviewDetails } from 'src/app/dto/review-details';
 import { Review } from 'src/app/model/review.model';
 import { ReviewService } from 'src/app/services/review.service';
+import { CurrentUser } from 'src/app/model/currentUser';
 
 @Component({
   selector: 'app-details-film',
@@ -16,10 +17,11 @@ import { ReviewService } from 'src/app/services/review.service';
 })
 export class DetailsFilmComponent implements OnInit {
 
-  private film : Film = null;
-  private loggedIn : boolean = false;
+  private film : Film;
+  private loggedIn : boolean;
+  private loggedUser;
   private id : number;
-  private reviewDetails : ReviewDetails = null;
+  private reviewDetails : ReviewDetails;
   private reviews : Review[] = [];
 
   constructor(private modalService: NgbModal, private router: Router, private filmService : FilmService, private reviewService : ReviewService) { }
@@ -28,8 +30,8 @@ export class DetailsFilmComponent implements OnInit {
     this.id = +(localStorage.getItem('film-details'));
     this.getFilm();
 
-    var loogedUser = JSON.parse(localStorage.getItem('currentUser'));
-    if(loogedUser != null){
+    this.loggedUser = JSON.parse(localStorage.getItem('currentUser'));
+    if(this.loggedUser != null){
       this.loggedIn = true;
     }
     this.initReviewDetails();
@@ -51,12 +53,15 @@ export class DetailsFilmComponent implements OnInit {
   }
 
   watchFilm(){
-    localStorage.setItem('film-review', this.id.toString());
-    const modalRef = this.modalService.open(CreateReviewComponent);
+    if(this.loggedIn == true && this.loggedUser.role == 'ROLE_REGISTERED_USER'){
+      localStorage.setItem('film-review', this.id.toString());
+      const modalRef = this.modalService.open(CreateReviewComponent);
+    }
   }
 
   initReviewDetails(){
-    if(this.loggedIn){
+    console.log(this.loggedUser);
+    if(this.loggedIn == true && this.loggedUser.role == 'ROLE_REGISTERED_USER'){
       this.reviewService.getReviewDetails(this.id.toString()).subscribe(
         (details:ReviewDetails) => {
           this.reviewDetails = details;

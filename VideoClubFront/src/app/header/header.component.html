@@ -29,33 +29,45 @@
         <li><div class="dropdown">
           <a [class.active]="activePage==='home'">FILMS</a>
           <div class="dropdown-content">
-            <a (click)="home()">View Films</a>
-            <a (click)= "createFilm()">Add new Film</a>
+            <a (click)="home()">VIEW FILMS</a>
+            <a (click)= "createFilm()">ADD FILM</a>
           </div>
         </div>
         </li>
         <li><div class="dropdown">
           <a [class.active]="activePage==='offers'" id="dropdown-a">OFFERS</a>
             <div class="dropdown-content">
-              <a [class.active]="activePage==='create-offer'" (click)= "createOffer()">Create offer</a>
-              <a [class.active]="activePage==='show-all-offers'" (click)= "showAllOffers()">Show all offers</a>
+              <a [class.active]="activePage==='show-all-offers'" (click)= "showAllOffers()">VIEW OFFERS</a>
+              <a [class.active]="activePage==='create-offer'" (click)= "createOffer()">ADD OFFER</a>
             </div>
           </div></li>
         <li><div class="dropdown"><a [class.active]="activePage==='actions'" (click)="actions()" id="dropdown-a">ACTIONS</a>
         <div class="dropdown-content">
-          <a (click)= "showActions()">View Actions</a>
-          <a (click)= "addActions()">Add Action Event</a>
+          <a (click)= "showActions()">VIEW ACTION EVENTS</a>
+          <a (click)= "addActions()">ADD ACTION EVENT</a>
         </div>
       </div></li>
       <li><div class="dropdown">
         <a [class.active]="activePage==='artists'" id="dropdown-a">ARTISTS</a>
           <div class="dropdown-content">
-            <a [class.active]="activePage==='add-actor'" (click)= "addActor()">Add artist</a>
-            <a [class.active]="activePage==='show-all-actors'" (click)= "showAllActors()">View artists</a>
+            <a (click)= "showAllActors()">VIEW ARTISTS</a>
+            <a (click)= "addActor()">ADD ARTIST</a>
           </div>
         </div></li>
         <li><a [class.active]="activePage==='report'" (click)="report()">REPORTS</a></li>
-        <li><a [class.active]="activePage==='adminTools'" (click)="adminTools()">ADMIN TOOLS</a></li>
+        <li><div class="dropdown">
+          <a [class.active]="activePage==='templates'" (click)="adminTools()" id="dropdown-a">ADMIN TOOLS</a>
+          <div class="dropdown-content">
+            <a (click)= "filmRestriction()">FILM RESTRICTION</a>
+            <a (click)= "genreRestriction()">GENRE RESTRICTION</a>
+            <a (click)= "titleTemplaye()">TITLE SETTINGS</a>
+            <a (click)= "immunityTemplate()">IMMUNITY SETTINGS</a>
+            <a (click)= "ageSettings()">AGE SETTINGS</a>
+            <a (click)= "freeMinutesByAge()">FREE MINUTES BY AGE</a>
+            <a (click)= "freeMinutesByAgeAndTitle()">FREE MINUTES BY AGE AND TITLE</a>
+            <a (click)= "freeMinutesByTitle()">FREE MINUTES BY TITLE</a>
+          </div>
+        </div></li>
         <li><a (click)="logout()">LOG OUT</a></li>
       </ul>
     </div>

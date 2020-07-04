@@ -92,17 +92,17 @@ public class TitleRulesTest {
 	
 	public List<Purchase> generatePurchases(){
 		List<Purchase> purchases = new ArrayList<Purchase>();
-		purchases.add(new Purchase(1L, null, 0, 2.0, 200, null, users.get(0)));
-		purchases.add(new Purchase(2L, null, 0, 1.0, 100, null, users.get(1)));
-		purchases.add(new Purchase(3L, null, 0, 2.0, 200, null, users.get(2)));
-		purchases.add(new Purchase(6L, null, 0, 3.0, 300, null, users.get(5)));
-		purchases.add(new Purchase(7L, null, 0, 3.0, 300, null, users.get(6)));
-		purchases.add(new Purchase(8L, null, 0, 3.0, 300, null, users.get(7)));
-		purchases.add(new Purchase(9L, null, 0, 3.0, 200, null, users.get(8)));
-		purchases.add(new Purchase(12L, null, 0, 6.0, 600, null, users.get(11)));
-		purchases.add(new Purchase(13L, null, 0, 6.0, 600, null, users.get(12)));
-		purchases.add(new Purchase(14L, null, 0, 6.0, 600, null, users.get(13)));
-		purchases.add(new Purchase(15L, null, 0, 4.0, 400, null, users.get(14)));
+		purchases.add(new Purchase(1L, null, 0, 2.0, 200, users.get(0)));
+		purchases.add(new Purchase(2L, null, 0, 1.0, 100, users.get(1)));
+		purchases.add(new Purchase(3L, null, 0, 2.0, 200, users.get(2)));
+		purchases.add(new Purchase(6L, null, 0, 3.0, 300, users.get(5)));
+		purchases.add(new Purchase(7L, null, 0, 3.0, 300, users.get(6)));
+		purchases.add(new Purchase(8L, null, 0, 3.0, 300, users.get(7)));
+		purchases.add(new Purchase(9L, null, 0, 3.0, 200, users.get(8)));
+		purchases.add(new Purchase(12L, null, 0, 6.0, 600, users.get(11)));
+		purchases.add(new Purchase(13L, null, 0, 6.0, 600, users.get(12)));
+		purchases.add(new Purchase(14L, null, 0, 6.0, 600, users.get(13)));
+		purchases.add(new Purchase(15L, null, 0, 4.0, 400, users.get(14)));
 		return purchases;
 	}
 	

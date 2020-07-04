@@ -1,0 +1,27 @@
+<div class="container">
+    <h2 class="form-signin-heading">Immunity Settings</h2>
+    <p style="text-align: center;">Define number of immunity points that are required to acquire each immunity:</p>
+    <br/>
+    <table class="invisible-table">
+    <tbody>
+        <tr>
+            <td><div class="gold-text">Gold Immunity:</div></td>
+            <td><input type="number" [(ngModel)]="goldAcquire"></td>
+            <td><button class="orangeButton" (click)="setGoldAcquire()">Update</button></td>
+        </tr>
+        <tr>
+            <td><div class="silver-text">Silver Immunity:</div></td>
+            <td><input type="number" [(ngModel)]="silverAcquire"></td>
+            <td><button class="orangeButton" (click)="setSilverAcquire()">Update</button></td>
+        </tr>
+        <tr>
+            <td><div class="bronze-text">Bronze Immunity:</div></td>
+            <td><input type="number" [(ngModel)]="bronzeAcquire"></td>
+            <td><button class="orangeButton" (click)="setBronzeAcquire()">Update</button></td>
+        </tr>
+    </tbody>
+    </table>
+    <br/>
+    <p style="color:red; text-align: center;" *ngIf="errorMessage != ''">{{errorMessage}}</p>
+    <p style="color:green; text-align: center;" *ngIf="greenMessage != ''">{{greenMessage}}</p>
+  </div>

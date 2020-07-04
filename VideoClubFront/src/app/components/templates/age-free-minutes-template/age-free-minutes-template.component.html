@@ -1,0 +1,27 @@
+<div class="container">
+    <h2 class="form-signin-heading">Free Minutes By Age Category</h2>
+    <p>Define the number of free minutes that all users of the defined age category will receive:</p>
+    <br/>
+    <table class="invisible-table" *ngFor="let minutes of freeMinutes">
+    <tbody>
+        <tr>
+            <td>Age Category:</td>
+            <td>
+                <select [(ngModel)]="minutes.ageCategory">
+                    <option value="CHILD">Child</option>
+                    <option value="TEEN">Teenager</option>
+                    <option value="YOUNG_ADULT">Young Adult</option>
+                    <option value="ADULT">Adult</option>
+                    <option value="ELDER">Elder</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>Number of Minutes:</td>
+            <td><input type="number" required [(ngModel)]="minutes.amount"></td>
+        </tr>
+    </tbody>
+    </table>
+    <div class="break"></div>
+    <button class="orangeButton" type="submit" (click)="save()">Finish</button>
+  </div>

@@ -1,6 +1,7 @@
 export class FreeMinutes {
     ageCategory: string;
+    title : string;
     amount: number;
-    heade: string;
+    header: string;
     body: string;
 }

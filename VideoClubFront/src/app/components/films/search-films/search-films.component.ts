@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DetailsFilmComponent } from '../details-film/details-film.component';
 import { CreateReviewComponent } from '../../reviews/create-review/create-review.component';
+import { CurrentUser } from 'src/app/model/currentUser';
 
 @Component({
   selector: 'app-search-films',
@@ -17,10 +18,16 @@ export class SearchFilmsComponent implements OnInit {
   private films : Film[];
   private searchedFilm : string;
   private searchedGenre : string;
+  private loggedIn : boolean  = false;
+  private loggedUser;
 
   constructor(private modalService: NgbModal, private router: Router, private filmService: FilmService) { }
 
   ngOnInit() {
+    this.loggedUser = JSON.parse(localStorage.getItem('currentUser'));
+    if(this.loggedUser != null){
+      this.loggedIn = true;
+    }
     this.initializeFilms();
   }
 
@@ -101,8 +108,12 @@ export class SearchFilmsComponent implements OnInit {
   }
 
   watchFilm(id:number){
-    localStorage.setItem('film-review', id.toString());
-    const modalRef = this.modalService.open(CreateReviewComponent);
+    if(this.loggedIn === true && this.loggedUser.role == 'ROLE_REGISTERED_USER'){
+      localStorage.setItem('film-review', id.toString());
+      const modalRef = this.modalService.open(CreateReviewComponent);
+    }
+    else{
+      this.moreInfo(id);
+    }
   }
-
 }
