@@ -58,7 +58,6 @@ public class PurchaseServiceImpl implements PurchaseService{
 		purchase.setDate(LocalDateTime.parse(sdf.format(new Date()),df));
 		purchase.setUser(user);
 		Offer offer = offerService.getOne(offerId);
-		purchase.setOffer(offer);
 		purchase.setPrice(offer.getPrice());
 		purchase.setPurchasedMinutes(offer.getMinutes());
 		cepPurchaseSession.insert(new PurchaseEvent(purchase, user));

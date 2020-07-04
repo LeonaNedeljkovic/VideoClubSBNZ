@@ -26,6 +26,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,8 +34,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.videoClub.model.drl.Immunity;
 import com.videoClub.model.drl.Title;
+import com.videoClub.dto.ImmunityResponseDto;
 import com.videoClub.dto.PointsDTO;
 import com.videoClub.dto.ReportDTO;
+import com.videoClub.dto.TitleResponseDto;
 import com.videoClub.factory.ImmunityFactory;
 import com.videoClub.factory.TitleFactory;
 import com.videoClub.model.AgeClassifier;
@@ -44,7 +47,6 @@ import com.videoClub.model.RegisteredUser;
 import com.videoClub.model.Report;
 import com.videoClub.model.User;
 import com.videoClub.model.enumeration.Rank;
-import com.videoClub.repository.ReportRepository;
 import com.videoClub.service.AgeClassifierService;
 import com.videoClub.service.FilmService;
 import com.videoClub.service.PurchaseService;
@@ -131,12 +133,15 @@ public class RuleController {
         return new ResponseEntity<>(userService.save(users), HttpStatus.OK);
 	}
 	
-	@PutMapping(value = "/restrict_genre/age", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value = "/restrict_genre/age", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public ResponseEntity<List<Film>> restrictGenreByAge(@RequestBody List<GenreAgeRestrictionTemplate> freeMinutes) {
+	public ResponseEntity<List<Film>> restrictGenreByAge(@RequestBody List<GenreAgeRestrictionTemplate> restricted) {
+		System.out.println("GENRE: " + restricted.get(0).getGenre());
+		System.out.println("AGE CATEGORY: " + restricted.get(0).getAgeCategory());
 		InputStream template = RuleController.class.getResourceAsStream("/templates/genreRestrictionByAge.drt");
 		ObjectDataCompiler converter = new ObjectDataCompiler();
-	    String drl = converter.compile(freeMinutes, template);
+	    String drl = converter.compile(restricted, template);
+	    System.out.println(drl);
 	    KieSession ksession = initializeKieSessionFromDRL(drl);
 	    List<Film> films = filmService.getAll();
 	    for(Film film : films){
@@ -163,7 +168,7 @@ public class RuleController {
         return new ResponseEntity<>(filmService.save(films), HttpStatus.OK);
 	}
 	
-	@PutMapping(value = "/free_minutes/age", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value = "/free_minutes/age", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<List<User>> freeMinutesByAge(@RequestBody List<FreeMinutes> freeMinutes) {
 		InputStream template = RuleController.class.getResourceAsStream("/templates/freeMinutesByAge.drt");
@@ -215,6 +220,32 @@ public class RuleController {
 	    ksession.fireAllRules();
         ksession.dispose();
         return new ResponseEntity<>(userService.save(users), HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/title/info", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<TitleResponseDto> getTitleInfo() {
+		TitleResponseDto response = new TitleResponseDto(
+				this.bronzeTitle.getAcquirePoints(),
+				this.silverTitle.getAcquirePoints(),
+				this.goldTitle.getAcquirePoints(),
+				this.bronzeTitle.getSavePoints(),
+				this.silverTitle.getSavePoints(),
+				this.goldTitle.getSavePoints(),
+				this.bronzeTitle.getRewardPoints(),
+				this.silverTitle.getRewardPoints(),
+				this.goldTitle.getRewardPoints()
+				);
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/immunity/info", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ImmunityResponseDto> getImmunityInfo() {
+		ImmunityResponseDto response = new ImmunityResponseDto(
+				this.bronzeImmunity.getAcquirePoints(),
+				this.silverImmunity.getAcquirePoints(),
+				this.goldImmunity.getAcquirePoints()
+				);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 	
 	@GetMapping(value = "/bronze_immunity_points", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -493,16 +524,27 @@ public class RuleController {
 	
 	private KieSession initializeKieSession(String sessionName){
 		KieSession kieSession = kieContainer.newKieSession(sessionName);
-		TitleFactory titleFactory = new TitleFactory(
-				goldTitle,
-				silverTitle,
-				bronzeTitle);
-		ImmunityFactory immunityFactory = new ImmunityFactory(
-				bronzeImmunity,
-				silverImmunity,
-				goldImmunity);
-		kieSession.setGlobal("titleFactory", titleFactory);
-		kieSession.setGlobal("immunityFactory", immunityFactory);
+		if(sessionName.equals("titleRulesSession")){
+			TitleFactory titleFactory = new TitleFactory(
+					goldTitle,
+					silverTitle,
+					bronzeTitle);
+			ImmunityFactory immunityFactory = new ImmunityFactory(
+					bronzeImmunity,
+					silverImmunity,
+					goldImmunity);
+			kieSession.setGlobal("titleFactory", titleFactory);
+			kieSession.setGlobal("immunityFactory", immunityFactory);
+		}
+		else{
+			kieSession.setGlobal("bronzeImmunity", bronzeImmunity);
+			kieSession.setGlobal("silverImmunity", silverImmunity);
+			kieSession.setGlobal("goldImmunity", goldImmunity);
+			kieSession.setGlobal("bronzeTitle", bronzeTitle);
+			kieSession.setGlobal("silverTitle", silverTitle);
+			kieSession.setGlobal("goldTitle", goldTitle);
+		}
+		
 		return kieSession;
 	}
 	

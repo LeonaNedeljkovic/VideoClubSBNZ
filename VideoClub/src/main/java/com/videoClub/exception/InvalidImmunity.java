@@ -7,9 +7,7 @@ private String message;
 	
 	public InvalidImmunity(){
 		super();
-		this.message = "Invalid value. Make sure that:"
-				+ "\tImmunity with higher value must have more acquire points than immunity with lower value."
-				+ "\tValue of points must be between 5 and 1000.";
+		this.message = "Invalid value.";
 	}
 
 	public String getMessage() {

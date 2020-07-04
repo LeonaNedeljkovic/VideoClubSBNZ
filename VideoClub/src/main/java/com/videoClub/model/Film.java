@@ -223,9 +223,7 @@ public class Film {
 	}
 
 	public void addNewRestrictedAgeCategory(AgeCategory category){
-		if(!(restrictedAgeCategories.contains(category))){
-			restrictedAgeCategories.add(category);
-		}
+		restrictedAgeCategories.add(category);
 	}
 
 	public void addNewRate(int rate, Long reviewId){

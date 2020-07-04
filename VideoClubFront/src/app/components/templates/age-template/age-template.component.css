@@ -1,0 +1,66 @@
+.container{
+    background-color:#1b1d1f;
+    padding:7%;
+    border-color:white;
+    border-style: double;
+    overflow: auto;
+ }
+ h2 {
+   font-size:20px;
+   color:#f2a223;
+   font-weight:bold;
+   text-align: center;
+   width: 100%;
+ }
+ h3{
+    font-size:15px;
+    color:#f2a223;
+    font-weight:bold;
+    text-align: left;
+ }
+ p{
+    font-size:13px;
+    color:white;
+    text-align: center;
+    width: 100%;
+ }
+ input, textarea, select {
+   font-size:12px;
+    font-family:Arial, Helvetica, sans-serif;
+    padding:5px;
+    width: 80%;
+    border:1px solid #413e3e;
+   background:#000;
+   color:white;
+   display: inline-block;
+ }
+ textarea {
+   overflow:auto;
+ }
+ 
+ .break{
+    padding:5px;
+ }
+ 
+ .orangeButton{
+    width: 30%;
+    background-color: #f2a223;
+    color:black;
+    border: none;
+    font-weight:bold;
+    padding: 5px;
+    margin-left: 35%;
+    position: relative;
+ }
+ 
+ ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color:white;
+  }
+
+  .review-table{
+    border:none;
+    color:white;
+    background-color:#1b1d1f;
+    margin-left: 10%;
+    width: 80%;
+  }

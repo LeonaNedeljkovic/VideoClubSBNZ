@@ -1550,18 +1550,18 @@ INSERT INTO offer (id, minutes, price) VALUES (3, 300, 4) ON DUPLICATE KEY UPDAT
 INSERT INTO offer (id, minutes, price) VALUES (4, 600, 7) ON DUPLICATE KEY UPDATE id = 4;
 INSERT INTO offer (id, minutes, price) VALUES (5, 1000, 10) ON DUPLICATE KEY UPDATE id = 5;
 
-INSERT INTO purchase (id, date, discount, price, purchased_minutes, offer_id, user_id) VALUES (1, '2020-05-05 00:00', 0, 3, 200, 2, 1) ON DUPLICATE KEY UPDATE id = 1;
-INSERT INTO purchase (id, date, discount, price, purchased_minutes, offer_id, user_id) VALUES (2, '2020-05-05 00:00', 0, 2, 100, 1, 2) ON DUPLICATE KEY UPDATE id = 2;
-INSERT INTO purchase (id, date, discount, price, purchased_minutes, offer_id, user_id) VALUES (3, '2020-05-05 00:00', 0, 3, 200, 2, 3) ON DUPLICATE KEY UPDATE id = 3;
-INSERT INTO purchase (id, date, discount, price, purchased_minutes, offer_id, user_id) VALUES (4, '2020-05-05 00:00', 0, 4, 300, 3, 6) ON DUPLICATE KEY UPDATE id = 4;
-INSERT INTO purchase (id, date, discount, price, purchased_minutes, offer_id, user_id) VALUES (5, '2020-05-05 00:00', 0, 4, 300, 3, 7) ON DUPLICATE KEY UPDATE id = 5;
-INSERT INTO purchase (id, date, discount, price, purchased_minutes, offer_id, user_id) VALUES (6, '2020-05-05 00:00', 0, 4, 300, 3, 8) ON DUPLICATE KEY UPDATE id = 6;
-INSERT INTO purchase (id, date, discount, price, purchased_minutes, offer_id, user_id) VALUES (7, '2020-05-05 00:00', 0, 3, 200, 2, 9) ON DUPLICATE KEY UPDATE id = 7;
-INSERT INTO purchase (id, date, discount, price, purchased_minutes, offer_id, user_id) VALUES (8, '2020-05-05 00:00', 0, 7, 600, 4, 12) ON DUPLICATE KEY UPDATE id = 8;
-INSERT INTO purchase (id, date, discount, price, purchased_minutes, offer_id, user_id) VALUES (9, '2020-05-05 00:00', 0, 7, 600, 4, 13) ON DUPLICATE KEY UPDATE id = 9;
-INSERT INTO purchase (id, date, discount, price, purchased_minutes, offer_id, user_id) VALUES (10, '2020-05-05 00:00', 0, 7, 600, 4, 14) ON DUPLICATE KEY UPDATE id = 10;
-INSERT INTO purchase (id, date, discount, price, purchased_minutes, offer_id, user_id) VALUES (11, '2020-05-05 00:00', 0, 3, 200, 2, 15) ON DUPLICATE KEY UPDATE id = 11;
-INSERT INTO purchase (id, date, discount, price, purchased_minutes, offer_id, user_id) VALUES (12, '2020-05-05 00:00', 0, 3, 200, 2, 15) ON DUPLICATE KEY UPDATE id = 12;
+INSERT INTO purchase (id, date, discount, price, purchased_minutes, user_id) VALUES (1, '2020-05-05 00:00', 0, 3, 200, 1) ON DUPLICATE KEY UPDATE id = 1;
+INSERT INTO purchase (id, date, discount, price, purchased_minutes, user_id) VALUES (2, '2020-05-05 00:00', 0, 2, 100, 2) ON DUPLICATE KEY UPDATE id = 2;
+INSERT INTO purchase (id, date, discount, price, purchased_minutes, user_id) VALUES (3, '2020-05-05 00:00', 0, 3, 200, 3) ON DUPLICATE KEY UPDATE id = 3;
+INSERT INTO purchase (id, date, discount, price, purchased_minutes, user_id) VALUES (4, '2020-05-05 00:00', 0, 4, 300, 6) ON DUPLICATE KEY UPDATE id = 4;
+INSERT INTO purchase (id, date, discount, price, purchased_minutes, user_id) VALUES (5, '2020-05-05 00:00', 0, 4, 300, 7) ON DUPLICATE KEY UPDATE id = 5;
+INSERT INTO purchase (id, date, discount, price, purchased_minutes, user_id) VALUES (6, '2020-05-05 00:00', 0, 4, 300, 8) ON DUPLICATE KEY UPDATE id = 6;
+INSERT INTO purchase (id, date, discount, price, purchased_minutes, user_id) VALUES (7, '2020-05-05 00:00', 0, 3, 200, 9) ON DUPLICATE KEY UPDATE id = 7;
+INSERT INTO purchase (id, date, discount, price, purchased_minutes, user_id) VALUES (8, '2020-05-05 00:00', 0, 7, 600, 12) ON DUPLICATE KEY UPDATE id = 8;
+INSERT INTO purchase (id, date, discount, price, purchased_minutes, user_id) VALUES (9, '2020-05-05 00:00', 0, 7, 600, 13) ON DUPLICATE KEY UPDATE id = 9;
+INSERT INTO purchase (id, date, discount, price, purchased_minutes, user_id) VALUES (10, '2020-05-05 00:00', 0, 7, 600, 14) ON DUPLICATE KEY UPDATE id = 10;
+INSERT INTO purchase (id, date, discount, price, purchased_minutes, user_id) VALUES (11, '2020-05-05 00:00', 0, 3, 200, 15) ON DUPLICATE KEY UPDATE id = 11;
+INSERT INTO purchase (id, date, discount, price, purchased_minutes, user_id) VALUES (12, '2020-05-05 00:00', 0, 3, 200, 15) ON DUPLICATE KEY UPDATE id = 12;
 
 
 INSERT INTO age_classifier (id, age_category, start_age, end_age) VALUES (1, 'CHILD', 0, 12) ON DUPLICATE KEY UPDATE id = 1;

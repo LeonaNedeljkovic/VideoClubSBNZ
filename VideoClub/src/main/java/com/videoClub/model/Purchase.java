@@ -36,11 +36,6 @@ public class Purchase {
 	private Integer purchasedMinutes;
 	
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinColumn(name = "offer_id")
-	@JsonIgnore
-	private Offer offer;
-	
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "user_id")
 	@JsonIgnore
 	private RegisteredUser user;
@@ -49,7 +44,7 @@ public class Purchase {
 		super();
 	}
 
-	public Purchase(Long id, LocalDateTime date, int discount, double price, int purchasedMinutes, Offer offer,
+	public Purchase(Long id, LocalDateTime date, int discount, double price, int purchasedMinutes,
 			RegisteredUser user) {
 		super();
 		this.id = id;
@@ -57,7 +52,6 @@ public class Purchase {
 		this.discount = discount;
 		this.price = price;
 		this.purchasedMinutes = purchasedMinutes;
-		this.offer = offer;
 		this.user = user;
 	}
 
@@ -103,14 +97,6 @@ public class Purchase {
 
 	public void setPurchasedMinutes(int purchasedMinutes) {
 		this.purchasedMinutes = purchasedMinutes;
-	}
-
-	public Offer getOffer() {
-		return offer;
-	}
-
-	public void setOffer(Offer offer) {
-		this.offer = offer;
 	}
 
 	public RegisteredUser getUser() {

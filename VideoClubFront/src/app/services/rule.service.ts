@@ -13,6 +13,8 @@ import { FilmAgeRestrictionTemplate } from '../model/film-age-restriction-templa
 import { FreeMinutes } from '../model/free-minutes.model';
 import { PointsDto } from '../dto/points.dto';
 import { Report } from '../model/report.model';
+import { TitleInfo } from '../dto/title-info-dto';
+import { ImmunityInfo } from '../dto/immunity-points-dto';
 
 @Injectable({providedIn: 'root'})
 export class RuleService {
@@ -29,7 +31,7 @@ export class RuleService {
     }
 
     restrictGenreByAge = (genreAgeRestriction :GenreAgeRestrictionTemplate[]): Observable<Film[]> => {
-    return this.http.put<Film[]>(`/api/restrict_genre/age`, genreAgeRestriction).pipe(
+    return this.http.post<Film[]>(`/api/restrict_genre/age`, genreAgeRestriction).pipe(
       map( (res: any) => {
           return res;
       })  );
@@ -43,7 +45,7 @@ export class RuleService {
         }
     
     freeMinutesByAge = (freeMinutes :FreeMinutes[]): Observable<User[]> => {
-        return this.http.put<User[]>(`/api/free_minutes/age`, freeMinutes).pipe(
+        return this.http.post<User[]>(`/api/free_minutes/age`, freeMinutes).pipe(
             map( (res: any) => {
                 return res;
             })  );
@@ -62,6 +64,20 @@ export class RuleService {
                 return res;
             })  );
         }
+
+    getTitleInfo = (): Observable<TitleInfo> => {
+        return this.http.get<TitleInfo>("/api/title/info").pipe(
+            map( (res: any) => {
+                return res;
+            })  );
+    }
+    
+    getImmunityInfo = (): Observable<ImmunityInfo> => {
+        return this.http.get<ImmunityInfo>("/api/immunity/info").pipe(
+            map( (res: any) => {
+                return res;
+            })  );
+    }
 
     getBronzeImmunity = (): Observable<PointsDto> => {
         return this.http.get<PointsDto>("/api/bronze_immunity_points").pipe(
@@ -85,21 +101,21 @@ export class RuleService {
     }
 
     getBronzeTitleAquire = (): Observable<PointsDto> => {
-        return this.http.get<PointsDto>("/api/bronze_title/aquire_points").pipe(
+        return this.http.get<PointsDto>("/api/bronze_title/acquire_points").pipe(
           map( (res: any) => {
               return res;
           })  );
     }
 
     getSilverTitleAquire = (): Observable<PointsDto> => {
-        return this.http.get<PointsDto>("/api/silver_title/aquire_points").pipe(
+        return this.http.get<PointsDto>("/api/silver_title/acquire_points").pipe(
           map( (res: any) => {
               return res;
           })  );
     }
 
     getGoldTitleAquire = (): Observable<PointsDto> => {
-        return this.http.get<PointsDto>("/api/gold_title/aquire_points").pipe(
+        return this.http.get<PointsDto>("/api/gold_title/acquire_points").pipe(
           map( (res: any) => {
               return res;
           })  );
@@ -154,84 +170,84 @@ export class RuleService {
           })  );
     }
 
-    setBronzeImmunityPoints = (points: PointsDto): Observable<PointsDto> => {
+    setBronzeImmunityPoints = (points: PointsDto): Observable<any> => {
         return this.http.put<PointsDto>("/api/bronze_immunity_points",points).pipe(
           map( (res: any) => {
               return res;
           })  );
     }
 
-    setSilverImmunityPoints = (points: PointsDto): Observable<PointsDto> => {
+    setSilverImmunityPoints = (points: PointsDto): Observable<any> => {
         return this.http.put<PointsDto>("/api/silver_immunity_points",points).pipe(
           map( (res: any) => {
               return res;
           })  );
     }
 
-    setGoldImmunityPoints = (points: PointsDto): Observable<PointsDto> => {
+    setGoldImmunityPoints = (points: PointsDto): Observable<any> => {
         return this.http.put<PointsDto>("/api/gold_immunity_points",points).pipe(
           map( (res: any) => {
               return res;
           })  );
     }
 
-    setBronzeAquirePoints = (points: PointsDto): Observable<PointsDto> => {
-        return this.http.put<PointsDto>("/api/bronze_title/aquire_points",points).pipe(
+    setBronzeAquirePoints = (points: PointsDto): Observable<any> => {
+        return this.http.put<PointsDto>("/api/bronze_title/acquire_points",points).pipe(
           map( (res: any) => {
               return res;
           })  );
     }
 
-    setSilverAquirePoints = (points: PointsDto): Observable<PointsDto> => {
-        return this.http.put<PointsDto>("/api/silver_title/aquire_points",points).pipe(
+    setSilverAquirePoints = (points: PointsDto): Observable<any> => {
+        return this.http.put<PointsDto>("/api/silver_title/acquire_points",points).pipe(
           map( (res: any) => {
               return res;
           })  );
     }
 
-    setGoldAquirePoints = (points: PointsDto): Observable<PointsDto> => {
-        return this.http.put<PointsDto>("/api/gold_title/aquire_points",points).pipe(
+    setGoldAquirePoints = (points: PointsDto): Observable<any> => {
+        return this.http.put<PointsDto>("/api/gold_title/acquire_points",points).pipe(
           map( (res: any) => {
               return res;
           })  );
     }
 
-    setBronzeSavePoints = (points: PointsDto): Observable<PointsDto> => {
+    setBronzeSavePoints = (points: PointsDto): Observable<any> => {
         return this.http.put<PointsDto>("/api/bronze_title/save_points",points).pipe(
           map( (res: any) => {
               return res;
           })  );
     }
 
-    setSilverSavePoints = (points: PointsDto): Observable<PointsDto> => {
+    setSilverSavePoints = (points: PointsDto): Observable<any> => {
         return this.http.put<PointsDto>("/api/silver_title/save_points",points).pipe(
           map( (res: any) => {
               return res;
           })  );
     }
 
-    setGoldSavePoints = (points: PointsDto): Observable<PointsDto> => {
+    setGoldSavePoints = (points: PointsDto): Observable<any> => {
         return this.http.put<PointsDto>("/api/gold_title/save_points",points).pipe(
           map( (res: any) => {
               return res;
           })  );
     }
 
-    setBronzeRewardPoints = (points: PointsDto): Observable<PointsDto> => {
+    setBronzeRewardPoints = (points: PointsDto): Observable<any> => {
         return this.http.put<PointsDto>("/api/bronze_title/reward_points",points).pipe(
           map( (res: any) => {
               return res;
           })  );
     }
 
-    setSilverRewardPoints = (points: PointsDto): Observable<PointsDto> => {
+    setSilverRewardPoints = (points: PointsDto): Observable<any> => {
         return this.http.put<PointsDto>("/api/silver_title/reward_points",points).pipe(
           map( (res: any) => {
               return res;
           })  );
     }
 
-    setGoldRewardPoints = (points: PointsDto): Observable<PointsDto> => {
+    setGoldRewardPoints = (points: PointsDto): Observable<any> => {
         return this.http.put<PointsDto>("/api/gold_title/reward_points",points).pipe(
           map( (res: any) => {
               return res;

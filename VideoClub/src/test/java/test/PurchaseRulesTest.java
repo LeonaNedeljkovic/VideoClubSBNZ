@@ -143,7 +143,6 @@ public class PurchaseRulesTest {
 				0,
 				offer.getPrice(),
 				offer.getMinutes(),
-				offer,
 				user);
 		return purchase;
 	}

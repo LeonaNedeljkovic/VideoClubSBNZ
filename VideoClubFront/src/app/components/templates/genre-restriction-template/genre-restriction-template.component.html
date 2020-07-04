@@ -1,0 +1,43 @@
+<div class="container">
+    <h2 class="form-signin-heading">Genre Restriction</h2>
+    <p>Define genre that users of choosen age category can not watch</p>
+    <br/>
+    <table class="invisible-table">
+    <tbody>
+        <tr>
+            <td>Age Category:</td>
+            <td>
+                <select [(ngModel)]="restriction.ageCategory">
+                    <option value="CHILD">Child</option>
+                    <option value="TEEN">Teenager</option>
+                    <option value="YOUNG_ADULT">Young Adult</option>
+                    <option value="ADULT">Adult</option>
+                    <option value="ELDER">Elder</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>Genre:</td>
+            <td>
+                <select [(ngModel)]="restriction.genre">
+                    <option>ACTION</option>
+                    <option>ADVENTURE</option>
+                    <option>ANIMATED</option>
+                    <option>COMEDY</option>
+                    <option>DOCUMENTARY</option>
+                    <option>DRAMA</option>
+                    <option>HISTORICAL</option>
+                    <option>HORROR</option>
+                    <option>MUSIC</option>
+                    <option>SCIFI</option>
+                    <option>THRILLER</option>
+                    <option>WESTERN</option>
+                    <option>FAMILY</option>
+                </select>
+            </td>
+        </tr>
+    </tbody>
+    </table>
+    <div class="break"></div>
+    <button class="orangeButton" type="submit" (click)="saveChanges()">Finish</button>
+  </div>
