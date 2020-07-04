@@ -3,12 +3,6 @@ package com.videoClub.rules.cepPurchase
 import com.videoClub.event.*;
 import com.videoClub.model.*;
 
-declare SuspiciousUserEvent
-    @role(event)
-    user: User
-    reason: String
-end
-
 
 rule "More than 10 purchases in 1 hour from same user"
     when
@@ -17,24 +11,10 @@ rule "More than 10 purchases in 1 hour from same user"
 			$p: PurchaseEvent(user.id == $userId)
 			over window:time(1h), count($p)
 		)
-        not (SuspiciousUserEvent(user.id == $userId, reason == "Many purchases in 1 hour from same user"))
     then
     	$user.setAllowedToPurchase(false);
-    	insert(new SuspiciousUserEvent($user, "Many purchases in 1 hour from the same user"));
 end
 
-rule "Less than 10 purchases in 1 hour from same user"
-    when
-        $t1: PurchaseEvent($userId: user.id, $user : user)
-        Number(intValue < 10 ) from accumulate(
-			$p: PurchaseEvent(user.id == $userId)
-			over window:time(1h), count($p)
-		)
-        $sp : SuspiciousUserEvent(user.id == $userId, reason == "Many purchases in 1 hour from same user")
-    then
-    	$user.setAllowedToPurchase(true);
-        delete($sp);   
-end
 
 rule "No suspicious user event and less than 10 purchase events in 1 hour"
     when
@@ -43,7 +23,6 @@ rule "No suspicious user event and less than 10 purchase events in 1 hour"
 			$p: PurchaseEvent(user.id == $userId)
 			over window:time(1h), count($p)
 		)
-        not (SuspiciousUserEvent(user.id == $userId, reason == "Many purchases in 1 hour from same user"))
     then
     	$user.setAllowedToPurchase(true);
 end
