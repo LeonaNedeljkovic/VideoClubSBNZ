@@ -24,6 +24,9 @@
     <kbase name="artistRecommendation" packages="com.videoClub.rules.artist">
         <ksession name="artistRulesSession"/>
     </kbase>
+    <kbase name="ageRange" packages="com.videoClub.rules.ageRange">
+        <ksession name="ageRangeRulesSession"/>
+    </kbase>
     <kbase name="cepLogging" eventProcessingMode="stream" packages="com.videoClub.rules.cep">
         <ksession name="cepRulesSession"/>
         <ksession name="cepLoginKsessionPseudoClock" clockType="pseudo"/>

@@ -78,10 +78,10 @@ public class ReviewServiceImpl implements ReviewService{
 			review.getTimeIntervals().add(interval);
 			kieSession.insert(interval);
 		}
-		cepReportSession.insert(new FilmWatchEvent(filmService.getOne(reviewDTO.getVideoContentId())));
 		kieSession.insert(user);
 		kieSession.fireAllRules();
 		kieSession.dispose();
+		cepReportSession.insert(new FilmWatchEvent(filmService.getOne(reviewDTO.getVideoContentId())));
 		return reviewRepository.save(review);
 	}
 	

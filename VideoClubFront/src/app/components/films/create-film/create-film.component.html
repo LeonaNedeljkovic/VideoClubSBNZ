@@ -44,10 +44,14 @@
                         <tr>
                               <td>Actors: </td>
                               <td>
-                              <select id="actors" multiple>
-                                    <option *ngFor="let artist of artists" value="{{artist.id}}">{{artist.name}} {{artist.surname}}</option>
-                              </select>
+                                    <select name="search field" class="search-field" (change)="addActor($event)">
+                                          <option *ngFor="let artist of artists" value="{{artist.id}}" >{{artist.name}} {{artist.surname}}</option>
+                                    </select>
                               </td>
+                        </tr>
+                        <tr *ngFor="let selected of getSelectedActors(); let i = index">
+                              <td></td>
+                              <td class="selected-item">{{selected.name}} {{selected.surname}}<span class="x" (click)="removeActor(selected.id)">X</span></td>
                         </tr>
                         <tr>
                               <td>Director: </td>
@@ -71,7 +75,7 @@
                         </tr>
                   </tbody>
                   </table>
-                  <button class="orangeButton" type="submit" (click)=" createFilm()">Add film</button>
+                  <button class="orangeButton" type="submit">Add film</button>
             </form>
             
             </div>

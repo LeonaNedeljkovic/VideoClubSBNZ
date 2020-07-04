@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.videoClub.comparator.ArtistComparator;
 import com.videoClub.dto.MessageDto;
 import com.videoClub.model.Artist;
 import com.videoClub.service.ArtistService;
@@ -49,7 +50,9 @@ public class ArtistController {
 	
 	@GetMapping(value = "/artists", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<Artist>> getArtists() {
-		return new ResponseEntity<>(artistService.getAll(), HttpStatus.OK);
+		List<Artist> getAll = artistService.getAll();
+		java.util.Collections.sort(getAll, new ArtistComparator());
+		return new ResponseEntity<>(getAll, HttpStatus.OK);
 	}
 	
 	@GetMapping(value = "/artists/actors/{videoId}", produces = MediaType.APPLICATION_JSON_VALUE)
