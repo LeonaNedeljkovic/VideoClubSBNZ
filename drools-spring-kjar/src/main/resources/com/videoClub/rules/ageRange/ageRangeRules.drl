@@ -1,0 +1,41 @@
+package com.videoClub.rules.ageRange
+import com.videoClub.exception.*;
+import com.videoClub.model.*;
+import com.videoClub.model.enumeration.*;
+
+rule "Invalid age range"
+    when
+		invalidChildRange() or 
+		invalidTeenRange() or
+		invalidYoungAdultRange() or
+		invalidAdultRange() or 
+		invalidElderRange()
+    then
+    	throw new InvalidAgeRange();
+end
+
+query invalidChildRange()
+	$teen: AgeClassifier(ageCategory == AgeCategory.TEEN, $startAge: startAge)
+	AgeClassifier(ageCategory == AgeCategory.CHILD && endAge != $startAge - 1)
+end
+
+query invalidTeenRange()
+	$youngAdult: AgeClassifier(ageCategory == AgeCategory.YOUNG_ADULT, $startAge: startAge)
+	AgeClassifier(ageCategory == AgeCategory.TEEN && endAge != $startAge - 1)
+end
+
+query invalidYoungAdultRange()
+	$adult: AgeClassifier(ageCategory == AgeCategory.ADULT, $startAge: startAge)
+	AgeClassifier(ageCategory == AgeCategory.YOUNG_ADULT && endAge != $startAge - 1)
+end
+
+query invalidAdultRange()
+	$elder: AgeClassifier(ageCategory == AgeCategory.ELDER, $startAge: startAge)
+	AgeClassifier(ageCategory == AgeCategory.ADULT && endAge != $startAge - 1)
+end
+
+query invalidElderRange()
+	$adult: AgeClassifier(ageCategory == AgeCategory.ADULT, $endAge: endAge)
+	AgeClassifier(ageCategory == AgeCategory.ELDER && startAge != $endAge + 1)
+end
+	

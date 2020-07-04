@@ -43,6 +43,7 @@ import com.videoClub.model.Purchase;
 import com.videoClub.model.RegisteredUser;
 import com.videoClub.model.Report;
 import com.videoClub.model.User;
+import com.videoClub.model.enumeration.AgeCategory;
 import com.videoClub.model.enumeration.Rank;
 import com.videoClub.repository.ReportRepository;
 import com.videoClub.service.AgeClassifierService;
@@ -115,6 +116,9 @@ public class RuleController {
 	@PutMapping(value = "/classify_user/age", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<List<User>> classifyUserByAge(@RequestBody List<AgeClassifier> ageClassifiers) {
+		KieSession session = initializeAddAgeClassifiers("ageRangeRulesSession", ageClassifiers);
+		session.fireAllRules();
+		session.dispose();
 		InputStream template = RuleController.class.getResourceAsStream("/templates/classifyUserByAge.drt");
 		ObjectDataCompiler converter = new ObjectDataCompiler();
 	    String drl = converter.compile(ageClassifiers, template);
@@ -477,7 +481,7 @@ public class RuleController {
 	
 	
 	
-	@Scheduled(cron="0 0 * * * *")
+	@Scheduled(cron="0 0 0 * * *")
 	public void fireReportRules() {
 		ReportDTO reportDTO = new ReportDTO(0.0,LocalDate.now(),null,0L);
 		FactHandle factHandle = cepReportSession.insert(reportDTO);
@@ -503,6 +507,14 @@ public class RuleController {
 				goldImmunity);
 		kieSession.setGlobal("titleFactory", titleFactory);
 		kieSession.setGlobal("immunityFactory", immunityFactory);
+		return kieSession;
+	}
+	
+	private KieSession initializeAddAgeClassifiers(String sessionName, List<AgeClassifier> ageClassifiers){
+		KieSession kieSession = kieContainer.newKieSession(sessionName);
+		for(AgeClassifier ageClassifier: ageClassifiers) {
+			kieSession.insert(ageClassifier);
+		}
 		return kieSession;
 	}
 	
