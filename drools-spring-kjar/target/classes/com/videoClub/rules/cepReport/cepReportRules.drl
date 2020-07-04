@@ -64,7 +64,7 @@ rule "number of views in the last 24h"
 	when
 		$r: ReportDTO( );
 		accumulate(
-			FilmNumber() from window numberOfViews,
+			FilmWatchEvent() from window numberOfViews,
 			$cnt: count(1)
 		)
 	then

@@ -64,6 +64,7 @@ public class PurchaseServiceImpl implements PurchaseService{
 		cepPurchaseSession.fireAllRules();
 		userService.save(user);
 		if (user.getAllowedToPurchase() == true) {
+			kieSession.insert(offer);
 			kieSession.insert(purchase);
 			kieSession.insert(user);
 			for (Action a : user.getAction()) {
