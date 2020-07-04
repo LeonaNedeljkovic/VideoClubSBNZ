@@ -38,14 +38,31 @@ export class CreateFilmComponent implements OnInit {
 
   }
 
+  getSelectedActors(){
+    let artistDto = [];
+    this.artists.forEach(artist => {
+      let _artist = artist;
+      this.film.actorIds.forEach(selected => {
+        if(_artist.id == selected.toString()){
+          artistDto.push(_artist);
+        }
+      });
+    });
+    return artistDto;
+  }
+
+  addActor(actor){
+    this.film.actorIds.push(actor.target.value+"");
+  }
+
+  removeActor(selected){
+    this.film.actorIds = this.film.actorIds.filter(obj => obj != selected);
+  }
+
   createFilm(){
-    if(this.film.name!="" && this.film.description!="" && this.film.year >1800 && this.film.year < 2023 && this.film.duration > 10 && this.film.duration < 400 
+    if(this.film.name!="" && this.film.year >1800 && this.film.year < 2023 && this.film.duration > 10 && this.film.duration < 400 
     && this.film.poster!="" ){
-    var e = document.getElementById("actors");
-    let indexToFind = (<HTMLSelectElement> e);
-    let selectedValues = Array.from(indexToFind.selectedOptions)
-        .map(option => option.value)
-    this.film.actorIds = selectedValues;
+      console.log(this.film.actorIds);
     var e2 = document.getElementById("director");
     let indexToFind2 = (<HTMLSelectElement> e2);
     this.film.directorId = indexToFind2.options[indexToFind2.selectedIndex].value;
@@ -62,6 +79,10 @@ export class CreateFilmComponent implements OnInit {
       const modalRef = this.modalService.open(MessageComponent);
       localStorage.removeItem("message2");
   });
+}else{
+      var message : Message = {header:"Error", message:"All fields must be field in", color:"green"};
+      localStorage.setItem('message', JSON.stringify(message));
+      const modalRef = this.modalService.open(MessageComponent);
 }
   }
 }
