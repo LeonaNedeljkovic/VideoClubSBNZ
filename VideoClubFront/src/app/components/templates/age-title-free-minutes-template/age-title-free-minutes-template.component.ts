@@ -10,12 +10,21 @@ import { FreeMinutes } from 'src/app/model/free-minutes.model';
 export class AgeTitleFreeMinutesTemplateComponent implements OnInit {
 
   private freeMinutes : FreeMinutes[] = []
+  private message : string = "";
 
   constructor(private rulesService : RuleService) { }
 
   ngOnInit() {
+    this.addTemplate();
+  }
+
+  addTemplate(){
     var freeMinutes : FreeMinutes ={ageCategory : "CHILD", amount:0, header : "Free Minutes for you!", body: "", title: "GOLD"};
     this.freeMinutes.push(freeMinutes);
+  }
+
+  removeTemplate(template: FreeMinutes){
+    this.freeMinutes = this.freeMinutes.filter(obj => obj !== template);
   }
 
   save(){
@@ -23,7 +32,7 @@ export class AgeTitleFreeMinutesTemplateComponent implements OnInit {
       element.body = "You got " + element.amount + " free minutes as gift from us!";
     });
     this.rulesService.freeMinutesByAgeAndTitle(this.freeMinutes).subscribe(
-      result =>{console.log(result)}
+      result =>{this.message="Template successfully created!"}
     )
   }
 

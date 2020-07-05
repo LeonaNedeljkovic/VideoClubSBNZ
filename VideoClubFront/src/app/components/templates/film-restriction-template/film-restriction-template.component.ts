@@ -13,13 +13,13 @@ import { FilmAgeRestrictionTemplate } from 'src/app/model/film-age-restriction-t
 export class FilmRestrictionTemplateComponent implements OnInit {
 
   private films : Film[] = [];
-  private restrictions : FilmAgeRestrictionTemplate[] ;
+  private restrictions : FilmAgeRestrictionTemplate[] = [];
+  private message : string = "";
 
   constructor(private filmService : FilmService, private ruleService : RuleService) { }
 
   ngOnInit() {
-    var filmRes : FilmAgeRestrictionTemplate = {ageCategory : "CHILD", id:"1"};
-    this.restrictions.push(filmRes);
+    this.addTemplate();
     this.initializeFilms();
   }
 
@@ -31,9 +31,18 @@ export class FilmRestrictionTemplateComponent implements OnInit {
     )
   }
 
+  addTemplate(){
+    var filmRes : FilmAgeRestrictionTemplate = {ageCategory : "CHILD", id:"1"};
+    this.restrictions.push(filmRes);
+  }
+
+  removeTemplate(template: FilmAgeRestrictionTemplate){
+    this.restrictions = this.restrictions.filter(obj => obj !== template);
+  }
+
   saveChanges(){
     this.ruleService.restrictFilmByAge(this.restrictions).subscribe(
-      response => {console.log(response)}
+      response =>{this.message="Template successfully created!"}
     )
   }
 

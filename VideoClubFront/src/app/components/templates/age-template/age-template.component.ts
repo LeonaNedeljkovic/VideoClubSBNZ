@@ -16,6 +16,9 @@ export class AgeTemplateComponent implements OnInit {
   private adultClassifier : AgeClassifier;
   private elderClassifier : AgeClassifier;
 
+  private redMessage : string = "";
+  private greenMessage : string = "";
+
   constructor(private ageClassifierService : AgeClassifierService, private ruleService : RuleService) { }
 
   ngOnInit() {
@@ -51,7 +54,16 @@ export class AgeTemplateComponent implements OnInit {
        this.adultClassifier, this.elderClassifier];
     this.ruleService.classifyUserByAge(classifiers).subscribe(
       response => {
-        console.log(response)
+        console.log(response);
+        if(!response.result){
+          this.redMessage = "";
+          this.greenMessage = "Age Ccategories updated successfully!";
+        }
+        else{
+          this.redMessage = response.result;
+          this.greenMessage = "";
+
+        }
       }
     )
   }

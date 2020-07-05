@@ -23,7 +23,7 @@ export class RuleService {
     
   }
 
-    classifyUserByAge= (ageClassifier: AgeClassifier[]): Observable<User[]> => {
+    classifyUserByAge= (ageClassifier: AgeClassifier[]): Observable<any> => {
       return this.http.put<User[]>("/api/classify_user/age", ageClassifier).pipe(
         map( (res: any) => {
             return res;

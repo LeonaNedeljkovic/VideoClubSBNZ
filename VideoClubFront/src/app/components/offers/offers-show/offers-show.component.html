@@ -6,7 +6,8 @@
             <div class="container" *ngFor="let offer of offers">
                   <h2>BUY {{offer.minutes}} MINUTES</h2>
                   <div class="crossed-text" *ngIf="offer.discount > 0">For {{offer.price}}$</div>
-                  <h3>For {{offer.price}}$</h3>
+                  <h3 *ngIf="offer.discount > 0">For {{getDiscount(offer)}}$</h3>
+                  <h3 *ngIf="offer.discount == 0">For {{offer.price}}$</h3>
                   <br/><br/><br/>
                   <button class="transparentButton" (click)="purchase(offer.id)">BUY NOW</button>
             </div> 
