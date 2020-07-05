@@ -24,8 +24,11 @@
                 </select>
             </td>
         </tr>
+        <tr><td><button class="transparentButton" (click)="removeTemplate(restriction)">Remove Template</button></td><td></td></tr>
     </tbody>
     </table>
     <div class="break"></div>
+    <p style="color: green;text-align: center;" *ngIf="message!=''">{{message}}</p>
+    <button class="orangeButton" (click)="addTemplate()">Add Template</button>
     <button class="orangeButton" type="submit" (click)="saveChanges()">Finish</button>
   </div>

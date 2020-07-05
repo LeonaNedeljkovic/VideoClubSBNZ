@@ -35,6 +35,10 @@ export class OffersShowComponent implements OnInit {
     )
   }
 
+  getDiscount(offer: OfferDto){
+    return offer.price*(100-offer.discount)/100;
+  }
+
   purchase(offerId:number){
     this.purchaseService.createPurchase(offerId.toString()).subscribe(
       data => {

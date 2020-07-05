@@ -22,21 +22,21 @@
                     <div *ngIf="filterSilverActions(event).length > 0">
                         <h3 class="silver-text">For users with SILVER title:</h3>
                         <div *ngFor="let action of filterSilverActions(event)">
-                            <span class="silver-text">&#x265B;</span><p>{{action.description}}</p>
+                            <p><span class="silver-text">&#x265B;</span>{{action.description}}</p>
                         </div>
                     </div>
                     <br/>
                     <div *ngIf="filterBronzeActions(event).length > 0">
                         <h3 class="bronze-text">For users with BRONZE title:</h3>
                         <div *ngFor="let action of filterBronzeActions(event)">
-                            <p>{{action.description}}</p>
+                            <p><span class="bronze-text">&#x265B;</span>{{action.description}}</p>
                         </div>
                     </div>
                     <br/>
                     <div *ngIf="filterNoneActions(event).length > 0">
                         <h3 class="white-text">For users without title:</h3>
                         <div *ngFor="let action of filterNoneActions(event)">
-                            <p>{{action.description}}</p>
+                            <p><span class="bronze-text">&#x265B;</span>{{action.description}}</p>
                         </div>
                     </div>
             </div>

@@ -4,6 +4,7 @@
     border-color:white;
     border-style: double;
     width: 100%;
+    overflow: auto;
 }
 h2 {
 	font-size:20px;
@@ -31,14 +32,18 @@ textarea {
 }
 
 .orangeButton{
-    width: 30%;
     background-color: #f2a223;
     color:black;
     border: none;
     font-weight:bold;
     padding: 5px;
-    margin-left:35%;
     margin-top: 20px;
+    margin-left: 50px;
+    width: 30%;
+    height: auto;
+    float: left;
+    display: inline;
+    position: relative;
 }
 
 .invisible-table{
@@ -48,6 +53,15 @@ textarea {
     font-weight:bold;
     margin-left: 10%;
     width: 70%;
+}
+
+.transparentButton{
+    width: 100%;
+    background-color: transparent;
+    color:white;
+    border-color: #f2a223;
+    font-weight:bold;
+    padding: 5px;
 }
 
 .invisible-table td{
