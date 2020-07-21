@@ -13,6 +13,12 @@ public class ArtistFlag {
 	
 	public ArtistFlag() {
 		super();
+		this.artist = null;
+		this.averageRate = 0;
+		this.favourites = 0;
+		this.watchedNumber = 0;
+		this.unwatchedNumber = 0;
+		this.ratesNumber = 0;
 	}
 
 	public ArtistFlag(Artist artist, double averageRate, int favourites,

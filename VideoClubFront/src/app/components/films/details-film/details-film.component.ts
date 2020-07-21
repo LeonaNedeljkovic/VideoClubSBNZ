@@ -60,16 +60,24 @@ export class DetailsFilmComponent implements OnInit {
   }
 
   initReviewDetails(){
-    console.log(this.loggedUser);
+    this.reviewDetails = {startedWatching:false, addedToFavourites:false, watched:false, rate:0};
     if(this.loggedIn == true && this.loggedUser.role == 'ROLE_REGISTERED_USER'){
-      this.reviewService.getReviewDetails(this.id.toString()).subscribe(
-        (details:ReviewDetails) => {
-          this.reviewDetails = details;
+      this.reviewService.getByUser().subscribe(
+        (reviews:Review[]) => {
+          reviews.forEach(review => {
+            if(review.film.id == this.id.toString()){
+              this.reviewDetails.startedWatching = true;
+              this.reviewDetails.rate = review.rate;
+              this.reviewDetails.watched = review.watched;
+              review.user.favouriteFilms.forEach(film => {
+                if(film.id == this.film.id.toString()){
+                  this.reviewDetails.addedToFavourites = true;
+                }
+              });
+            }
+          });
         }
       )
-    }
-    else{
-      this.reviewDetails = {startedWatching:false, addedToFavourites:false, watched:false, rate:0};
     }
   }
 

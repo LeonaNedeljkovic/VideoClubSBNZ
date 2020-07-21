@@ -4,7 +4,7 @@
             <div class="container">
                   <h2 class="form-signin-heading">Create film</h2>
                   <br/>
-                  <form class="form-signin" (ngSubmit)=" createFilm()">
+                  <form class="form-signin" >
                   <table class="invisible-table">
                   <tbody>
                         <tr>
@@ -75,7 +75,8 @@
                         </tr>
                   </tbody>
                   </table>
-                  <button class="orangeButton" type="submit">Add film</button>
+                  <button class="orangeButton" type="input" (click)="getReport()">Show analysis</button>
+                 
             </form>
             
             </div>

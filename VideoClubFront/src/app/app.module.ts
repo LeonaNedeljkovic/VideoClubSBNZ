@@ -42,6 +42,7 @@ import { FilmRestrictionTemplateComponent } from './components/templates/film-re
 import { GenreRestrictionTemplateComponent } from './components/templates/genre-restriction-template/genre-restriction-template.component';
 import { TitleTemplateComponent } from './components/templates/title-template/title-template.component';
 import { ImmunityTemplateComponent } from './components/templates/immunity-template/immunity-template.component';
+import { FilmReportComponent } from './components/films/film-report/film-report.component';
 
 @NgModule({
   declarations: [
@@ -76,7 +77,8 @@ import { ImmunityTemplateComponent } from './components/templates/immunity-templ
     FilmRestrictionTemplateComponent,
     GenreRestrictionTemplateComponent,
     TitleTemplateComponent,
-    ImmunityTemplateComponent
+    ImmunityTemplateComponent,
+    FilmReportComponent
   ],
   imports: [
     NgbModule,

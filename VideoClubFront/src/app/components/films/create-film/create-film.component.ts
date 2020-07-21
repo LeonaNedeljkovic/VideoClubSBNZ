@@ -6,6 +6,9 @@ import { Artist } from 'src/app/model/artist.model';
 import { Message } from 'src/app/dto/message';
 import { MessageComponent } from 'src/app/pages/message/message.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { SharedService } from 'src/app/services/shared.service';
+import { FinalReport } from 'src/app/dto/final-report';
+import { FilmReportComponent } from '../film-report/film-report.component';
 
 @Component({
   selector: 'app-create-film',
@@ -15,7 +18,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 export class CreateFilmComponent implements OnInit {
   private film: FilmDto =
   {
-    id: "",
+    id: "0",
     name: "",
     description:"",
     genre: "",
@@ -28,7 +31,8 @@ export class CreateFilmComponent implements OnInit {
   }
   private artists: Array<Artist>=[];
 
-  constructor(private filmService: FilmService, private artistService: ArtistService, private modalService: NgbModal) { }
+  constructor(private filmService: FilmService, private artistService: ArtistService,
+     private modalService: NgbModal, private sharedService : SharedService) { }
 
   ngOnInit() {
     this.artistService.getArtists().subscribe(data => {
@@ -57,6 +61,26 @@ export class CreateFilmComponent implements OnInit {
 
   removeActor(selected){
     this.film.actorIds = this.film.actorIds.filter(obj => obj != selected);
+  }
+
+  getReport(){
+    if(this.film.name!="" && this.film.year >1800 && this.film.year < 2023 && this.film.duration > 10 && this.film.duration < 400 
+    && this.film.poster!="" ){
+    var e2 = document.getElementById("director");
+    let indexToFind2 = (<HTMLSelectElement> e2);
+    this.film.directorId = indexToFind2.options[indexToFind2.selectedIndex].value;
+    var e3 = document.getElementById("director");
+    let indexToFind3 = (<HTMLSelectElement> e3);
+    this.film.writtenId = indexToFind3.options[indexToFind3.selectedIndex].value;
+    var e4 = document.getElementById("chosen");
+    let indexToFind4 = (<HTMLSelectElement> e4);
+    this.film.genre= indexToFind4.options[indexToFind4.selectedIndex].text;
+    this.filmService.filmReport(this.film).subscribe(data => {
+      var report : FinalReport = data;
+      this.sharedService.report = report;
+      const modalRef = this.modalService.open(FilmReportComponent);
+  });
+  }
   }
 
   createFilm(){

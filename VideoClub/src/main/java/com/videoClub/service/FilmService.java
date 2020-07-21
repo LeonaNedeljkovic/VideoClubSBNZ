@@ -3,16 +3,16 @@ package com.videoClub.service;
 import java.util.List;
 
 import com.videoClub.dto.FilmDTO;
-import com.videoClub.dto.MessageDto;
 import com.videoClub.model.Film;
 import com.videoClub.model.RegisteredUser;
 import com.videoClub.model.User;
+import com.videoClub.model.drl.FinalReport;
 import com.videoClub.model.drl.RecommendedFilm;
 import com.videoClub.model.enumeration.Genre;
 
 public interface FilmService {
 
-	public MessageDto save(FilmDTO filmDTO);
+	public Film save(FilmDTO filmDTO);
 	public Film getOne(Long id);
 	public List<Film> getAll();
 	public List<Film> getTopRated(int number);
@@ -23,5 +23,6 @@ public interface FilmService {
 	public Film rateFilm(Long filmId, Integer rate, RegisteredUser user);
 	public List<Film> saveFilmToFavourites(Long filmId, User user);
 	public List<RecommendedFilm> getRecommendedFilms(RegisteredUser user, int number);
+	public FinalReport getRecommendedInfo(FilmDTO film);
 	public List<Film> save(List<Film> films);
 }

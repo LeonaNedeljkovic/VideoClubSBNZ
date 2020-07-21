@@ -19,10 +19,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.videoClub.dto.FilmDTO;
-import com.videoClub.dto.MessageDto;
 import com.videoClub.exception.NotLoggedIn;
 import com.videoClub.model.Film;
 import com.videoClub.model.RegisteredUser;
+import com.videoClub.model.drl.FinalReport;
 import com.videoClub.model.drl.RecommendedFilm;
 import com.videoClub.model.enumeration.Genre;
 import com.videoClub.service.FilmService;
@@ -41,7 +41,7 @@ public class FilmController {
 	
 	@PostMapping(value = "/film", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public ResponseEntity<MessageDto> createFilm(@RequestBody FilmDTO filmDTO) {
+	public ResponseEntity<Film> createFilm(@RequestBody FilmDTO filmDTO) {
 		return new ResponseEntity<>(filmService.save(filmDTO), HttpStatus.OK);
 	}
 	
@@ -91,6 +91,12 @@ public class FilmController {
 			throw new NotLoggedIn();
 		}
 		return new ResponseEntity<>(filmService.getRecommendedFilms(user, number), HttpStatus.OK);
+	}
+	
+	@PostMapping(value = "/film/recommended/info", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public ResponseEntity<FinalReport> getRecommendedInfo(@RequestBody FilmDTO filmDTO) {
+		return new ResponseEntity<>(filmService.getRecommendedInfo(filmDTO), HttpStatus.OK);
 	}
 	
 	@GetMapping(value = "/films/top_rated/{number}", produces = MediaType.APPLICATION_JSON_VALUE)
