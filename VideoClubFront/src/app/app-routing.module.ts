@@ -29,6 +29,7 @@ import { TitleTemplateComponent } from './components/templates/title-template/ti
 import { GenreRestrictionTemplateComponent } from './components/templates/genre-restriction-template/genre-restriction-template.component';
 import { AgeTemplateComponent } from './components/templates/age-template/age-template.component';
 import { ImmunityTemplateComponent } from './components/templates/immunity-template/immunity-template.component';
+import { FilmReportComponent } from './components/films/film-report/film-report.component';
 
 
 
@@ -101,6 +102,10 @@ const routes: Routes = [
   { 
     path: 'immunity-template',
     component: ImmunityTemplateComponent
+  },
+  { 
+    path: 'film-report',
+    component: FilmReportComponent
   },
   {
     path: 'dashboard',

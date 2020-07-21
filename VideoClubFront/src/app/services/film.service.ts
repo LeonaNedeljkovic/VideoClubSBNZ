@@ -6,6 +6,7 @@ import { MessageDto } from '../dto/message.dto';
 import { Film } from '../model/film.model';
 import { FilmDto } from '../dto/film.dto';
 import { RecommendedFilm } from '../model/recommended-film.model';
+import { FinalReport } from '../dto/final-report';
 
 @Injectable({providedIn: 'root'})
 export class FilmService {
@@ -54,6 +55,13 @@ export class FilmService {
       map( (res: any) => {
           return res;
       })  );
+    }
+
+    filmReport = (film: FilmDto): Observable<FinalReport> => {
+    return this.http.post<FinalReport>(`/api/film/recommended/info`, film).pipe(
+        map( (res: any) => {
+            return res;
+        })  );
     }
 
     getTopRated = (num: number): Observable<Film[]> => {

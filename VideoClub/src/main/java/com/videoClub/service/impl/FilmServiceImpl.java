@@ -13,9 +13,9 @@ import org.kie.api.runtime.ObjectFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.videoClub.comparator.AgeCategoryReportComparator;
 import com.videoClub.comparator.RecommendedFilmComparator;
 import com.videoClub.dto.FilmDTO;
-import com.videoClub.dto.MessageDto;
 import com.videoClub.exception.EntityNotFound;
 import com.videoClub.exception.FilmNotReviewed;
 import com.videoClub.model.Artist;
@@ -23,7 +23,9 @@ import com.videoClub.model.Film;
 import com.videoClub.model.RegisteredUser;
 import com.videoClub.model.Review;
 import com.videoClub.model.User;
+import com.videoClub.model.drl.FinalReport;
 import com.videoClub.model.drl.RecommendedFilm;
+import com.videoClub.model.enumeration.AgeCategory;
 import com.videoClub.model.enumeration.Genre;
 import com.videoClub.repository.FilmRepository;
 import com.videoClub.service.ArtistService;
@@ -51,8 +53,7 @@ public class FilmServiceImpl implements FilmService{
 	
 
 	@Override
-	public MessageDto save(FilmDTO filmDTO) {
-		KieSession kieSession = kieContainer.newKieSession("adminRecommendationRulesSession");
+	public Film save(FilmDTO filmDTO) {
 		Film film = new Film();
 		List<Artist> actors = new ArrayList<Artist>();
 		for(Long id : filmDTO.getActorIds()){
@@ -68,26 +69,8 @@ public class FilmServiceImpl implements FilmService{
 		film.setGenre(Genre.valueOf(filmDTO.getGenre()));
 		film.setRating(0);
 		film.setPoster(filmDTO.getPoster());
-		for(RegisteredUser registeredUser: userService.getAllRegisteredUsers()) {
-			for(Review r: registeredUser.getReviews()) {
-				kieSession.insert(r);
-			}
-		}
-		for(Film f: filmRepository.findAll()) {
-			kieSession.insert(f);
-		}
-		for(Artist artist: film.getActors()) {
-			kieSession.insert(artist);
-		}
-		kieSession.insert(film.getDirector());
-		kieSession.insert(film.getWrittenBy());
-		kieSession.insert(film.getGenre());
-		MessageDto messageDto = new MessageDto();
-		kieSession.insert(messageDto);
-		kieSession.fireAllRules();
-		kieSession.dispose();
-		filmRepository.save(film);
-		return messageDto;
+		
+		return filmRepository.save(film);
 	}
 
 	@Override
@@ -248,4 +231,54 @@ public class FilmServiceImpl implements FilmService{
 	public List<Film> getByName(String filmName) {
 		return filmRepository.getByName(filmName);
 	}
+
+	@Override
+	public FinalReport getRecommendedInfo(FilmDTO filmDTO) {
+		Film film = new Film();
+		List<Artist> actors = new ArrayList<Artist>();
+		for(Long id : filmDTO.getActorIds()){
+			actors.add(artistService.getOne(id));
+		}
+		film.setActors(actors);
+		film.setDirector(artistService.getOne(filmDTO.getDirectorId()));
+		film.setWrittenBy(artistService.getOne(filmDTO.getWrittenId()));
+		film.setName(filmDTO.getName());
+		film.setDescription(filmDTO.getDescription());
+		film.setDuration(filmDTO.getDuration());
+		film.setYear(filmDTO.getYear());
+		film.setGenre(Genre.valueOf(filmDTO.getGenre()));
+		film.setRating(0);
+		film.setPoster(filmDTO.getPoster());
+		
+		KieSession kieSession = kieContainer.newKieSession("adminRecommendationRulesSession");
+		kieSession.insert(film);
+		for(RegisteredUser registeredUser: userService.getAllRegisteredUsers()) {
+			kieSession.insert(registeredUser);
+		}
+		
+		kieSession.insert(AgeCategory.CHILD);
+		kieSession.insert(AgeCategory.TEEN);
+		kieSession.insert(AgeCategory.YOUNG_ADULT);
+		kieSession.insert(AgeCategory.ADULT);
+		kieSession.insert(AgeCategory.ELDER);
+		
+		kieSession.fireAllRules();
+		kieSession.dispose();
+		
+		FinalReport report = null;
+		Collection<?> types = kieSession.getObjects(new FinalReportObjectFilter());
+		for(Object o : types){
+			report = (FinalReport) o;
+			Collections.sort(report.getAgeCategoryReports(), new AgeCategoryReportComparator());
+		}
+		return report;
+	}
+	
+	class FinalReportObjectFilter implements ObjectFilter {
+        @Override
+        public boolean accept(Object object) {
+            String className = object.getClass().getName();
+            return className.contains("FinalReport");
+        }
+    }
 }

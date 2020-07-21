@@ -88,8 +88,10 @@ public class ReviewServiceImpl implements ReviewService{
 	@Override
 	public ReviewDetailsDTO getReviewDetails(RegisteredUser user, Long filmId){
 		ReviewDetailsDTO details = new ReviewDetailsDTO(false, false, 0, false);
-		for(Review review : user.getReviews()){
+		List<Review> reviews = reviewRepository.getByVideoContent(filmId, user.getId());
+		for(Review review : reviews){
 			if(review.getFilm().getId() == filmId){
+				System.out.println("IMA GA");
 				details.setStartedWatching(true);
 				if(review.isWatched()){
 					details.setWatched(true);

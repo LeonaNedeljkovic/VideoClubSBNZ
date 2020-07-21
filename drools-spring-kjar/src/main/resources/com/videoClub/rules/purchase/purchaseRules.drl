@@ -22,8 +22,6 @@ rule "Purchase with discount"
         $purchase.setPrice($price-bd.doubleValue());
         $user.setAvailableMinutes($user.getAvailableMinutes() + $offer.getMinutes());
         $user.setImmunityPoints($user.getImmunityPoints() + (int)$offer.getPrice());
-        update($purchase);
-        update($user);
 
 end
 
@@ -40,6 +38,4 @@ rule "Purchase without discount"
         $purchase.setPrice($offer.getPrice());
         $user.setAvailableMinutes($user.getAvailableMinutes() + $offer.getMinutes());
         $user.setImmunityPoints($user.getImmunityPoints() + (int)$offer.getPrice());
-        update($purchase);
-        update($user);
 end
