@@ -75,17 +75,6 @@ rule "Genre - collect informations about reviews and rate"
     	insert(new GenreFlag($genre, $watchedNum, $unwatchedNum, $rating, $ratesNum));
 end
 
-rule "Delete forbidden films from memory"
-	salience 10
-	agenda-group "flags-recommendation"
-	lock-on-active
-    when
-    	RegisteredUser( $ageCategory : ageCategory );
-    	$film : Film( restrictedAgeCategories contains $ageCategory )
-    then
-    	delete($film);
-end
-
 rule "Reward director for favourite films"
 	agenda-group "flags-recommendation"
 	lock-on-active

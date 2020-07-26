@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.videoClub.dto.FilmDTO;
-import com.videoClub.exception.NotLoggedIn;
 import com.videoClub.model.Film;
 import com.videoClub.model.RegisteredUser;
 import com.videoClub.model.drl.FinalReport;
@@ -54,18 +53,12 @@ public class FilmController {
 	@GetMapping(value = "/film/rate/{id}/{rate}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Film> rateFilm(@PathVariable(value = "id") Long id, @PathVariable(value = "rate") Integer rate) {
 		RegisteredUser user = (RegisteredUser) this.customUserDetailsService.loadUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-		if(user == null){
-			throw new NotLoggedIn();
-		}
 		return new ResponseEntity<>(filmService.rateFilm(id, rate, user), HttpStatus.OK);
 	}
 	
 	@GetMapping(value = "/film/favourites/exists/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Boolean> checkIfFavourite(@PathVariable(value = "id") Long id) {
 		RegisteredUser user = (RegisteredUser) this.customUserDetailsService.loadUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-		if(user == null){
-			throw new NotLoggedIn();
-		}
 		for(Film film : user.getFavouriteFilms()){
 			if(film.getId() == id){
 				return new ResponseEntity<>(true, HttpStatus.OK);
@@ -77,9 +70,6 @@ public class FilmController {
 	@GetMapping(value = "/film/favourites/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<Film>> addToFavourites(@PathVariable(value = "id") Long id) {
 		RegisteredUser user = (RegisteredUser) this.customUserDetailsService.loadUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-		if(user == null){
-			throw new NotLoggedIn();
-		}
 		return new ResponseEntity<>(filmService.saveFilmToFavourites(id, user), HttpStatus.OK);
 	}
 	
@@ -87,10 +77,14 @@ public class FilmController {
 	@PreAuthorize("hasRole('ROLE_REGISTERED_USER')")
 	public ResponseEntity<List<RecommendedFilm>> getRecommended(@PathVariable(value = "number") Integer number) {
 		RegisteredUser user = (RegisteredUser) this.customUserDetailsService.loadUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-		if(user == null){
-			throw new NotLoggedIn();
-		}
-		return new ResponseEntity<>(filmService.getRecommendedFilms(user, number), HttpStatus.OK);
+		return new ResponseEntity<>(filmService.getRecommendedFilms(user, null, number), HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/films/recommended/{number}/{artistId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('ROLE_REGISTERED_USER')")
+	public ResponseEntity<List<RecommendedFilm>> getRecommendedByArtist(@PathVariable(value = "number") Integer number, @PathVariable(value = "artistId") Long artistId) {
+		RegisteredUser user = (RegisteredUser) this.customUserDetailsService.loadUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+		return new ResponseEntity<>(filmService.getRecommendedFilms(user, artistId, number), HttpStatus.OK);
 	}
 	
 	@PostMapping(value = "/film/recommended/info", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)

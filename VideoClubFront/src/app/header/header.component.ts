@@ -71,7 +71,7 @@ export class HeaderComponent implements OnInit {
   }
 
   reloadActiveUrl(){
-    if(this._router.url === '/dashboard/films-show' || this._router.url === '/dashboard/films-search' || this._router.url === '/dashboard/create-film'){
+    if(this._router.url === '/dashboard/films-show' || this._router.url === '/dashboard/create-film'){
       this.activePage = "home";
     }
     else if(this._router.url === '/dashboard/reviews'){

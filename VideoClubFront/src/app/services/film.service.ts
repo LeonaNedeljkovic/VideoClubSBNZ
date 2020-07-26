@@ -57,6 +57,13 @@ export class FilmService {
       })  );
     }
 
+    filmsRecommendedByArtist = (num: number, id:string): Observable<RecommendedFilm[]> => {
+        return this.http.get<RecommendedFilm[]>(`/api/films/recommended/${num}/${id}`).pipe(
+          map( (res: any) => {
+              return res;
+          })  );
+        }
+
     filmReport = (film: FilmDto): Observable<FinalReport> => {
     return this.http.post<FinalReport>(`/api/film/recommended/info`, film).pipe(
         map( (res: any) => {
