@@ -22,7 +22,7 @@ public interface FilmService {
 	public void delete(Long id);
 	public Film rateFilm(Long filmId, Integer rate, RegisteredUser user);
 	public List<Film> saveFilmToFavourites(Long filmId, User user);
-	public List<RecommendedFilm> getRecommendedFilms(RegisteredUser user, int number);
+	public List<RecommendedFilm> getRecommendedFilms(RegisteredUser user, Long artistId, int number);
 	public FinalReport getRecommendedInfo(FilmDTO film);
 	public List<Film> save(List<Film> films);
 }

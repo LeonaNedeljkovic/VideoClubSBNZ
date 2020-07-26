@@ -138,6 +138,14 @@ h1#logo a {
 #navigation ul li a.active, #navigation ul li a:hover {
 	color:#d91d2a;
 }
+
+#artist-navigation {
+	display:block;
+	clear:right;
+	border-bottom:1px dashed #666;
+	padding:8px 0;
+}
+
 #sub-navigation {
 	display:block;
 	clear:right;
@@ -174,8 +182,8 @@ a:not([href]){
 }
 
 .filter label {
-	float:right;
-	display:inline;
+	display: inline-flex;
+	justify-content: flex-start;
 	font-size:14px;
 	font-weight:bold;
 	color:#fff;
@@ -184,6 +192,8 @@ a:not([href]){
 }
 
 .filter .filter-field {
+	display: inline-flex;
+	justify-content: flex-start;
 	width:238px;
 	border:1px solid #413e3e;
 	background:#000;
@@ -196,8 +206,8 @@ a:not([href]){
 	margin:0 0 0 auto;
 }
 .search label {
-	float:left;
-	display:inline;
+	display: inline-flex;
+	justify-content: flex-start;
 	font-size:14px;
 	font-weight:bold;
 	color:#fff;
@@ -205,6 +215,8 @@ a:not([href]){
 	padding-right:6px;
 }
 .search .search-field {
+	display: inline-flex;
+	justify-content: flex-end;
 	width:238px;
 	border:1px solid #413e3e;
 	background:#000;
@@ -212,6 +224,8 @@ a:not([href]){
 	padding:2px 0 2px 2px;
 }
 .search .search-button {
+	display: inline-flex;
+	justify-content: flex-end;
 	font-size:14px;
 	font-weight:bold;
 	border:0;
@@ -219,6 +233,38 @@ a:not([href]){
 	color:#fff;
 	cursor:pointer;
 }
+
+.artist {
+	width:100%;
+	justify-content: flex-start;
+	display: flex;
+}
+.artist label {
+	display: inline-flex;
+	font-size:14px;
+	font-weight:bold;
+	color:#fff;
+	line-height:24px;
+	padding-right:6px;
+}
+.artist .artist-field {
+	display: inline-flex;
+	width:238px;
+	border:1px solid #413e3e;
+	background:#000;
+	color:white;
+	padding:2px 0 2px 2px;
+}
+.artist .artist-button {
+	display: inline-flex;
+	font-size:14px;
+	font-weight:bold;
+	border:0;
+	background:none;
+	color:#fff;
+	cursor:pointer;
+}
+
 #main {
 	border-bottom:1px dashed #413e3e;
 }
@@ -435,3 +481,33 @@ a:not([href]){
 .dropdown:hover .dropdown-content {
 	display: block;
 }
+
+
+.search-dropdown {
+    position: relative;
+    display: inline-block;
+  }
+  
+  /* Dropdown Content (Hidden by Default) */
+  .search-dropdown-content {
+	margin-top: -2%;
+	margin-left: 18%;
+	position: absolute;
+	max-height: 200px;
+	overflow-y: auto;
+    background-color: black;
+    width:238px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 100;
+  }
+  
+  /* Links inside the dropdown */
+  .search-dropdown-content a {
+    color: white;
+    padding: 7px 7px;
+    text-decoration: none;
+    display: block;
+  }
+  
+  /* Change color of dropdown links on hover */
+  .search-dropdown-content a:hover {background-color: #1b1d1f;}

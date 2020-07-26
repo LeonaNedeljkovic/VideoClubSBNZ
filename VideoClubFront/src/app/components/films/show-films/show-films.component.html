@@ -4,37 +4,60 @@
 
 <div id="shell">
   <div id="sub-navigation">
-    <ul>
-      <li><div class="search"><label for="search-field">GENRE:</label>
-        <select class="search-field" [(ngModel)]="searchedGenre" name="search field">
-          <option>ACTION</option>
-          <option>ADVENTURE</option>
-          <option>ANIMATED</option>
-          <option>COMEDY</option>
-          <option>DOCUMENTARY</option>
-          <option>DRAMA</option>
-          <option>HISTORICAL</option>
-          <option>HORROR</option>
-          <option>MUSIC</option>
-          <option>SCIFI</option>
-          <option>THRILLER</option>
-          <option>WESTERN</option>
-          <option>FAMILY</option>
-        </select>
-        <input type="submit" value="GO!" class="search-button" (click)="filter()"/></div></li>
-    </ul>
-    <div class="search">
+    <div>
+      <ul>
+        <li><div class="search">
+          <label for="search-field">GENRE: </label>
+          <select class="search-field" [(ngModel)]="searchedGenre" name="search field">
+            <option>ACTION</option>
+            <option>ADVENTURE</option>
+            <option>ANIMATED</option>
+            <option>COMEDY</option>
+            <option>DOCUMENTARY</option>
+            <option>DRAMA</option>
+            <option>HISTORICAL</option>
+            <option>HORROR</option>
+            <option>MUSIC</option>
+            <option>SCIFI</option>
+            <option>THRILLER</option>
+            <option>WESTERN</option>
+            <option>FAMILY</option>
+          </select>
+          <input type="submit" value=" GO!" class="search-button" (click)="showSearchedByGenre()()"/>
+        </div>
+      </li>
+      </ul>
+      <div class="search">
+        <form action="#" method="get" accept-charset="utf-8">
+          <label for="search-field">SEARCH: </label>
+          <input type="text" name="search field" class="search-field" [(ngModel)]="searchedFilm" />
+          <input type="submit" value=" GO!" class="search-button" (click)="search()"/>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div id="artist-navigation">
+    <div class="artist">
       <form action="#" method="get" accept-charset="utf-8">
-        <label for="search-field">SEARCH</label>
-        <input type="text" name="search field" class="search-field" [(ngModel)]="searchedFilm" />
-        <input type="submit" value="GO!" class="search-button" (click)="search()"/>
+        <div class="search-dropdown">
+          <label for="artist-field">ARTIST: </label>
+          <input type="text" name="artist field" class="artist-field" [(ngModel)]="searchInput" (ngModelChange)="searchArtist()" />
+          <div class="search-dropdown-content" *ngIf="searchedArtist.length > 0">
+              <div *ngFor="let artist of searchedArtist">
+                <a (click)="selectArtist(artist)">{{artist.name}} {{artist.surname}}</a>
+              </div>
+          </div>
+          <input type="submit" value=" GO!" class="artist-button" (click)="recommendFilmByArtist()"/>
+          
+        </div>
+        
       </form>
     </div>
   </div>
   <div id="main">
     <div id="content">
-      <div class="box" *ngIf="loggedIn == true && loggedUser.role==='ROLE_REGISTERED_USER'">
-        <div class="head">
+      <div class="box" *ngIf="loggedIn == true && loggedUser.role==='ROLE_REGISTERED_USER' && searched === false">
+        <div class="head" >
           <h2 id="recommended">RECOMMENDED FOR YOU</h2>
           <p class="text-right"><a (click)="seeAll('recommended')">See all</a></p>
         </div>
@@ -62,7 +85,7 @@
       <div class="cl">&nbsp;</div>
       </div>
 
-      <div class="box">
+      <div class="box" *ngIf="searched === false">
         <div class="head">
           <h2 id="mostPopular">MOST POPULAR</h2>
           <p class="text-right"><a (click)="seeAll('mostPopular')">See all</a></p>
@@ -90,7 +113,7 @@
         </div>
       <div class="cl">&nbsp;</div>
       </div>
-      <div class="box">
+      <div class="box" *ngIf="searched === false">
         <div class="head">
           <h2>TOP RATED</h2>
           <p class="text-right"><a (click)="seeAll('topRated')">See all</a></p>
@@ -98,6 +121,33 @@
         <div *ngFor="let film of topRatedFilms" >
           <div class="movie">
             <div class="movie-image"><a (click)="watchFilm(film.id)" ><img src="{{film.poster}}" alt="" /></a> </div>
+            <div class="rating">
+              <p class="film-name">{{film.name}}</p>
+              <div class="rating-show">
+                <span class="star" *ngIf="film.rating >= 1">&#x2605;</span>
+                <span class="star" *ngIf="1 > film.rating">&#x2606;</span>
+                <span class="star" *ngIf="film.rating >= 1.5">&#x2605;</span>
+                <span class="star" *ngIf="1.5 > film.rating">&#x2606;</span>
+                <span class="star" *ngIf="film.rating >= 2.5">&#x2605;</span>
+                <span class="star" *ngIf="2.5 > film.rating">&#x2606;</span>
+                <span class="star" *ngIf="film.rating >= 3.5">&#x2605;</span>
+                <span class="star" *ngIf="3.5 > film.rating">&#x2606;</span>
+                <span class="star" *ngIf="film.rating >= 4.5">&#x2605;</span>
+                <span class="star" *ngIf="4.5 > film.rating">&#x2606;</span>
+              </div>
+              <div class="film-name"><button class="transparentButton" type="input" (click)="moreInfo(film.id)">More Info</button></div>
+            </div>
+          </div>
+        </div>
+        <div class="cl">&nbsp;</div>
+      </div>
+      <div class="box" *ngIf="searched === true">
+        <div class="head">
+          <a (click)="mainpage()">back to mainpage</a>
+        </div>
+        <div>
+          <div class="movie" *ngFor="let film of films">
+            <div class="movie-image"><a (click)="watchFilm(film.id)" ><img src="{{film.poster}}" /></a> </div>
             <div class="rating">
               <p class="film-name">{{film.name}}</p>
               <div class="rating-show">
