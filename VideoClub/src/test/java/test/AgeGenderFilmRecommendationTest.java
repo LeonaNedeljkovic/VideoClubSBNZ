@@ -310,8 +310,7 @@ public class AgeGenderFilmRecommendationTest {
 				actors, 
 				director,
 				scenarist, 
-				new ArrayList<Review>(),
-				new ArrayList<AgeCategory>());
+				new ArrayList<Review>());
 		return film;
 	}
 	
