@@ -173,8 +173,7 @@ public class NewAdminTest {
 				actors,
 				director,
 				scenarist,
-				new ArrayList<Review>(),
-				new ArrayList<AgeCategory>());
+				new ArrayList<Review>());
 	}
 	
 	class FinalReportObjectFilter implements ObjectFilter {

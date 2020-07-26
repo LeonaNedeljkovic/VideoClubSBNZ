@@ -2,12 +2,7 @@ package test;
 
 import static org.junit.Assert.*;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import org.drools.core.time.SessionPseudoClock;
@@ -15,28 +10,20 @@ import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.rule.FactHandle;
 
 import com.videoClub.dto.ReportDTO;
 import com.videoClub.event.FilmWatchEvent;
 import com.videoClub.event.LoggingEvent;
 import com.videoClub.event.PurchaseEvent;
-import com.videoClub.model.Action;
 import com.videoClub.model.Artist;
 import com.videoClub.model.Film;
-import com.videoClub.model.Notification;
 import com.videoClub.model.Purchase;
 import com.videoClub.model.RegisteredUser;
-import com.videoClub.model.Review;
 import com.videoClub.model.User;
 import com.videoClub.model.enumeration.Genre;
-import com.videoClub.model.enumeration.Rank;
 
 public class CepRulesTest {
-
-	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-	private static DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-
+	
 	/*
 	 * Testiramo sta ce se desiti ukoliko se korisnik pokusa ulogovati vise od 3
 	 * puta neuspesno sa istim korisnickim imenom
@@ -204,8 +191,8 @@ public class CepRulesTest {
 		PurchaseEvent purchaseEvent1 = new PurchaseEvent(purchase,new RegisteredUser());
 		PurchaseEvent purchaseEvent2 = new PurchaseEvent(purchase,new RegisteredUser());
 		PurchaseEvent purchaseEvent3 = new PurchaseEvent(purchase,new RegisteredUser());
-		Film film = new Film(new Long(1),"Film1","Description",Genre.ACTION,200,2019,0.0,"poster",null,new Artist(),new Artist(),null,null);
-		Film film2 = new Film(new Long(2),"Film2","Description",Genre.ACTION,200,2019,0.0,"poster",null,new Artist(),new Artist(),null,null);
+		Film film = new Film(new Long(1),"Film1","Description",Genre.ACTION,200,2019,0.0,"poster",null,new Artist(),new Artist(),null);
+		Film film2 = new Film(new Long(2),"Film2","Description",Genre.ACTION,200,2019,0.0,"poster",null,new Artist(),new Artist(),null);
 		ksession.insert(purchaseEvent1);
 		ksession.insert(purchaseEvent2);
 		ksession.insert(purchaseEvent3);
