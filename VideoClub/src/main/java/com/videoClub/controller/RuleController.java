@@ -41,21 +41,17 @@ import com.videoClub.dto.TitleResponseDto;
 import com.videoClub.factory.ImmunityFactory;
 import com.videoClub.factory.TitleFactory;
 import com.videoClub.model.AgeClassifier;
-import com.videoClub.model.Film;
 import com.videoClub.model.Purchase;
 import com.videoClub.model.RegisteredUser;
 import com.videoClub.model.Report;
 import com.videoClub.model.User;
 import com.videoClub.model.enumeration.Rank;
 import com.videoClub.service.AgeClassifierService;
-import com.videoClub.service.FilmService;
 import com.videoClub.service.PurchaseService;
 import com.videoClub.service.ReportService;
 import com.videoClub.service.RuleService;
 import com.videoClub.service.UserService;
-import com.videoClub.template.FilmAgeRestrictionTemplate;
 import com.videoClub.template.FreeMinutes;
-import com.videoClub.template.GenreAgeRestrictionTemplate;
 
 @RestController
 @RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -64,9 +60,6 @@ public class RuleController {
 	
 	@Autowired
 	private RuleService ruleService;
-	
-	@Autowired
-	private FilmService filmService;
 	
 	@Autowired
 	private UserService userService;
@@ -134,41 +127,6 @@ public class RuleController {
         ksession.dispose();
         ageClassifierService.saveAll(ageClassifiers);
         return new ResponseEntity<>(userService.save(users), HttpStatus.OK);
-	}
-	
-	@PostMapping(value = "/restrict_genre/age", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public ResponseEntity<List<Film>> restrictGenreByAge(@RequestBody List<GenreAgeRestrictionTemplate> restricted) {
-		System.out.println("GENRE: " + restricted.get(0).getGenre());
-		System.out.println("AGE CATEGORY: " + restricted.get(0).getAgeCategory());
-		InputStream template = RuleController.class.getResourceAsStream("/templates/genreRestrictionByAge.drt");
-		ObjectDataCompiler converter = new ObjectDataCompiler();
-	    String drl = converter.compile(restricted, template);
-	    System.out.println(drl);
-	    KieSession ksession = initializeKieSessionFromDRL(drl);
-	    List<Film> films = filmService.getAll();
-	    for(Film film : films){
-			ksession.insert(film);		
-		}
-	    ksession.fireAllRules();
-        ksession.dispose();
-        return new ResponseEntity<>(filmService.save(films), HttpStatus.OK);
-	}
-	
-	@PutMapping(value = "/restrict_film/age", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public ResponseEntity<List<Film>> restrictFilmByAge(@RequestBody List<FilmAgeRestrictionTemplate> restricted) {
-		InputStream template = RuleController.class.getResourceAsStream("/templates/filmRestrictionByAge.drt");
-		ObjectDataCompiler converter = new ObjectDataCompiler();
-	    String drl = converter.compile(restricted, template);
-	    KieSession ksession = initializeKieSessionFromDRL(drl);
-	    List<Film> films = filmService.getAll();
-	    for(Film film : films){
-			ksession.insert(film);		
-		}
-	    ksession.fireAllRules();
-        ksession.dispose();
-        return new ResponseEntity<>(filmService.save(films), HttpStatus.OK);
 	}
 	
 	@PostMapping(value = "/free_minutes/age", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

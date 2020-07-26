@@ -17,8 +17,6 @@ import { AgeFreeMinutesTemplateComponent } from '../components/templates/age-fre
 import { TitleFreeMinutesTemplateComponent } from '../components/templates/title-free-minutes-template/title-free-minutes-template.component';
 import { AgeTitleFreeMinutesTemplateComponent } from '../components/templates/age-title-free-minutes-template/age-title-free-minutes-template.component';
 import { TitleTemplateComponent } from '../components/templates/title-template/title-template.component';
-import { FilmRestrictionTemplateComponent } from '../components/templates/film-restriction-template/film-restriction-template.component';
-import { GenreRestrictionTemplateComponent } from '../components/templates/genre-restriction-template/genre-restriction-template.component';
 import { AgeTemplateComponent } from '../components/templates/age-template/age-template.component';
 import { ImmunityTemplateComponent } from '../components/templates/immunity-template/immunity-template.component';
 
@@ -202,16 +200,6 @@ export class HeaderComponent implements OnInit {
   immunityTemplate(){
     this.activePage="templates";
     const modalRef = this.modalService.open(ImmunityTemplateComponent);
-  }
-
-  filmRestriction(){
-    this.activePage="templates";
-    const modalRef = this.modalService.open(FilmRestrictionTemplateComponent);
-  }
-
-  genreRestriction(){
-    this.activePage="templates";
-    const modalRef = this.modalService.open(GenreRestrictionTemplateComponent);
   }
 
   ageSettings(){

@@ -14,7 +14,6 @@ import com.videoClub.dto.MessageDto;
 import com.videoClub.model.Artist;
 import com.videoClub.model.Film;
 import com.videoClub.model.Review;
-import com.videoClub.model.enumeration.AgeCategory;
 import com.videoClub.model.enumeration.Genre;
 
 public class AdminRecommendationTest {
@@ -38,17 +37,17 @@ public class AdminRecommendationTest {
 		Artist director = new Artist(3L, "Sammuel", "Vein", new ArrayList<Film>(), new ArrayList<Film>(),
 				new ArrayList<Film>());
 		Film film1 = new Film(new Long(1), "Film1", "Best movie ever", Genre.ACTION, 100, 2020, 5.0, "poster",
-				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>(), new ArrayList<AgeCategory>());
+				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>());
 		Film film2 = new Film(new Long(2), "Film2", "Best movie ever", Genre.ACTION, 100, 2020, 2.0, "poster",
-				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>(), new ArrayList<AgeCategory>());
+				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>());
 		Film film3 = new Film(new Long(3), "Film3", "Best movie ever", Genre.ACTION, 100, 2020, 2.0, "poster",
-				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>(), new ArrayList<AgeCategory>());
+				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>());
 		Film film4 = new Film(new Long(4), "Film4", "Best movie ever", Genre.ACTION, 100, 2020, 5.0, "poster",
-				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>(), new ArrayList<AgeCategory>());
+				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>());
 		Film film5 = new Film(new Long(5), "Film5", "Best movie ever", Genre.ACTION, 100, 2020, 4.0, "poster",
-				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>(), new ArrayList<AgeCategory>());
+				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>());
 		Film film6 = new Film(new Long(6), "Film6", "Best movie ever", Genre.ACTION, 100, 2020, 4.0, "poster",
-				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>(), new ArrayList<AgeCategory>());
+				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>());
 		Review review1 = new Review(1L,film1,null,null,false,null,0);
 		Review review2 = new Review(2L,film1,null,null,false,null,0);
 		Review review3 = new Review(3L,film1,null,null,true,null,5);
@@ -92,17 +91,17 @@ public class AdminRecommendationTest {
 		Artist director = new Artist(3L, "Sammuel", "Vein", new ArrayList<Film>(), new ArrayList<Film>(),
 				new ArrayList<Film>());
 		Film film1 = new Film(new Long(1), "Film1", "Best movie ever", Genre.ACTION, 100, 2020, 2.0, "poster",
-				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>(), new ArrayList<AgeCategory>());
+				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>());
 		Film film2 = new Film(new Long(2), "Film2", "Best movie ever", Genre.ACTION, 100, 2020, 2.0, "poster",
-				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>(), new ArrayList<AgeCategory>());
+				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>());
 		Film film3 = new Film(new Long(3), "Film3", "Best movie ever", Genre.ACTION, 100, 2020, 2.0, "poster",
-				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>(), new ArrayList<AgeCategory>());
+				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>());
 		Film film4 = new Film(new Long(4), "Film4", "Best movie ever", Genre.ACTION, 100, 2020, 2.0, "poster",
-				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>(), new ArrayList<AgeCategory>());
+				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>());
 		Film film5 = new Film(new Long(5), "Film5", "Best movie ever", Genre.ACTION, 100, 2020, 2.0, "poster",
-				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>(), new ArrayList<AgeCategory>());
+				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>());
 		Film film6 = new Film(new Long(6), "Film6", "Best movie ever", Genre.ACTION, 100, 2020, 3.0, "poster",
-				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>(), new ArrayList<AgeCategory>());
+				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>());
 		Review review1 = new Review(1L,film1,null,null,false,null,0);
 		Review review2 = new Review(2L,film1,null,null,false,null,0);
 		Review review3 = new Review(3L,film1,null,null,true,null,5);
@@ -144,17 +143,17 @@ public class AdminRecommendationTest {
 		Artist random = new Artist(4L, "Paper", "Vaj", new ArrayList<Film>(), new ArrayList<Film>(),
 				new ArrayList<Film>());
 		Film film1 = new Film(new Long(1), "Film1", "Best movie ever", Genre.ACTION, 100, 2020, 5.0, "poster",
-				new ArrayList<Artist>(Arrays.asList(random)),random,random, new ArrayList<Review>(), new ArrayList<AgeCategory>());
+				new ArrayList<Artist>(Arrays.asList(random)),random,random, new ArrayList<Review>());
 		Film film2 = new Film(new Long(2), "Film2", "Best movie ever", Genre.ACTION, 100, 2020, 4.0, "poster",
-				new ArrayList<Artist>(Arrays.asList(random)),random,random, new ArrayList<Review>(), new ArrayList<AgeCategory>());
+				new ArrayList<Artist>(Arrays.asList(random)),random,random, new ArrayList<Review>());
 		Film film3 = new Film(new Long(3), "Film3", "Best movie ever", Genre.ACTION, 100, 2020, 5.0, "poster",
-				new ArrayList<Artist>(Arrays.asList(random)),random,random, new ArrayList<Review>(), new ArrayList<AgeCategory>());
+				new ArrayList<Artist>(Arrays.asList(random)),random,random, new ArrayList<Review>());
 		Film film4 = new Film(new Long(4), "Film4", "Best movie ever", Genre.ACTION, 100, 2020, 5.0, "poster",
-				new ArrayList<Artist>(Arrays.asList(random)),random,random, new ArrayList<Review>(), new ArrayList<AgeCategory>());
+				new ArrayList<Artist>(Arrays.asList(random)),random,random, new ArrayList<Review>());
 		Film film5 = new Film(new Long(5), "Film5", "Best movie ever", Genre.ACTION, 100, 2020, 4.0, "poster",
-				new ArrayList<Artist>(Arrays.asList(random)),random,random, new ArrayList<Review>(), new ArrayList<AgeCategory>());
+				new ArrayList<Artist>(Arrays.asList(random)),random,random, new ArrayList<Review>());
 		Film film6 = new Film(new Long(6), "Film6", "Best movie ever", Genre.ACTION, 100, 2020, 3.0, "poster",
-				new ArrayList<Artist>(Arrays.asList(random)),random,random, new ArrayList<Review>(), new ArrayList<AgeCategory>());
+				new ArrayList<Artist>(Arrays.asList(random)),random,random, new ArrayList<Review>());
 		Review review1 = new Review(1L,film1,null,null,false,null,0);
 		Review review2 = new Review(2L,film1,null,null,false,null,0);
 		Review review3 = new Review(3L,film1,null,null,true,null,5);
@@ -196,17 +195,17 @@ public class AdminRecommendationTest {
 		Artist director = new Artist(3L, "Sammuel", "Vein", new ArrayList<Film>(), new ArrayList<Film>(),
 				new ArrayList<Film>());
 		Film film1 = new Film(new Long(1), "Film1", "Best movie ever", Genre.ACTION, 100, 2020, 5.0, "poster",
-				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>(), new ArrayList<AgeCategory>());
+				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>());
 		Film film2 = new Film(new Long(2), "Film2", "Best movie ever", Genre.ACTION, 100, 2020, 5.0, "poster",
-				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>(), new ArrayList<AgeCategory>());
+				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>());
 		Film film3 = new Film(new Long(3), "Film3", "Best movie ever", Genre.ACTION, 100, 2020, 4.0, "poster",
-				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>(), new ArrayList<AgeCategory>());
+				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>());
 		Film film4 = new Film(new Long(4), "Film4", "Best movie ever", Genre.ACTION, 100, 2020, 5.0, "poster",
-				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>(), new ArrayList<AgeCategory>());
+				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>());
 		Film film5 = new Film(new Long(5), "Film5", "Best movie ever", Genre.ACTION, 100, 2020, 4.0, "poster",
-				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>(), new ArrayList<AgeCategory>());
+				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>());
 		Film film6 = new Film(new Long(6), "Film6", "Best movie ever", Genre.ACTION, 100, 2020, 3.0, "poster",
-				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>(), new ArrayList<AgeCategory>());
+				new ArrayList<Artist>(Arrays.asList(actor)),director,scenarist, new ArrayList<Review>());
 		Review review1 = new Review(1L,film1,null,null,false,null,0);
 		Review review2 = new Review(2L,film1,null,null,false,null,0);
 		Review review3 = new Review(3L,film1,null,null,true,null,5);

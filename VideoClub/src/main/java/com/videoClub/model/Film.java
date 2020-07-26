@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -21,7 +20,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.videoClub.model.enumeration.AgeCategory;
 import com.videoClub.model.enumeration.Genre;
 
 @Entity
@@ -74,13 +72,6 @@ public class Film {
 	private List<Review> reviews = new ArrayList<Review>();
 	
 	@JsonIgnore
-	@ElementCollection(targetClass = Genre.class)
-	@JoinTable(name = "restricted_age_categories", joinColumns = @JoinColumn(name = "id"))
-	@Column(name = "age_category", nullable = false)
-	@Enumerated(EnumType.STRING)
-	private List<AgeCategory> restrictedAgeCategories = new ArrayList<AgeCategory>();
-	
-	@JsonIgnore
 	@OneToMany(mappedBy = "film_report", fetch = FetchType.LAZY)
 	private List<Report> reports = new ArrayList<Report>();
 
@@ -90,8 +81,7 @@ public class Film {
 	}
 	
 	public Film(Long id, String name, String description, Genre genre, int duration, int year, double rating,
-			String poster, List<Artist> actors, Artist director, Artist writtenBy, List<Review> reviews,
-			List<AgeCategory> restrictedAgeCategories) {
+			String poster, List<Artist> actors, Artist director, Artist writtenBy, List<Review> reviews) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -105,7 +95,6 @@ public class Film {
 		this.director = director;
 		this.writtenBy = writtenBy;
 		this.reviews = reviews;
-		this.restrictedAgeCategories = restrictedAgeCategories;
 	}
 
 	public Long getId() {
@@ -203,16 +192,6 @@ public class Film {
 	public void setPoster(String poster) {
 		this.poster = poster;
 	}
-
-	public List<AgeCategory> getRestrictedAgeCategories() {
-		return restrictedAgeCategories;
-	}
-
-	public void setRestrictedAgeCategories(List<AgeCategory> restrictedAgeCategories) {
-		this.restrictedAgeCategories = restrictedAgeCategories;
-	}
-	
-	
 	
 	public List<Report> getReports() {
 		return reports;
@@ -220,10 +199,6 @@ public class Film {
 
 	public void setReports(List<Report> reports) {
 		this.reports = reports;
-	}
-
-	public void addNewRestrictedAgeCategory(AgeCategory category){
-		restrictedAgeCategories.add(category);
 	}
 
 	public void addNewRate(int rate, Long reviewId){
