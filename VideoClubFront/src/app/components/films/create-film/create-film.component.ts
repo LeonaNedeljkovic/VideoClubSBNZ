@@ -16,6 +16,12 @@ import { FilmReportComponent } from '../film-report/film-report.component';
   styleUrls: ['./create-film.component.css']
 })
 export class CreateFilmComponent implements OnInit {
+  private searchInput : string = "";
+  private searchedArtist : Artist[] = [];
+  private searchInputDirector: string="";
+  private searchInputScenarist: string="";
+  private searchedDirectors: Artist[] = [];
+  private searchedScenarist: Artist[]=[];
   private film: FilmDto =
   {
     id: "0",
@@ -55,8 +61,21 @@ export class CreateFilmComponent implements OnInit {
     return artistDto;
   }
 
-  addActor(actor){
-    this.film.actorIds.push(actor.target.value+"");
+  addActor(actor:Artist){
+    this.film.actorIds.push(actor.id+"");
+    this.searchedArtist = [];
+  }
+
+  addDirector(director: Artist){
+    this.film.directorId=director.id;
+    this.searchInputDirector=director.name+" "+director.surname;
+    this.searchedDirectors=[];
+  }
+
+  addScenarist(scenarist:Artist){
+    this.film.writtenId=scenarist.id;
+    this.searchInputScenarist= scenarist.name+" "+scenarist.surname;
+    this.searchedScenarist=[];
   }
 
   removeActor(selected){
@@ -66,47 +85,56 @@ export class CreateFilmComponent implements OnInit {
   getReport(){
     if(this.film.name!="" && this.film.year >1800 && this.film.year < 2023 && this.film.duration > 10 && this.film.duration < 400 
     && this.film.poster!="" ){
-    var e2 = document.getElementById("director");
-    let indexToFind2 = (<HTMLSelectElement> e2);
-    this.film.directorId = indexToFind2.options[indexToFind2.selectedIndex].value;
-    var e3 = document.getElementById("director");
-    let indexToFind3 = (<HTMLSelectElement> e3);
-    this.film.writtenId = indexToFind3.options[indexToFind3.selectedIndex].value;
     var e4 = document.getElementById("chosen");
     let indexToFind4 = (<HTMLSelectElement> e4);
     this.film.genre= indexToFind4.options[indexToFind4.selectedIndex].text;
     this.filmService.filmReport(this.film).subscribe(data => {
+      var film: FilmDto = this.film;
+      this.sharedService.filmToAdd = film;
       var report : FinalReport = data;
       this.sharedService.report = report;
       const modalRef = this.modalService.open(FilmReportComponent);
   });
+  }else{
+    var message : Message = {header:"Error", message:"All fields must be field in", color:"green"};
+    localStorage.setItem('message', JSON.stringify(message));
+    const modalRef = this.modalService.open(MessageComponent);
   }
   }
 
-  createFilm(){
-    if(this.film.name!="" && this.film.year >1800 && this.film.year < 2023 && this.film.duration > 10 && this.film.duration < 400 
-    && this.film.poster!="" ){
-      console.log(this.film.actorIds);
-    var e2 = document.getElementById("director");
-    let indexToFind2 = (<HTMLSelectElement> e2);
-    this.film.directorId = indexToFind2.options[indexToFind2.selectedIndex].value;
-    var e3 = document.getElementById("director");
-    let indexToFind3 = (<HTMLSelectElement> e3);
-    this.film.writtenId = indexToFind3.options[indexToFind3.selectedIndex].value;
-    var e4 = document.getElementById("chosen");
-    let indexToFind4 = (<HTMLSelectElement> e4);
-    this.film.genre= indexToFind4.options[indexToFind4.selectedIndex].text;
+  searchArtist() {
+    if(this.searchInput != ""){
+      this.searchedArtist = this.artists.filter((artist: Artist) => {
+        return (artist.name + " " + artist.surname).toLowerCase().includes(this.searchInput.toLowerCase());
+      });
+    }
+    else{
+      this.searchedArtist = [];
+      return this.searchedArtist;
+    }
+  }
 
-    this.filmService.createFilm(this.film).subscribe(data => {
-      var message : Message = {header:data.header, message:data.message, color:"green"};
-      localStorage.setItem('message', JSON.stringify(message));
-      const modalRef = this.modalService.open(MessageComponent);
-      localStorage.removeItem("message2");
-  });
-}else{
-      var message : Message = {header:"Error", message:"All fields must be field in", color:"green"};
-      localStorage.setItem('message', JSON.stringify(message));
-      const modalRef = this.modalService.open(MessageComponent);
-}
+  searchScenarist() {
+    if(this.searchInputScenarist != ""){
+      this.searchedScenarist = this.artists.filter((artist: Artist) => {
+        return (artist.name + " " + artist.surname).toLowerCase().includes(this.searchInputScenarist.toLowerCase());
+      });
+    }
+    else{
+      this.searchedScenarist = [];
+      return this.searchedScenarist;
+    }
+  }
+
+  searchDirector() {
+    if(this.searchInputDirector != ""){
+      this.searchedDirectors = this.artists.filter((artist: Artist) => {
+        return (artist.name + " " + artist.surname).toLowerCase().includes(this.searchInputDirector.toLowerCase());
+      });
+    }
+    else{
+      this.searchedDirectors = [];
+      return this.searchedDirectors;
+    }
   }
 }

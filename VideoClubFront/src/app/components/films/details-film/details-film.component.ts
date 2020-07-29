@@ -49,6 +49,10 @@ export class DetailsFilmComponent implements OnInit {
     if(this.loggedIn){
       localStorage.setItem('film-rate', this.id.toString());
       const modalRef = this.modalService.open(RatingComponent);
+      modalRef.result.then((data) => {
+      }, (reason) => {
+        this.ngOnInit();
+      });
     }
   }
 
@@ -86,7 +90,7 @@ export class DetailsFilmComponent implements OnInit {
       this.filmService.addToFavourites(this.id.toString()).subscribe(
         
       )
-      location.reload();
+      this.ngOnInit();
     }
   }
 

@@ -1,0 +1,559 @@
+//created on: May 30, 2020
+package com.videoClub.rules.adminRecommendation
+
+import com.videoClub.dto.MessageDto;
+import com.videoClub.model.drl.*;
+import com.videoClub.model.*;
+import com.videoClub.model.enumeration.*;
+import java.util.List;
+import java.util.Collections;
+
+
+declare UserFlag
+	@PropertyReactive
+	user : RegisteredUser
+    actorsFlag : ArtistFlag
+    directorsFlag : ArtistFlag
+    scenaristsFlag : ArtistFlag
+    genreFlag : GenreFlag
+end
+
+declare ActorRate
+	averageRate : double
+	userFlag : UserFlag
+end
+
+declare ActorElement
+	actor : Artist
+end
+
+declare DirectorElement
+	director : Artist
+end
+
+declare ScenaristElement
+	scenarist : Artist
+end
+
+declare GenreElement
+	genre : Genre
+end
+
+declare UserFlagPoints
+	userFlag : UserFlag
+    points : double
+end
+
+declare UserRecommendation
+	ageCategory : AgeCategory
+    points : double
+end
+
+rule "Insert Film elements"
+	salience 100
+	lock-on-active
+	when
+		$film : Film( $actors : actors, $director : director, $scenarist : writtenBy, $genre : genre );
+	then
+		for(Artist artist : $film.getActors()){
+			insert(new ActorElement(artist));
+		}
+		insert(new DirectorElement($director));
+		insert(new ScenaristElement($scenarist));
+		insert(new GenreElement($film.getGenre()));
+		System.out.println("Film elements inserted");
+end
+
+rule "Insert UserFlag"
+	salience 90
+	no-loop
+	when
+		$user : RegisteredUser(  );
+	then
+		insert(new UserFlag( $user,
+							 new ArtistFlag(),
+							 new ArtistFlag(),
+							 new ArtistFlag(),
+							 new GenreFlag(null,0,0,0,0)));
+end
+
+rule "Collect informations about reviews and favourites of ActorElement for UserFlag"
+	salience 80
+	no-loop
+	when
+		$userFlag : UserFlag( $reviews : user.reviews, $favouriteFilms : user.favouriteFilms, $user : user ) @Watch(!*);
+		ActorElement( $artist : actor );
+		Number( $watchedNum : intValue ) from accumulate(
+         	$review : Review( watched == true, rate == 0, $artist memberOf film.getActors() 
+         	|| $artist.getId() == film.getDirector().getId() || $artist.getId() == film.getWrittenBy().getId()) from $reviews,
+         	count( $review ) );
+     	Number( $unwatchedNum : intValue ) from accumulate(
+         	$review : Review( watched == false, $artist memberOf film.getActors()
+         	|| $artist.getId() == film.getDirector().getId() || $artist.getId() == film.getWrittenBy().getId()) from $reviews,
+         	count( $review ) );
+        Number( $rating : doubleValue ) from accumulate(
+         	$review : Review( $rate : rate, rate > 0, $artist memberOf film.getActors()
+         	|| $artist.getId() == film.getDirector().getId() || $artist.getId() == film.getWrittenBy().getId()) from $reviews,
+         	average( $rate ) );
+        Number( $favourites : intValue )
+        from accumulate(
+         	$review : Review( film memberOf $favouriteFilms, $artist memberOf film.getActors()
+         	|| $artist.getId() == film.getDirector().getId() || $artist.getId() == film.getWrittenBy().getId()) from $reviews,
+         	count( $review ) );
+	then
+		ArtistFlag artistFlag = $userFlag.getActorsFlag();
+		artistFlag.setFavourites(artistFlag.getFavourites()+$favourites);
+		artistFlag.setWatchedNumber(artistFlag.getWatchedNumber()+$watchedNum);
+		artistFlag.setUnwatchedNumber(artistFlag.getUnwatchedNumber()+$unwatchedNum);
+		insert(new ActorRate($rating, $userFlag));
+		update($userFlag);
+end
+
+rule "Collect informations about DirectorElement for UserFlag"
+	salience 80
+	no-loop
+	when
+		$userFlag : UserFlag( $reviews : user.reviews, $favouriteFilms : user.favouriteFilms ) @Watch(!*);
+		DirectorElement( $artist : director );
+		Number( $watchedNum : intValue ) from accumulate(
+         	$review : Review( watched == true, rate == 0, $artist memberOf film.getActors() 
+         	|| $artist.getId() == film.getDirector().getId() || $artist.getId() == film.getWrittenBy().getId()) from $reviews,
+         	count( $review ) );
+     	Number( $unwatchedNum : intValue ) from accumulate(
+         	$review : Review( watched == false, $artist memberOf film.getActors()
+         	|| $artist.getId() == film.getDirector().getId() || $artist.getId() == film.getWrittenBy().getId()) from $reviews,
+         	count( $review ) );
+        Number( $rating : doubleValue ) from accumulate(
+         	$review : Review( $rate : rate, rate > 0, $artist memberOf film.getActors()
+         	|| $artist.getId() == film.getDirector().getId() || $artist.getId() == film.getWrittenBy().getId()) from $reviews,
+         	average( $rate ) );
+         Number( $ratesNum : intValue ) from accumulate(
+         	$rated : Review( rate > 0, $artist memberOf film.getActors()
+         	|| $artist.getId() == film.getDirector().getId() || $artist.getId() == film.getWrittenBy().getId()) from $reviews,
+         	count( $rated ) );
+        Number( $favourites : intValue )
+        from accumulate(
+         	$review : Review( film memberOf $favouriteFilms, $artist memberOf film.getActors()
+         	|| $artist.getId() == film.getDirector().getId() || $artist.getId() == film.getWrittenBy().getId()) from $reviews,
+         	count( $review ) );
+	then
+		ArtistFlag artistFlag = $userFlag.getDirectorsFlag();
+		artistFlag.setFavourites($favourites);
+		artistFlag.setWatchedNumber($watchedNum);
+		artistFlag.setUnwatchedNumber($unwatchedNum);
+		artistFlag.setRatesNumber($ratesNum);
+		artistFlag.setAverageRate($rating);
+		update($userFlag);
+end
+
+rule "Collect informations about ScenaristElement for UserFlag"
+	salience 80
+	no-loop
+	when
+		$userFlag : UserFlag( $reviews : user.reviews, $favouriteFilms : user.favouriteFilms ) @Watch(!*);
+		ScenaristElement( $artist : scenarist );
+		Number( $watchedNum : intValue ) from accumulate(
+         	$review : Review( watched == true, rate == 0, $artist memberOf film.getActors() 
+         	|| $artist.getId() == film.getDirector().getId() || $artist.getId() == film.getWrittenBy().getId()) from $reviews,
+         	count( $review ) );
+     	Number( $unwatchedNum : intValue ) from accumulate(
+         	$review : Review( watched == false, $artist memberOf film.getActors()
+         	|| $artist.getId() == film.getDirector().getId() || $artist.getId() == film.getWrittenBy().getId()) from $reviews,
+         	count( $review ) );
+        Number( $rating : doubleValue ) from accumulate(
+         	$review : Review( $rate : rate, rate > 0, $artist memberOf film.getActors()
+         	|| $artist.getId() == film.getDirector().getId() || $artist.getId() == film.getWrittenBy().getId()) from $reviews,
+         	average( $rate ) );
+         Number( $ratesNum : intValue ) from accumulate(
+         	$rated : Review( rate > 0, $artist memberOf film.getActors()
+         	|| $artist.getId() == film.getDirector().getId() || $artist.getId() == film.getWrittenBy().getId()) from $reviews,
+         	count( $rated ) );
+        Number( $favourites : intValue )
+        from accumulate(
+         	$review : Review( film memberOf $favouriteFilms, $artist memberOf film.getActors()
+         	|| $artist.getId() == film.getDirector().getId() || $artist.getId() == film.getWrittenBy().getId()) from $reviews,
+         	count( $review ) );
+	then
+		ArtistFlag artistFlag = $userFlag.getScenaristsFlag();
+		artistFlag.setFavourites($favourites);
+		artistFlag.setWatchedNumber($watchedNum);
+		artistFlag.setUnwatchedNumber($unwatchedNum);
+		artistFlag.setRatesNumber($ratesNum);
+		artistFlag.setAverageRate($rating);
+		update($userFlag);
+end
+
+rule "Collect informations about GenreElement for UserFlag"
+	salience 80
+	no-loop
+	when
+		$userFlag : UserFlag( $reviews : user.reviews ) @Watch(!*);
+		GenreElement( $genre : genre );
+    	Number( $rating : doubleValue ) from accumulate(
+         	$review : Review( rate > 0, $rate : rate, film.getGenre() == $genre ) from $reviews,
+         	average( $rate ) );
+    	Number( $watchedNum : intValue ) from accumulate(
+         	$review : Review( watched == true, rate == 0, film.getGenre() == $genre )from $reviews,
+         	count( $review ) );
+     	Number( $unwatchedNum : intValue ) from accumulate(
+         	$review : Review( watched == false, rate == 0, film.getGenre() == $genre )from $reviews,
+         	count( $review ) );
+         Number( $ratesNum : intValue ) from accumulate(
+         	$rated : Review( rate > 0, $rate : rate, film.getGenre() == $genre ) from $reviews,
+         	count( $rated ) );
+	then
+		GenreFlag genreFlag = $userFlag.getGenreFlag();
+		genreFlag.setGenre($genre);
+		genreFlag.setWatchedTime($watchedNum);
+		genreFlag.setUnwatchedTime($unwatchedNum);
+		genreFlag.setRatesNumber($ratesNum);
+		genreFlag.setAverageRate($rating);
+		update($userFlag);
+end
+
+rule "Merge all ActorRates of one User"
+	salience 70
+	no-loop
+	when
+		$userFlag : UserFlag( $userId : user.id ) @Watch(!*);
+		$rates : List( this.size() > 0 ) 
+			from collect(ActorRate( userFlag.user.id == $userId, averageRate > 0 ));
+	then
+		ArtistFlag artistFlag = $userFlag.getActorsFlag();
+		double rate = 0;
+		int ratesNum = 0;
+		for(Object o : $rates){
+			ActorRate ar = (ActorRate) o;
+			rate = rate + ar.getAverageRate();
+			ratesNum++;
+		}
+		artistFlag.setAverageRate(rate/ratesNum);
+		artistFlag.setRatesNumber(ratesNum);
+		update($userFlag);
+end
+
+rule "Reward director for favourite films"
+	salience 60
+	no-loop
+    when
+        $userFlag : UserFlag( directorsFlag.favourites > 0, $favourites : directorsFlag.favourites );
+    then
+    	insert(new UserFlagPoints($userFlag, 30*$favourites));
+        System.out.println("Film acquired "+30*$favourites+ " points for favourite films of director"+
+        " by user " + $userFlag.getUser().getUsername());
+end
+
+rule "Reward scenarist for favourite films"
+	salience 60
+	lock-on-active
+    when
+        $userFlag : UserFlag( scenaristsFlag.favourites > 0, $favourites : scenaristsFlag.favourites );
+    then
+    	insert(new UserFlagPoints($userFlag, 20*$favourites));
+        System.out.println("Film acquired "+20*$favourites+ " points for favourite films of scenarist"+
+        " by user " + $userFlag.getUser().getUsername());
+end
+
+rule "Reward actors for favourite films"
+	salience 60
+	no-loop
+    when
+        $userFlag : UserFlag( actorsFlag.favourites > 0, $favourites : actorsFlag.favourites );
+    then
+    	insert(new UserFlagPoints($userFlag, 10*$favourites));
+        System.out.println("Film acquired "+10*$favourites+ " points for favourite films of actors"+
+        " by user " + $userFlag.getUser().getUsername());
+end
+
+rule "Reward highly rated director"
+	salience 60
+	no-loop
+    when
+        $userFlag : UserFlag( directorsFlag.averageRate >= 4,
+        	$averageRate : directorsFlag.averageRate,
+        	$ratesNum : directorsFlag.ratesNumber );
+    then
+		insert(new UserFlagPoints($userFlag, $averageRate*10*$ratesNum));
+        System.out.println("Film acquired "+$averageRate*10*$ratesNum+ " points for highly rated director"+
+        " by user " + $userFlag.getUser().getUsername());
+end
+
+rule "Reward highly rated actors"
+	salience 60
+	no-loop
+    when
+        $userFlag : UserFlag( actorsFlag.averageRate >= 4,
+        	$averageRate : actorsFlag.averageRate,
+        	$ratesNum : actorsFlag.ratesNumber );
+    then
+		insert(new UserFlagPoints($userFlag, $averageRate*10*$ratesNum));
+        System.out.println("Film acquired "+$averageRate*10*$ratesNum+ " points for highly rated actors"+
+        " by user " + $userFlag.getUser().getUsername());
+end
+
+rule "Reward highly rated scenarist"
+	salience 60
+	no-loop
+    when
+        $userFlag : UserFlag( scenaristsFlag.averageRate >= 4,
+        	$averageRate : scenaristsFlag.averageRate,
+        	$ratesNum : scenaristsFlag.ratesNumber );
+    then
+		insert(new UserFlagPoints($userFlag, $averageRate*10*$ratesNum));
+        System.out.println("Film acquired "+$averageRate*10*$ratesNum+ " points for highly rated scenarist"+
+        " by user " + $userFlag.getUser().getUsername());
+end
+
+rule "Reward watched director"
+	salience 60
+	no-loop
+    when
+        $userFlag : UserFlag( directorsFlag.watchedNumber > 0,
+        	$watchedNum : directorsFlag.watchedNumber );
+    then
+        insert(new UserFlagPoints($userFlag, 10*$watchedNum));
+        System.out.println("Film acquired "+10*$watchedNum+ " points for watched director"+
+        " by user " + $userFlag.getUser().getUsername());
+end
+
+rule "Reward watched actors"
+	salience 60
+	no-loop
+    when
+        $userFlag : UserFlag( actorsFlag.watchedNumber > 0,
+        	$watchedNum : actorsFlag.watchedNumber );
+    then
+        insert(new UserFlagPoints($userFlag, 10*$watchedNum));
+        System.out.println("Film acquired "+10*$watchedNum+ " points for watched actors"+
+        " by user " + $userFlag.getUser().getUsername());
+end
+
+rule "Reward watched scenarist"
+	salience 60
+	no-loop
+    when
+        $userFlag : UserFlag( scenaristsFlag.watchedNumber > 0,
+        	$watchedNum : scenaristsFlag.watchedNumber );
+    then
+        insert(new UserFlagPoints($userFlag, 10*$watchedNum));
+        System.out.println("Film acquired "+10*$watchedNum+ " points for watched scenarist"+
+        " by user " + $userFlag.getUser().getUsername());
+end
+
+rule "Reward average rated director"
+	salience 60
+	no-loop
+    when
+        $userFlag : UserFlag( directorsFlag.averageRate < 4 && directorsFlag.averageRate > 3,
+        	$averageRate : directorsFlag.averageRate, $ratesNum : directorsFlag.ratesNumber );
+    then
+        insert(new UserFlagPoints($userFlag, $averageRate*$ratesNum));
+        System.out.println("Film acquired "+$averageRate*$ratesNum+ " points for average rated director"+
+        " by user " + $userFlag.getUser().getUsername());
+end
+
+rule "Reward average rated actors"
+	salience 60
+	no-loop
+    when
+        $userFlag : UserFlag( actorsFlag.averageRate < 4 && actorsFlag.averageRate > 3,
+        	$averageRate : actorsFlag.averageRate, $ratesNum : actorsFlag.ratesNumber );
+    then
+        insert(new UserFlagPoints($userFlag, $averageRate*$ratesNum));
+        System.out.println("Film acquired "+$averageRate*$ratesNum+ " points for average rated actors"+
+        " by user " + $userFlag.getUser().getUsername());
+end
+
+rule "Reward average rated scenarist"
+	salience 60
+	no-loop
+    when
+        $userFlag : UserFlag( scenaristsFlag.averageRate < 4 && scenaristsFlag.averageRate > 3,
+        	$averageRate : scenaristsFlag.averageRate, $ratesNum : scenaristsFlag.ratesNumber );
+    then
+        insert(new UserFlagPoints($userFlag, $averageRate*$ratesNum));
+        System.out.println("Film acquired "+$averageRate*$ratesNum+ " points for average rated scenarist"+
+        " by user " + $userFlag.getUser().getUsername());
+end
+
+rule "Punish unwatched director"
+	salience 60
+	no-loop
+    when
+    	$userFlag : UserFlag( directorsFlag.unwatchedNumber > 0, 
+    		$unwatchedNum : directorsFlag.unwatchedNumber );
+    then
+        insert(new UserFlagPoints($userFlag, 0-10*$unwatchedNum));
+        System.out.println("Film lost "+10*$unwatchedNum+ " points for unwatched films of director"+
+        " by user " + $userFlag.getUser().getUsername());
+end
+
+rule "Punish unwatched actors"
+	salience 60
+	no-loop
+    when
+        $userFlag : UserFlag( actorsFlag.unwatchedNumber > 0, 
+    		$unwatchedNum : actorsFlag.unwatchedNumber );
+    then
+        insert(new UserFlagPoints($userFlag, 0-10*$unwatchedNum));
+        System.out.println("Film lost "+10*$unwatchedNum+ " points for unwatched films of actors"+
+        " by user " + $userFlag.getUser().getUsername());
+end
+
+rule "Punish unwatched scenarist"
+	salience 60
+	no-loop
+    when
+        $userFlag : UserFlag( scenaristsFlag.unwatchedNumber > 0, 
+    		$unwatchedNum : scenaristsFlag.unwatchedNumber );
+    then
+        insert(new UserFlagPoints($userFlag, 0-10*$unwatchedNum));
+        System.out.println("Film lost "+10*$unwatchedNum+ " points for unwatched films of scnarist"+
+        " by user " + $userFlag.getUser().getUsername());
+end
+
+rule "Punish badly rated director"
+	salience 60
+	no-loop
+    when
+        $userFlag : UserFlag( directorsFlag.averageRate <= 3 && directorsFlag.averageRate > 0,
+        	$averageRate : directorsFlag.averageRate, $ratesNum : directorsFlag.ratesNumber );
+    then
+        insert(new UserFlagPoints($userFlag, 0-10*(10-$averageRate)));
+        System.out.println("Film lost "+10*(10-$averageRate)+ " points for badly rated director"+
+        " by user " + $userFlag.getUser().getUsername());
+end
+
+rule "Punish badly rated actors"
+	salience 60
+	no-loop
+    when
+        $userFlag : UserFlag( actorsFlag.averageRate <= 3 && actorsFlag.averageRate > 0,
+        	$averageRate : actorsFlag.averageRate, $ratesNum : actorsFlag.ratesNumber );
+    then
+        insert(new UserFlagPoints($userFlag, 0-10*(10-$averageRate)));
+        System.out.println("Film lost "+10*(10-$averageRate)+ " points for badly rated actors"+
+        " by user " + $userFlag.getUser().getUsername());
+end
+
+rule "Punish badly rated scenarist"
+	salience 60
+	no-loop
+    when
+        $userFlag : UserFlag( scenaristsFlag.averageRate <= 3 && scenaristsFlag.averageRate > 0,
+        	$averageRate : scenaristsFlag.averageRate, $ratesNum : scenaristsFlag.ratesNumber );
+    then
+        insert(new UserFlagPoints($userFlag, 0-5*(10-$averageRate)));
+        System.out.println("Film lost "+5*(10-$averageRate)+ " points for badly rated scenarist"+
+        " by user " + $userFlag.getUser().getUsername());
+end
+
+rule "Reward highly rated genre"
+	salience 60
+	no-loop
+    when
+    	$userFlag : UserFlag( genreFlag.averageRate >= 4,
+        	$averageRate : genreFlag.averageRate, $ratesNum : genreFlag.ratesNumber );
+    then
+        insert(new UserFlagPoints($userFlag, 5*$averageRate*$ratesNum ));
+        System.out.println("Film acquired "+5*$averageRate*$ratesNum+ " points for highly rated genre"+
+        " by user " + $userFlag.getUser().getUsername());
+end
+
+rule "Reward watched genre"
+	salience 60
+	no-loop
+    when
+    	$userFlag : UserFlag( genreFlag.watchedTime > 0,
+        	$watchedNum : genreFlag.watchedTime );
+    then
+    	insert(new UserFlagPoints($userFlag, 5*$watchedNum ));
+        System.out.println("Film acquired "+5*$watchedNum+ " points for watched genre"+
+        " by user " + $userFlag.getUser().getUsername());
+end
+
+rule "Reward average rated genre"
+	salience 60
+	no-loop
+    when
+    	$userFlag : UserFlag( genreFlag.averageRate < 4 && genreFlag.averageRate > 3,
+        	$rating: genreFlag.ratesNumber*genreFlag.averageRate );
+    then
+        insert(new UserFlagPoints($userFlag, $rating ));
+        System.out.println("Film acquired "+$rating+ " points for average rated genre"+
+        " by user " + $userFlag.getUser().getUsername());
+end
+
+rule "Punish unwwatched genre"
+	salience 60
+	no-loop
+    when
+    	$userFlag : UserFlag( (genreFlag.watchedTime == 0 && genreFlag.unwatchedTime == 0 &&
+        	genreFlag.averageRate == 0), 
+        	$reviewsSize : user.getReviews().size(), user.getReviews().size()>0 );
+    then
+    	insert(new UserFlagPoints($userFlag, 0-$reviewsSize ));
+        System.out.println("Film lost "+$reviewsSize+ " points for unwatched genre"+
+        " by user " + $userFlag.getUser().getUsername());
+end
+
+rule "Punish badly rated genre"
+	salience 60
+	no-loop
+    when
+    	$userFlag : UserFlag( genreFlag.averageRate <= 3 && genreFlag.averageRate > 0,
+        	$rating: genreFlag.ratesNumber*genreFlag.averageRate );
+    then
+    	insert(new UserFlagPoints($userFlag, 0-15*(10-$rating)) );
+        System.out.println("Film lost "+15*(10-$rating)+ " points for badly rated genre"+
+        " by user " + $userFlag.getUser().getUsername());
+end
+
+rule "Collect all points of one user into UserRecommendation"
+	salience 50
+	no-loop
+    when
+    	$userFlag : UserFlag( $id : user.id, $ageCategory : user.ageCategory );
+        Number($points:doubleValue) from accumulate(
+        	UserFlagPoints( $id == userFlag.user.id, $points:Double.valueOf(points)),
+        	sum($points)
+        );
+    then
+    	insert(new UserRecommendation($ageCategory,$points));
+    	System.out.println("UserRecommendation inserted for user: "+$userFlag.getUser().getUsername()+
+    	" with "+$points + " points");
+end
+
+rule "Insert AgeCategoryReport"
+	salience 40
+	no-loop
+    when
+    	$ageCategory : AgeCategory(  );
+    	Number( $recommendations : intValue ) from accumulate
+    		( $ur : UserRecommendation( ageCategory == $ageCategory, points > 0 ), count($ur));
+        Number( $total : intValue, $total > 0 ) from accumulate
+    		( $tot : UserRecommendation( ageCategory == $ageCategory ), count($tot));
+    then
+    	insert(new AgeCategoryReport($ageCategory, $recommendations, 100*$recommendations/$total));
+    	System.out.println("AgeCategoryReport inserted for category: "+$ageCategory+
+    	" with "+$recommendations+" interested users, which is "+100*$recommendations/$total+"% of all ausers in this age category");
+end
+
+rule "Insert FinalReport"
+	salience 30
+	no-loop
+    when
+    	$ageCategories : List() from collect (AgeCategoryReport(  ));
+    	Number( $totalRecommendations : intValue ) from accumulate(
+         	AgeCategoryReport( $recommendations : userRecommendationNumber ),
+         	sum( $recommendations ) );
+         Number( $totalUsers : intValue ) from accumulate(
+         	$flag : UserFlag(  ),
+         	count( $flag ) );
+    then
+    	insert(new FinalReport($totalRecommendations,(100*$totalRecommendations)/$totalUsers,$ageCategories));
+    	System.out.println("\nFinal Report: \n\tPotentially interested users: "+$totalRecommendations
+    		+"\n\tPercentage of potentially interested users: "+(100*$totalRecommendations)/$totalUsers+"%");
+end
+
+

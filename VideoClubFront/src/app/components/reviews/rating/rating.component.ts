@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbActiveModal  } from '@ng-bootstrap/ng-bootstrap';
 import { FilmService } from 'src/app/services/film.service';
 import { ReviewService } from 'src/app/services/review.service';
 import { Film } from 'src/app/model/film.model';
@@ -19,7 +19,7 @@ export class RatingComponent implements OnInit {
   private failureMessage : String = "";
   private reviews : Review[] = [];
 
-  constructor(private modalService: NgbModal, private filmService : FilmService, private reviewService : ReviewService) { }
+  constructor(private modalService: NgbModal, private filmService : FilmService, private reviewService : ReviewService,private activeModal: NgbActiveModal) { }
 
   ngOnInit() {
     this.id = +(localStorage.getItem('film-rate'));
@@ -73,7 +73,7 @@ export class RatingComponent implements OnInit {
     if(this.checkRate() == true && this.checkReview() == true){
       this.filmService.rateFilm(this.id.toString(), this.rated).subscribe(
         (film:Film) => {
-          location.reload();
+          this.activeModal.dismiss();
         }
       )
       this.failureMessage = "";
