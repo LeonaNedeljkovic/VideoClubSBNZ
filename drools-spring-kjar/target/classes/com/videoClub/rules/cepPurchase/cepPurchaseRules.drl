@@ -16,7 +16,7 @@ rule "More than 10 purchases in 1 hour from same user"
 end
 
 
-rule "No suspicious user event and less than 10 purchase events in 1 hour"
+rule "Less than 10 purchase events in 1 hour"
     when
         $t1: PurchaseEvent($userId: user.id, $user : user)
         Number(intValue<10 ) from accumulate(

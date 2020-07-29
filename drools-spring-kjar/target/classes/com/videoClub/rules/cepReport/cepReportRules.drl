@@ -57,7 +57,7 @@ rule "Get most watched film in the last 24h"
 		$r.setFilm($filmNumber.getFilm());
 end
 
-rule "number of views in the last 24h"
+rule "Number of views in the last 24h"
 	when
 		$r: ReportDTO( );
 		accumulate(
