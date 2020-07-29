@@ -18,7 +18,7 @@
             </div>
             <div  >
               <div class="movie" *ngFor="let review of reviews">
-                <div class="movie-image"><a (click)="watchFilm(review.film.id)" ><img src="{{review.film.poster}}" /></a> </div>
+                <div class="movie-image"><a (click)="moreInfo(review.film.id)" ><img src="{{review.film.poster}}" /></a> </div>
                 <div class="rating">
                   <p class="film-name">{{review.film.name}}</p>
                   <div class="rating-show">
@@ -33,7 +33,6 @@
                     <span class="star" *ngIf="review.film.rating >= 4.5">&#x2605;</span>
                     <span class="star" *ngIf="4.5 > review.film.rating">&#x2606;</span>
                   </div>
-                  <div class="film-name"><button class="transparentButton" type="input" (click)="moreInfo(review.film.id)">More Info</button></div>
                 </div>
               </div>
             </div>
