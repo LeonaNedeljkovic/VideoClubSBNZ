@@ -1,19 +1,37 @@
-
 <div class="container">
-        <form class="form-signin" (ngSubmit)="createOffer()">
-          <h2 class="form-signin-heading">Create offer</h2>
-          <br/>
-          <table class="invisible-table">
-            <tbody>
-              <tr>
-                <td>Minutes: </td>
-                <td><input type="number" id="minutes" name="minutes" [(ngModel)]="offer.minutes" placeholder="Minutes" required autofocus></td>
-                <td>Price: </td>
-                <td><input type="number" id="price" name="price" [(ngModel)]="offer.price" placeholder="Price" required></td>
-              </tr>
-            </tbody>
-          </table>
-          <div class="break"></div>
-          <button class="orangeButton" type="submit">Create offer</button>
-        </form>
+  <form class="form-signin" (ngSubmit)="createOffer()">
+    <h2 class="form-signin-heading">Create offer</h2>
+    <br />
+    <table class="invisible-table">
+      <tbody>
+        <tr>
+          <td>Minutes:</td>
+          <td>
+            <input
+              type="number"
+              id="minutes"
+              name="minutes"
+              [(ngModel)]="offer.minutes"
+              placeholder="Minutes"
+              required
+              autofocus
+            />
+          </td>
+          <td>Price:</td>
+          <td>
+            <input
+              type="number"
+              id="price"
+              name="price"
+              [(ngModel)]="offer.price"
+              placeholder="Price"
+              required
+            />
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="break"></div>
+    <button class="orangeButton" type="submit">Create offer</button>
+  </form>
 </div>

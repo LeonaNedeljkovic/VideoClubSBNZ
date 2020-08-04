@@ -1,74 +1,139 @@
 <div class="container">
-    <div class="row">
-      <h2 style="text-align: center; width: 100%;">{{film.name}}</h2>
-      <div class="info-container">
-        <table class="info-table">
-          <tbody>
-            <tr>
-              <td>Director: </td><td>{{film.director.name}} {{film.director.surname}}</td>
-            </tr>
-            <tr>
-              <td>Screenwriter: </td><td>{{film.writtenBy.name}} {{film.writtenBy.surname}}</td>
-            </tr>
-          </tbody>
-        </table>
-        <br/>
-        <table class="info-table">
-          <tbody>
-            <tr>
-              <td>Actors: </td>
-            </tr>
-            <tr *ngFor="let actor of film.actors; let i = index">
-              <td>{{actor.name}} {{actor.surname}}</td>
-            </tr>
-          </tbody>
-        </table>
-        <br/>
-        <p>Duration: {{film.duration}}min</p>
-        <table class="info-table">
-          <tbody *ngIf="reviewDetails.startedWatching === true">
-            <tr *ngIf="reviewDetails.watched === true">
-              <td class="green-td">&#x2611; Watched</td>
-            </tr>
-            <tr *ngIf="reviewDetails.watched === false">
-              <td>&#x2612; Not watched to the end</td>
-            </tr>
-            <tr *ngIf="reviewDetails.rate == 0">
-              <td >&#x2612; Not rated</td>
-            </tr>
-            <tr *ngIf="reviewDetails.rate > 0">
-              <td class="green-td">&#x2611; Rate: {{reviewDetails.rate}}</td>
-            </tr>
-            <tr *ngIf="reviewDetails.addedToFavourites === false">
-              <td>&#x2612; Not added to favourites</td>
-            </tr>
-            <tr *ngIf="reviewDetails.addedToFavourites === true">
-              <td class="green-td">&#x2611; Added to favourites</td>
-            </tr>
-          </tbody>
-        </table>
-        <br/>
-        <button name="watch-film"  *ngIf="loggedIn==true && loggedUser.role === 'ROLE_REGISTERED_USER'" class="transparentButton" type="input" (click)="watchFilm()">Watch Film</button>
-      </div>
-      <div class="info-container" >
-        <div><img class="poster" src="{{film.poster}}" /></div>
-        <div class="rating-show">
-          <span class="star" *ngIf="film.rating >= 1">&#x2605;</span>
-          <span class="star" *ngIf="1 > film.rating">&#x2606;</span>
-          <span class="star" *ngIf="film.rating >= 1.5">&#x2605;</span>
-          <span class="star" *ngIf="1.5 > film.rating">&#x2606;</span>
-          <span class="star" *ngIf="film.rating >= 2.5">&#x2605;</span>
-          <span class="star" *ngIf="2.5 > film.rating">&#x2606;</span>
-          <span class="star" *ngIf="film.rating >= 3.5">&#x2605;</span>
-          <span class="star" *ngIf="3.5 > film.rating">&#x2606;</span>
-          <span class="star" *ngIf="film.rating >= 4.5">&#x2605;</span>
-          <span class="star" *ngIf="4.5 > film.rating">&#x2606;</span>
-        </div>
-        <div><p style="text-align: center; width: 100%; padding-top:10px; padding-bottom:0px;"><b>Rating: {{film.rating}}</b></p></div>
-        <button *ngIf="loggedIn===true && loggedUser.role === 'ROLE_REGISTERED_USER' && reviewDetails.watched === true" class="orangeButton" type="input" (click)="rateFilm()">Rate Film</button>
-        <button *ngIf="loggedIn===true && loggedUser.role === 'ROLE_REGISTERED_USER' && reviewDetails.watched === false" class="orangeButton" type="input" disabled> Rate Film</button>
-        <button *ngIf="loggedIn===true && loggedUser.role === 'ROLE_REGISTERED_USER' && reviewDetails.rate == 5" class="transparentButton" type="input" (click)="favourites()">Add to favourites</button>
-        <button *ngIf="loggedIn===true && loggedUser.role === 'ROLE_REGISTERED_USER' && 5 > reviewDetails.rate" class="transparentButton" type="input" disabled>Add to favourites</button>
-      </div>
+  <div class="row">
+    <h2 style="text-align: center; width: 100%;">{{ film.name }}</h2>
+    <div class="info-container">
+      <table class="info-table">
+        <tbody>
+          <tr>
+            <td>Director:</td>
+            <td>{{ film.director.name }} {{ film.director.surname }}</td>
+          </tr>
+          <tr>
+            <td>Screenwriter:</td>
+            <td>{{ film.writtenBy.name }} {{ film.writtenBy.surname }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <br />
+      <table class="info-table">
+        <tbody>
+          <tr>
+            <td>Actors:</td>
+          </tr>
+          <tr *ngFor="let actor of film.actors; let i = index">
+            <td>{{ actor.name }} {{ actor.surname }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <br />
+      <p>Duration: {{ film.duration }}min</p>
+      <table class="info-table">
+        <tbody *ngIf="reviewDetails.startedWatching === true">
+          <tr *ngIf="reviewDetails.watched === true">
+            <td class="green-td">&#x2611; Watched</td>
+          </tr>
+          <tr *ngIf="reviewDetails.watched === false">
+            <td>&#x2612; Not watched to the end</td>
+          </tr>
+          <tr *ngIf="reviewDetails.rate == 0">
+            <td>&#x2612; Not rated</td>
+          </tr>
+          <tr *ngIf="reviewDetails.rate > 0">
+            <td class="green-td">&#x2611; Rate: {{ reviewDetails.rate }}</td>
+          </tr>
+          <tr *ngIf="reviewDetails.addedToFavourites === false">
+            <td>&#x2612; Not added to favourites</td>
+          </tr>
+          <tr *ngIf="reviewDetails.addedToFavourites === true">
+            <td class="green-td">&#x2611; Added to favourites</td>
+          </tr>
+        </tbody>
+      </table>
+      <br />
+      <button
+        name="watch-film"
+        *ngIf="loggedIn == true && loggedUser.role === 'ROLE_REGISTERED_USER'"
+        class="transparentButton"
+        type="input"
+        (click)="watchFilm()"
+      >
+        Watch Film
+      </button>
     </div>
-  </div> 
+    <div class="info-container">
+      <div><img class="poster" src="{{ film.poster }}" /></div>
+      <div class="rating-show">
+        <span class="star" *ngIf="film.rating >= 1">&#x2605;</span>
+        <span class="star" *ngIf="1 > film.rating">&#x2606;</span>
+        <span class="star" *ngIf="film.rating >= 1.5">&#x2605;</span>
+        <span class="star" *ngIf="1.5 > film.rating">&#x2606;</span>
+        <span class="star" *ngIf="film.rating >= 2.5">&#x2605;</span>
+        <span class="star" *ngIf="2.5 > film.rating">&#x2606;</span>
+        <span class="star" *ngIf="film.rating >= 3.5">&#x2605;</span>
+        <span class="star" *ngIf="3.5 > film.rating">&#x2606;</span>
+        <span class="star" *ngIf="film.rating >= 4.5">&#x2605;</span>
+        <span class="star" *ngIf="4.5 > film.rating">&#x2606;</span>
+      </div>
+      <div>
+        <p
+          style="
+            text-align: center;
+            width: 100%;
+            padding-top: 10px;
+            padding-bottom: 0px;
+          "
+        >
+          <b>Rating: {{ film.rating }}</b>
+        </p>
+      </div>
+      <button
+        *ngIf="
+          loggedIn === true &&
+          loggedUser.role === 'ROLE_REGISTERED_USER' &&
+          reviewDetails.watched === true
+        "
+        class="orangeButton"
+        type="input"
+        (click)="rateFilm()"
+      >
+        Rate Film
+      </button>
+      <button
+        *ngIf="
+          loggedIn === true &&
+          loggedUser.role === 'ROLE_REGISTERED_USER' &&
+          reviewDetails.watched === false
+        "
+        class="orangeButton"
+        type="input"
+        disabled
+      >
+        Rate Film
+      </button>
+      <button
+        *ngIf="
+          loggedIn === true &&
+          loggedUser.role === 'ROLE_REGISTERED_USER' &&
+          reviewDetails.rate == 5
+        "
+        class="transparentButton"
+        type="input"
+        (click)="favourites()"
+      >
+        Add to favourites
+      </button>
+      <button
+        *ngIf="
+          loggedIn === true &&
+          loggedUser.role === 'ROLE_REGISTERED_USER' &&
+          5 > reviewDetails.rate
+        "
+        class="transparentButton"
+        type="input"
+        disabled
+      >
+        Add to favourites
+      </button>
+    </div>
+  </div>
+</div>

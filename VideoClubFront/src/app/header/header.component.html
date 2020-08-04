@@ -1,76 +1,163 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<title>MovieHunter</title>
-</head>
-<body>
-<!-- START PAGE SOURCE -->
-<div id="shell">
-  <div id="header">
-    <h1 id="logo">Video Club</h1>
-    <div id="navigation">
-      <ul *ngIf="loggedIn==false">
-        <li><a class="active">HOME</a></li>
-        <li><a (click)="login()">LOG IN</a></li>
-        <li><a (click)="register()">REGISTER</a></li>
-      </ul>
-      <ul *ngIf="loggedIn==true && loggedUser.role === 'ROLE_REGISTERED_USER'">
-        <li><a [class.active]="activePage==='home'" (click)="home()">HOME</a></li>
-        <li><a class="dropdown">NOTIFICATIONS<span class="badge" *ngIf="unopenedNotifications() > 0">{{unopenedNotifications()}}</span>
-          <div class="dropdown-content" *ngIf="unopenedNotifications() > 0  || notifications.length >0">
-            <div class="notification" *ngFor="let notification of notifications" (click)="openNotification(notification.header, notification.body, notification.id, notification.opened)"><h2>{{notification.header}}</h2><p>{{notification.body}}</p></div></div>
-        </a></li>
-        <li><a [class.active]="activePage==='profile'" (click)="profile()">MY PROFILE</a></li>
-        <li><a [class.active]="activePage==='offers'" (click)="offers()">OFFERS</a></li>
-        <li><a [class.active]="activePage==='actions'" (click)="showActions()">ACTIONS</a></li>
-        <li><a (click)="logout()">LOG OUT</a></li>
-      </ul>
-      <ul *ngIf="loggedIn==true && loggedUser.role === 'ROLE_ADMIN'">
-        <li><div class="dropdown">
-          <a [class.active]="activePage==='home'">FILMS</a>
-          <div class="dropdown-content">
-            <a (click)="home()">VIEW FILMS</a>
-            <a (click)= "createFilm()">ADD FILM</a>
-          </div>
+  <head>
+    <title>MovieHunter</title>
+  </head>
+  <body>
+    <!-- START PAGE SOURCE -->
+    <div id="shell">
+      <div id="header">
+        <h1 id="logo">Video Club</h1>
+        <div id="navigation">
+          <ul *ngIf="loggedIn == false">
+            <li><a class="active">HOME</a></li>
+            <li><a (click)="login()">LOG IN</a></li>
+            <li><a (click)="register()">REGISTER</a></li>
+          </ul>
+          <ul
+            *ngIf="
+              loggedIn == true && loggedUser.role === 'ROLE_REGISTERED_USER'
+            "
+          >
+            <li>
+              <a [class.active]="activePage === 'home'" (click)="home()"
+                >HOME</a
+              >
+            </li>
+            <li>
+              <a class="dropdown"
+                >NOTIFICATIONS<span
+                  class="badge"
+                  *ngIf="unopenedNotifications() > 0"
+                  >{{ unopenedNotifications() }}</span
+                >
+                <div
+                  class="dropdown-content"
+                  *ngIf="
+                    unopenedNotifications() > 0 || notifications.length > 0
+                  "
+                >
+                  <div
+                    class="notification"
+                    *ngFor="let notification of notifications"
+                    (click)="
+                      openNotification(
+                        notification.header,
+                        notification.body,
+                        notification.id,
+                        notification.opened
+                      )
+                    "
+                  >
+                    <h2>{{ notification.header }}</h2>
+                    <p>{{ notification.body }}</p>
+                  </div>
+                </div>
+              </a>
+            </li>
+            <li>
+              <a [class.active]="activePage === 'profile'" (click)="profile()"
+                >MY PROFILE</a
+              >
+            </li>
+            <li>
+              <a [class.active]="activePage === 'offers'" (click)="offers()"
+                >OFFERS</a
+              >
+            </li>
+            <li>
+              <a
+                [class.active]="activePage === 'actions'"
+                (click)="showActions()"
+                >ACTIONS</a
+              >
+            </li>
+            <li><a (click)="logout()">LOG OUT</a></li>
+          </ul>
+          <ul *ngIf="loggedIn == true && loggedUser.role === 'ROLE_ADMIN'">
+            <li>
+              <div class="dropdown">
+                <a [class.active]="activePage === 'home'">FILMS</a>
+                <div class="dropdown-content">
+                  <a (click)="home()">VIEW FILMS</a>
+                  <a (click)="createFilm()">ADD FILM</a>
+                </div>
+              </div>
+            </li>
+            <li>
+              <div class="dropdown">
+                <a [class.active]="activePage === 'offers'" id="dropdown-a"
+                  >OFFERS</a
+                >
+                <div class="dropdown-content">
+                  <a
+                    [class.active]="activePage === 'show-all-offers'"
+                    (click)="showAllOffers()"
+                    >VIEW OFFERS</a
+                  >
+                  <a
+                    [class.active]="activePage === 'create-offer'"
+                    (click)="createOffer()"
+                    >ADD OFFER</a
+                  >
+                </div>
+              </div>
+            </li>
+            <li>
+              <div class="dropdown">
+                <a
+                  [class.active]="activePage === 'actions'"
+                  (click)="actions()"
+                  id="dropdown-a"
+                  >ACTIONS</a
+                >
+                <div class="dropdown-content">
+                  <a (click)="showActions()">VIEW ACTION EVENTS</a>
+                  <a (click)="addActions()">ADD ACTION EVENT</a>
+                </div>
+              </div>
+            </li>
+            <li>
+              <div class="dropdown">
+                <a [class.active]="activePage === 'artists'" id="dropdown-a"
+                  >ARTISTS</a
+                >
+                <div class="dropdown-content">
+                  <a (click)="showAllActors()">VIEW ARTISTS</a>
+                  <a (click)="addActor()">ADD ARTIST</a>
+                </div>
+              </div>
+            </li>
+            <li>
+              <a [class.active]="activePage === 'report'" (click)="report()"
+                >REPORTS</a
+              >
+            </li>
+            <li>
+              <div class="dropdown">
+                <a
+                  [class.active]="activePage === 'templates'"
+                  (click)="adminTools()"
+                  id="dropdown-a"
+                  >ADMIN TOOLS</a
+                >
+                <div class="dropdown-content">
+                  <a (click)="titleTemplaye()">TITLE SETTINGS</a>
+                  <a (click)="immunityTemplate()">IMMUNITY SETTINGS</a>
+                  <a (click)="ageSettings()">AGE SETTINGS</a>
+                  <a (click)="freeMinutesByAge()">FREE MINUTES BY AGE</a>
+                  <a (click)="freeMinutesByAgeAndTitle()"
+                    >FREE MINUTES BY AGE AND TITLE</a
+                  >
+                  <a (click)="freeMinutesByTitle()">FREE MINUTES BY TITLE</a>
+                </div>
+              </div>
+            </li>
+            <li><a (click)="logout()">LOG OUT</a></li>
+          </ul>
         </div>
-        </li>
-        <li><div class="dropdown">
-          <a [class.active]="activePage==='offers'" id="dropdown-a">OFFERS</a>
-            <div class="dropdown-content">
-              <a [class.active]="activePage==='show-all-offers'" (click)= "showAllOffers()">VIEW OFFERS</a>
-              <a [class.active]="activePage==='create-offer'" (click)= "createOffer()">ADD OFFER</a>
-            </div>
-          </div></li>
-        <li><div class="dropdown"><a [class.active]="activePage==='actions'" (click)="actions()" id="dropdown-a">ACTIONS</a>
-        <div class="dropdown-content">
-          <a (click)= "showActions()">VIEW ACTION EVENTS</a>
-          <a (click)= "addActions()">ADD ACTION EVENT</a>
-        </div>
-      </div></li>
-      <li><div class="dropdown">
-        <a [class.active]="activePage==='artists'" id="dropdown-a">ARTISTS</a>
-          <div class="dropdown-content">
-            <a (click)= "showAllActors()">VIEW ARTISTS</a>
-            <a (click)= "addActor()">ADD ARTIST</a>
-          </div>
-        </div></li>
-        <li><a [class.active]="activePage==='report'" (click)="report()">REPORTS</a></li>
-        <li><div class="dropdown">
-          <a [class.active]="activePage==='templates'" (click)="adminTools()" id="dropdown-a">ADMIN TOOLS</a>
-          <div class="dropdown-content">
-            <a (click)= "titleTemplaye()">TITLE SETTINGS</a>
-            <a (click)= "immunityTemplate()">IMMUNITY SETTINGS</a>
-            <a (click)= "ageSettings()">AGE SETTINGS</a>
-            <a (click)= "freeMinutesByAge()">FREE MINUTES BY AGE</a>
-            <a (click)= "freeMinutesByAgeAndTitle()">FREE MINUTES BY AGE AND TITLE</a>
-            <a (click)= "freeMinutesByTitle()">FREE MINUTES BY TITLE</a>
-          </div>
-        </div></li>
-        <li><a (click)="logout()">LOG OUT</a></li>
-      </ul>
+      </div>
     </div>
-  </div>
-</div>
-<!-- END PAGE SOURCE -->
-</body>
+    <!-- END PAGE SOURCE -->
+  </body>
 </html>

@@ -1,50 +1,85 @@
 <div class="container">
-    <div class="row">
+  <div class="row">
     <h2>Age Category Settings</h2>
     <p>Define start and end age for every age category:</p>
-    <br/><br/><br/>
+    <br /><br /><br />
     <table class="review-table">
-        <tbody>
-            <tr><td colspan="2"><h3>Child</h3></td><td></td></tr>
-            <tr>
-                <td>From: </td>
-                <td><input type="number" [(ngModel)]="childClassifier.startAge"/></td>
-                <td>To:</td>
-                <td><input type="number" [(ngModel)]="childClassifier.endAge"/></td>
-            </tr>
-            <tr><td colspan="2"><h3>Teenager</h3></td><td></td></tr>
-            <tr>
-                <td>From: </td>
-                <td><input type="number" [(ngModel)]="teenClassifier.startAge"/></td>
-                <td>To:</td>
-                <td><input type="number" [(ngModel)]="teenClassifier.endAge"/></td>
-            </tr>
-            <tr><td colspan="2"><h3>Young Adult</h3></td><td></td></tr>
-            <tr>
-                <td>From: </td>
-                <td><input type="number" [(ngModel)]="youngAdultClassifier.startAge"/></td>
-                <td>To:</td>
-                <td><input type="number" [(ngModel)]="youngAdultClassifier.endAge"/></td>
-            </tr>
-            <tr><td colspan="2"><h3>Adult</h3></td><td></td></tr>
-            <tr>
-                <td>From: </td>
-                <td><input type="number" [(ngModel)]="adultClassifier.startAge"/></td>
-                <td>To:</td>
-                <td><input type="number" [(ngModel)]="adultClassifier.endAge"/></td>
-            </tr>
-            <tr><td colspan="2"><h3>Elder</h3></td><td></td></tr>
-            <tr>
-                <td>From: </td>
-                <td><input type="number" [(ngModel)]="elderClassifier.startAge"/></td>
-                <td>To:</td>
-                <td><input type="number" [(ngModel)]="elderClassifier.endAge"/></td>
-            </tr>
-        </tbody>
+      <tbody>
+        <tr>
+          <td colspan="2"><h3>Child</h3></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>From:</td>
+          <td>
+            <input type="number" [(ngModel)]="childClassifier.startAge" />
+          </td>
+          <td>To:</td>
+          <td><input type="number" [(ngModel)]="childClassifier.endAge" /></td>
+        </tr>
+        <tr>
+          <td colspan="2"><h3>Teenager</h3></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>From:</td>
+          <td><input type="number" [(ngModel)]="teenClassifier.startAge" /></td>
+          <td>To:</td>
+          <td><input type="number" [(ngModel)]="teenClassifier.endAge" /></td>
+        </tr>
+        <tr>
+          <td colspan="2"><h3>Young Adult</h3></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>From:</td>
+          <td>
+            <input type="number" [(ngModel)]="youngAdultClassifier.startAge" />
+          </td>
+          <td>To:</td>
+          <td>
+            <input type="number" [(ngModel)]="youngAdultClassifier.endAge" />
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2"><h3>Adult</h3></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>From:</td>
+          <td>
+            <input type="number" [(ngModel)]="adultClassifier.startAge" />
+          </td>
+          <td>To:</td>
+          <td><input type="number" [(ngModel)]="adultClassifier.endAge" /></td>
+        </tr>
+        <tr>
+          <td colspan="2"><h3>Elder</h3></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>From:</td>
+          <td>
+            <input type="number" [(ngModel)]="elderClassifier.startAge" />
+          </td>
+          <td>To:</td>
+          <td><input type="number" [(ngModel)]="elderClassifier.endAge" /></td>
+        </tr>
+      </tbody>
     </table>
-    <br/><br/><br/>
-    <p style="color: red; text-align: center;" *ngIf="redMessage != ''">{{redMessage}}</p>
-    <p style="color: green; text-align: center;" class="green-text" *ngIf="greenMessage != ''">{{greenMessage}}</p>
-    <button class="orangeButton" type="input" (click)="saveAgeClassifiers()">Save Changes</button>
-</div>
+    <br /><br /><br />
+    <p style="color: red; text-align: center;" *ngIf="redMessage != ''">
+      {{ redMessage }}
+    </p>
+    <p
+      style="color: green; text-align: center;"
+      class="green-text"
+      *ngIf="greenMessage != ''"
+    >
+      {{ greenMessage }}
+    </p>
+    <button class="orangeButton" type="input" (click)="saveAgeClassifiers()">
+      Save Changes
+    </button>
+  </div>
 </div>

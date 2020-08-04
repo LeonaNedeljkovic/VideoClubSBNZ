@@ -18,11 +18,9 @@ public interface FilmRepository extends JpaRepository<Film, Long>{
 	public List<Film> getUnwatchedFilms(Long userId);
 	
 	@Query("SELECT f FROM Film f " +
-		    "WHERE f.id NOT IN "
-		    + "(SELECT r.film.id FROM Review r WHERE r.user.id = ?1) "
-		  + "AND (f.director.id = ?2 OR f.writtenBy.id = ?2 "
-		  + 	"OR ?2 IN (SELECT a.id FROM f.actors a))")
-	public List<Film> getUnwatchedFilmsByArtist(Long userId, Long artistId);
+		    "WHERE (f.director.id = ?1 OR f.writtenBy.id = ?1 "
+		  + 	"OR ?1 IN (SELECT a.id FROM f.actors a))")
+	public List<Film> getFilmsByArtist(Long artistId);
 	
 	@Query("SELECT f FROM Film f " +
 		    "ORDER BY f.rating DESC")

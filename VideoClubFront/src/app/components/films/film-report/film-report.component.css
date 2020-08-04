@@ -1,59 +1,61 @@
-.container{
-    background-color:#1b1d1f;
-    padding:7%;
-    border-color:white;
-    border-style: double;
-    width: 100%;
-    overflow: auto;
+.container {
+  background-color: #1b1d1f;
+  padding: 7%;
+  border-color: white;
+  border-style: double;
+  width: 100%;
+  overflow: auto;
 }
 h2 {
-	font-size:20px;
-	color:white;
-    font-weight:bold;
-    color: #f2a223;
-    width:100%;
-    text-align: center;
+  font-size: 20px;
+  color: white;
+  font-weight: bold;
+  color: #f2a223;
+  width: 100%;
+  text-align: center;
 }
-p{
-    color:white;
-    font-size: 13px;
+p {
+  color: white;
+  font-size: 13px;
 }
 
-li{
-    color:white;
-    font-size: 13px;
+li {
+  color: white;
+  font-size: 13px;
 }
-input, textarea, select {
-	font-size:12px;
-    font-family:Arial, Helvetica, sans-serif;
-    padding:5px;
-    width: 100%;
-    border:1px solid #413e3e;
-	background:#000;
-	color:white;
+input,
+textarea,
+select {
+  font-size: 12px;
+  font-family: Arial, Helvetica, sans-serif;
+  padding: 5px;
+  width: 100%;
+  border: 1px solid #413e3e;
+  background: #000;
+  color: white;
 }
 textarea {
-	overflow:auto;
+  overflow: auto;
 }
 
-.orangeButton{
-    background-color: #f2a223;
-    color:black;
-    border: none;
-    font-weight:bold;
-    padding: 5px;
-    margin-top: 20px;
-    margin-left: 25%;
-    width: 50%;
-    height: auto;
-    float: left;
-    display: inline;
-    position: relative;
+.orangeButton {
+  background-color: #f2a223;
+  color: black;
+  border: none;
+  font-weight: bold;
+  padding: 5px;
+  margin-top: 20px;
+  margin-left: 25%;
+  width: 50%;
+  height: auto;
+  float: left;
+  display: inline;
+  position: relative;
 }
 
-.invisible-container{
-    background-color: transparent;
-    border: none;
-    margin-left: 5%;
-    width: 90%;
+.invisible-container {
+  background-color: transparent;
+  border: none;
+  margin-left: 5%;
+  width: 90%;
 }

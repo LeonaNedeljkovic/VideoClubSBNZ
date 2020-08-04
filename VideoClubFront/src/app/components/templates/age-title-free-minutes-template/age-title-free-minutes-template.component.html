@@ -1,41 +1,53 @@
 <div class="container">
-    <h2 class="form-signin-heading">Free Minutes By Title And Age</h2>
-    <p>Define the number of free minutes that all users of the defined title rank and age category will receive:</p>
-    <br/>
-    <table class="invisible-table" *ngFor="let minutes of freeMinutes">
+  <h2 class="form-signin-heading">Free Minutes By Title And Age</h2>
+  <p>
+    Define the number of free minutes that all users of the defined title rank
+    and age category will receive:
+  </p>
+  <br />
+  <table class="invisible-table" *ngFor="let minutes of freeMinutes">
     <tbody>
-        <tr>
-            <td>Title Rank:</td>
-            <td>
-                <select [(ngModel)]="minutes.title">
-                    <option value="GOLD">Gold</option>
-                    <option value="SILVER">Silver</option>
-                    <option value="BRONZE">Bronze</option>
-                    <option value="NONE">None</option>
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td>Age Category:</td>
-            <td>
-                <select [(ngModel)]="minutes.ageCategory">
-                    <option value="CHILD">Child</option>
-                    <option value="TEEN">Teenager</option>
-                    <option value="YOUNG_ADULT">Young Adult</option>
-                    <option value="ADULT">Adult</option>
-                    <option value="ELDER">Elder</option>
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td>Number of Minutes:</td>
-            <td><input type="number" [(ngModel)]="minutes.amount"  required></td>
-        </tr>
-        <tr><td><button class="transparentButton" (click)="removeTemplate(minutes)">Remove Template</button></td><td></td></tr>
+      <tr>
+        <td>Title Rank:</td>
+        <td>
+          <select [(ngModel)]="minutes.title">
+            <option value="GOLD">Gold</option>
+            <option value="SILVER">Silver</option>
+            <option value="BRONZE">Bronze</option>
+            <option value="NONE">None</option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td>Age Category:</td>
+        <td>
+          <select [(ngModel)]="minutes.ageCategory">
+            <option value="CHILD">Child</option>
+            <option value="TEEN">Teenager</option>
+            <option value="YOUNG_ADULT">Young Adult</option>
+            <option value="ADULT">Adult</option>
+            <option value="ELDER">Elder</option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td>Number of Minutes:</td>
+        <td><input type="number" [(ngModel)]="minutes.amount" required /></td>
+      </tr>
+      <tr>
+        <td>
+          <button class="transparentButton" (click)="removeTemplate(minutes)">
+            Remove Template
+          </button>
+        </td>
+        <td></td>
+      </tr>
     </tbody>
-    </table>
-    <div class="break"></div>
-    <p style="color: green;text-align: center;" *ngIf="message!=''">{{message}}</p>
-    <button class="orangeButton" (click)="addTemplate()">Add Template</button>
-    <button class="orangeButton" type="submit" (click)="save()">Finish</button>
-  </div>
+  </table>
+  <div class="break"></div>
+  <p style="color: green; text-align: center;" *ngIf="message != ''">
+    {{ message }}
+  </p>
+  <button class="orangeButton" (click)="addTemplate()">Add Template</button>
+  <button class="orangeButton" type="submit" (click)="save()">Finish</button>
+</div>

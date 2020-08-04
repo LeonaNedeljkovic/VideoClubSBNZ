@@ -1,14 +1,33 @@
 <div class="container">
-  <form class="form-signin" (ngSubmit)=" updateOffer()">
+  <form class="form-signin" (ngSubmit)="updateOffer()">
     <h2 class="form-signin-heading">Update Offer</h2>
-    <br/>
+    <br />
     <table class="invisible-table">
       <tbody>
         <tr>
-          <td>Minutes: </td>
-          <td><input type="number" id="minutes" name="minutes" [(ngModel)]="offer.minutes" placeholder="Minutes" required autofocus></td>
-          <td>Price: </td>
-          <td><input type="number" id="price" name="price" [(ngModel)]="offer.price" placeholder="Price" required></td>
+          <td>Minutes:</td>
+          <td>
+            <input
+              type="number"
+              id="minutes"
+              name="minutes"
+              [(ngModel)]="offer.minutes"
+              placeholder="Minutes"
+              required
+              autofocus
+            />
+          </td>
+          <td>Price:</td>
+          <td>
+            <input
+              type="number"
+              id="price"
+              name="price"
+              [(ngModel)]="offer.price"
+              placeholder="Price"
+              required
+            />
+          </td>
         </tr>
       </tbody>
     </table>
