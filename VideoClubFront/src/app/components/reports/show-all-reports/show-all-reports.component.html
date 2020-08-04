@@ -1,19 +1,21 @@
-<div class="container">    
-    <table class="table table-striped">
-        <thead>
-            <th>Id</th>
-            <th>Date</th>
-            <th>Number of views</th>
-            <th>Most viewed film</th>        
-        </thead>
-        <tbody>
-            <tr *ngFor="let report of reports">
-                <td>{{report.id}}</td>
-                <td>{{report.date}}</td>
-                <td>{{report.numberOfViews}}</td>
-                <td *ngIf = "report.film != null">{{report.film.name}}</td>
-                <td *ngIf = "report.film == null"><p style="color:red;">No reviews</p></td>
-            </tr>
-        </tbody>
-    </table>
+<div class="container">
+  <table class="table table-striped">
+    <thead>
+      <th>Id</th>
+      <th>Date</th>
+      <th>Number of views</th>
+      <th>Most viewed film</th>
+    </thead>
+    <tbody>
+      <tr *ngFor="let report of reports">
+        <td>{{ report.id }}</td>
+        <td>{{ report.date }}</td>
+        <td>{{ report.numberOfViews }}</td>
+        <td *ngIf="report.film != null">{{ report.film.name }}</td>
+        <td *ngIf="report.film == null">
+          <p style="color: red;">No reviews</p>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </div>

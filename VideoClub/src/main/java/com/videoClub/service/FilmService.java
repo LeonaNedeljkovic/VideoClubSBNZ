@@ -17,12 +17,16 @@ public interface FilmService {
 	public List<Film> getAll();
 	public List<Film> getTopRated(int number);
 	public List<Film> getMostPopular(int number);
-	public List<Film> getByGenre(Genre genre);
 	public List<Film> getByName(String filmName);
+	public List<Film> getByGenre(Genre genre);
+	public List<Film> getByArtist(Long artistId);
 	public void delete(Long id);
 	public Film rateFilm(Long filmId, Integer rate, RegisteredUser user);
 	public List<Film> saveFilmToFavourites(Long filmId, User user);
-	public List<RecommendedFilm> getRecommendedFilms(RegisteredUser user, Long artistId, int number);
 	public FinalReport getRecommendedInfo(FilmDTO film);
 	public List<Film> save(List<Film> films);
+	public List<RecommendedFilm> getRecommendedFilmsByDefault(RegisteredUser user, int number);
+	public List<RecommendedFilm> getRecommendedFilmsByArtis(RegisteredUser user, Long artistId, int number);
+	public List<RecommendedFilm> getRecommendedFilmsByGenre(RegisteredUser user, Genre genre, int number);
+	public List<RecommendedFilm> getRecommendedFilms(RegisteredUser user, List<Film> films, int number, boolean strip);
 }

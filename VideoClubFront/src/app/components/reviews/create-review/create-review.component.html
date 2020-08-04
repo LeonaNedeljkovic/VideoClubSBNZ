@@ -1,20 +1,38 @@
 <div class="container">
-    <div class="row">
-    <h2 style="width: 100%; text-align: center;">Enter time interval of review:</h2>
-    <br/><br/><br/>
+  <div class="row">
+    <h2 style="width: 100%; text-align: center;">
+      Enter time interval of review:
+    </h2>
+    <br /><br /><br />
     <table class="review-table">
-        <tbody>
-            <tr>
-                <td><p>From: </p></td>
-                <td><input type="number" name="search field" class="search-field" [(ngModel)]="review.startMinute" /></td>
-                <td><p>To: </p></td>
-                <td><input type="number" name="search field" class="search-field" [(ngModel)]="review.endMinute" /></td>
-            </tr>
-        </tbody>
+      <tbody>
+        <tr>
+          <td><p>From:</p></td>
+          <td>
+            <input
+              type="number"
+              name="search field"
+              class="search-field"
+              [(ngModel)]="review.startMinute"
+            />
+          </td>
+          <td><p>To:</p></td>
+          <td>
+            <input
+              type="number"
+              name="search field"
+              class="search-field"
+              [(ngModel)]="review.endMinute"
+            />
+          </td>
+        </tr>
+      </tbody>
     </table>
-    <br/><br/><br/>
-    <p class="red-text">{{failureMessage}}</p>
-    <p class="green-text">{{successMessage}}</p>
-    <button class="orangeButton" type="input" (click)="watch()">Watch Film</button>
-</div>
+    <br /><br /><br />
+    <p class="red-text">{{ failureMessage }}</p>
+    <p class="green-text">{{ successMessage }}</p>
+    <button class="orangeButton" type="input" (click)="watch()">
+      Watch Film
+    </button>
+  </div>
 </div>

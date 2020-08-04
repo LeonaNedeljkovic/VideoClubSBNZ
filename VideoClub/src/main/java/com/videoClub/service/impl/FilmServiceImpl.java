@@ -136,16 +136,24 @@ public class FilmServiceImpl implements FilmService{
 		RegisteredUser saved = (RegisteredUser) userService.save(user);
 		return saved.getFavouriteFilms();
 	}
+	
+	@Override
+	public List<RecommendedFilm> getRecommendedFilmsByDefault(RegisteredUser user, int number) {
+		return getRecommendedFilms(user, filmRepository.getUnwatchedFilms(user.getId()), number, true);
+	}
+	
+	@Override
+	public List<RecommendedFilm> getRecommendedFilmsByArtis(RegisteredUser user, Long artistId, int number) {
+		return getRecommendedFilms(user, filmRepository.getFilmsByArtist(artistId), number, false);
+	}
+	
+	@Override
+	public List<RecommendedFilm> getRecommendedFilmsByGenre(RegisteredUser user, Genre genre, int number) {
+		return getRecommendedFilms(user, filmRepository.getByGenre(genre), number, false);
+	}
 
 	@Override
-	public List<RecommendedFilm> getRecommendedFilms(RegisteredUser user, Long artistId, int number) {
-		List<Film> unwatched = null;
-		if(artistId == null){
-			unwatched = filmRepository.getUnwatchedFilms(user.getId());
-		}
-		else{
-			unwatched = filmRepository.getUnwatchedFilmsByArtist(user.getId(), artistId);
-		}
+	public List<RecommendedFilm> getRecommendedFilms(RegisteredUser user, List<Film> films, int number, boolean strip) {
 		KieSession kieSession = kieContainer.newKieSession("filmRecommendationRulesSession");
 		kieSession.getAgenda().getAgendaGroup("user-flags").setFocus();
 		kieSession.insert(user);
@@ -162,7 +170,7 @@ public class FilmServiceImpl implements FilmService{
 			kieSession.insert(r);
 		}
 		List<RecommendedFilm> recommendedFilms = new ArrayList<RecommendedFilm>();
-		for(Film f : unwatched){
+		for(Film f : films){
 			kieSession.insert(f);
 		}
 		kieSession.fireAllRules();
@@ -173,7 +181,7 @@ public class FilmServiceImpl implements FilmService{
 		}
 		kieSession.dispose();
 		Collections.sort(recommendedFilms, new RecommendedFilmComparator());
-		if(artistId == null){
+		if(strip){
 			recommendedFilms = recommendedFilms.stream().filter(recommendedFilm -> recommendedFilm.getRecommendPoints() > 0)
                 .collect(Collectors.toList());
 		}
@@ -233,6 +241,11 @@ public class FilmServiceImpl implements FilmService{
 	@Override
 	public List<Film> getByGenre(Genre genre) {
 		return filmRepository.getByGenre(genre);
+	}
+	
+	@Override
+	public List<Film> getByArtist(Long artistId) {
+		return filmRepository.getFilmsByArtist(artistId);
 	}
 
 	@Override

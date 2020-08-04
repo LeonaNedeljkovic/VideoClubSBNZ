@@ -1,22 +1,28 @@
 <div class="container">
-    <h2 class="form-signin-heading">Film Analysis Report</h2>
-    <p>This analysis is based on review history of users in this system</p>
-    <br/>
-    <div class="invisible-container">
-        <ul>
-            <li>Number of potentially interested users: {{report.userRecommendationsNumber}}</li>
-            <li>Percentage of potentially interested users: {{report.percentage}}</li>
-        </ul>
-        Reports based on age category of users:
-        <ul>
-            <li *ngFor="let category of report.ageCategoryReports">
-                {{category.ageCategory}}: {{category.userRecommendationNumber}} interested users 
-                ({{category.percentage}}% of all users from this age category)
-                
-            </li>
-        </ul>
-    </div>
-    <br/>
-    <button class="orangeButton" type="input" (click)="add()">Add film</button>
-    <button class="orangeButton" type="input" (click)="close()">Cancel</button>
+  <h2 class="form-signin-heading">Film Analysis Report</h2>
+  <p>This analysis is based on review history of users in this system</p>
+  <br />
+  <div class="invisible-container">
+    <ul>
+      <li>
+        Number of potentially interested users:
+        {{ report.userRecommendationsNumber }}
+      </li>
+      <li>
+        Percentage of potentially interested users: {{ report.percentage }}
+      </li>
+    </ul>
+    Reports based on age category of users:
+    <ul>
+      <li *ngFor="let category of report.ageCategoryReports">
+        {{ category.ageCategory }}:
+        {{ category.userRecommendationNumber }} interested users ({{
+          category.percentage
+        }}% of all users from this age category)
+      </li>
+    </ul>
   </div>
+  <br />
+  <button class="orangeButton" type="input" (click)="add()">Add film</button>
+  <button class="orangeButton" type="input" (click)="close()">Cancel</button>
+</div>

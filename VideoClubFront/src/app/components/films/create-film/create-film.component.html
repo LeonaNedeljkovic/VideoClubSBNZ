@@ -1,131 +1,206 @@
 <body>
-      <div id="shell">
-      <div id="sub-navigation"></div>
-            <div class="container">
-                  <h2 class="form-signin-heading">Create film</h2>
-                  <br/>
-                  <form class="form-signin" >
-                  <table class="invisible-table">
-                  <tbody>
-                        <tr>
-                              <td>Name: </td>
-                              <td><input type="text" id="name" name="name" [(ngModel)]="film.name" placeholder="Name" required autofocus></td>
-                        </tr>
-                        <tr>
-                              <td>Film Genre: </td>
-                              <td>
-                              <select id="chosen">
-                                    <option selected>ACTION</option>
-                                    <option>ADVENTURE</option>
-                                    <option>ANIMATED</option>
-                                    <option>COMEDY</option>
-                                    <option>DOCUMENTARY</option>
-                                    <option>DRAMA</option>
-                                    <option>HISTORICAL</option>
-                                    <option>HORROR</option>
-                                    <option>MUSIC</option>
-                                    <option>SCIFI</option>
-                                    <option>THRILLER</option>
-                                    <option>WESTERN</option>
-                                    <option>FAMILY</option>
-                              </select>
-                              </td>
-                        </tr>
-                        <tr>
-                              <td>Year: </td>
-                              <td><input type="number" id="year" name="year" [(ngModel)]="film.year" placeholder="Year" required autofocus></td>
-                        </tr>
-                        <tr>
-                              <td>Film Duration:</td>
-                              <td>
-                                    <input type="number" id="duration" name="duration" [(ngModel)]="film.duration" placeholder="Duration" required>
-                              </td>
-                        </tr>
-                        <tr>
-                              <td>Actors: </td>
-                              <td>
-                                    <div id="artist-navigation">
-                                          <div class="artist">
-                                                <form action="#" method="get" accept-charset="utf-8">
-                                                      <div class="search-dropdown">
-                                                            <input type="text" name="artist field" class="artist-field" [(ngModel)]="searchInput" (ngModelChange)="searchArtist()" /> 
-                                                      </div>
-                                                </form>
-                                          </div>           
-                                    </div>
-                              </td>   
-                        </tr>
-                        <tr>      
-                              <div class="search-dropdown-content" *ngIf="searchedArtist.length > 0">
-                                    <div *ngFor="let artist of searchedArtist" >
-                                          <a (click)="addActor(artist)">{{artist.name}} {{artist.surname}}</a>
-                                    </div>
-                              </div> 
-                        </tr>
-                        <tr *ngFor="let selected of getSelectedActors(); let i = index">
-                              <td></td>
-                              <td class="selected-item">{{selected.name}} {{selected.surname}}<span class="x" (click)="removeActor(selected.id)">X</span></td>
-                        </tr>
-                        <tr>
-                              <td>Director: </td>
-                              <td>
-                                    <div id="artist-navigation">
-                                          <div class="artist">
-                                                <form action="#" method="get" accept-charset="utf-8">
-                                                      <div class="search-dropdown">
-                                                            <input type="text" name="artist field" class="artist-field" [(ngModel)]="searchInputDirector" (ngModelChange)="searchDirector()" /> 
-                                                      </div>
-                                                </form>
-                                          </div>           
-                                    </div>
-                              </td>   
-                        </tr>
-                        <tr>      
-                              <div class="search-dropdown-content" *ngIf="searchedDirectors.length > 0">
-                                    <div *ngFor="let artist of searchedDirectors" >
-                                          <a (click)="addDirector(artist)">{{artist.name}} {{artist.surname}}</a>
-                                    </div>
-                              </div> 
-                        </tr>
-                        <tr>
-                              <td>Screenwritter: </td>
-                              <td>
-                                    <div id="artist-navigation">
-                                          <div class="artist">
-                                                <form action="#" method="get" accept-charset="utf-8">
-                                                      <div class="search-dropdown">
-                                                            <input type="text" name="artist field" class="artist-field" [(ngModel)]="searchInputScenarist" (ngModelChange)="searchScenarist()" /> 
-                                                      </div>
-                                                </form>
-                                          </div>           
-                                    </div>
-                              </td>   
-                        </tr>
-                        <tr>      
-                              <div class="search-dropdown-content" *ngIf="searchedScenarist.length > 0">
-                                    <div *ngFor="let artist of searchedScenarist" >
-                                          <a (click)="addScenarist(artist)">{{artist.name}} {{artist.surname}}</a>
-                                    </div>
-                              </div> 
-                        </tr>
-                        <tr>
-                              <td>Poster of Film:</td>
-                              <td><input type="text" id="poster" name="poster" [(ngModel)]="film.poster" placeholder="Poster" required></td>
-                        </tr>
-                  </tbody>
-                  </table>
-                  <button class="orangeButton" type="input" (click)="getReport()">Show analysis</button>
-                 
-            </form>
-            
-            </div>
-            <div class="cl">&nbsp;</div>
-            </div>
-            <div id="footer">
-              <p class="lf">Copyright &copy; 2010 <a href="#">SiteName</a> - All Rights Reserved</p>
-              <p class="rf">Design by <a href="http://chocotemplates.com/">ChocoTemplates.com</a></p>
-              <div style="clear:both;"></div>
-            </div>
-          <!-- END PAGE SOURCE -->
+  <div id="shell">
+    <div id="sub-navigation"></div>
+    <div class="container">
+      <h2 class="form-signin-heading">Create film</h2>
+      <br />
+      <form class="form-signin">
+        <table class="invisible-table">
+          <tbody>
+            <tr>
+              <td>Name:</td>
+              <td>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  [(ngModel)]="film.name"
+                  placeholder="Name"
+                  required
+                  autofocus
+                />
+              </td>
+            </tr>
+            <tr>
+              <td>Film Genre:</td>
+              <td>
+                <select id="chosen">
+                  <option selected>ACTION</option>
+                  <option>ADVENTURE</option>
+                  <option>ANIMATED</option>
+                  <option>COMEDY</option>
+                  <option>DOCUMENTARY</option>
+                  <option>DRAMA</option>
+                  <option>HISTORICAL</option>
+                  <option>HORROR</option>
+                  <option>MUSIC</option>
+                  <option>SCIFI</option>
+                  <option>THRILLER</option>
+                  <option>WESTERN</option>
+                  <option>FAMILY</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td>Year:</td>
+              <td>
+                <input
+                  type="number"
+                  id="year"
+                  name="year"
+                  [(ngModel)]="film.year"
+                  placeholder="Year"
+                  required
+                  autofocus
+                />
+              </td>
+            </tr>
+            <tr>
+              <td>Film Duration:</td>
+              <td>
+                <input
+                  type="number"
+                  id="duration"
+                  name="duration"
+                  [(ngModel)]="film.duration"
+                  placeholder="Duration"
+                  required
+                />
+              </td>
+            </tr>
+            <tr>
+              <td>Actors:</td>
+              <td>
+                <div>
+                  <div class="artist">
+                    <form action="#" method="get" accept-charset="utf-8">
+                      <div class="search-artist-dropdown">
+                        <input
+                          type="text"
+                          name="artist field"
+                          class="artist-field"
+                          [(ngModel)]="searchInput"
+                          (ngModelChange)="searchArtist()"
+                        />
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <div
+                class="search-artist-dropdown-content"
+                *ngIf="searchedArtist.length > 0"
+              >
+                <div *ngFor="let artist of searchedArtist">
+                  <a (click)="addActor(artist)"
+                    >{{ artist.name }} {{ artist.surname }}</a
+                  >
+                </div>
+              </div>
+            </tr>
+            <tr *ngFor="let selected of getSelectedActors(); let i = index">
+              <td></td>
+              <td class="selected-item">
+                {{ selected.name }} {{ selected.surname
+                }}<span class="x" (click)="removeActor(selected.id)">X</span>
+              </td>
+            </tr>
+            <tr>
+              <td>Director:</td>
+              <td>
+                <div>
+                  <div class="artist">
+                    <form action="#" method="get" accept-charset="utf-8">
+                      <div class="search-artist-dropdown">
+                        <input
+                          type="text"
+                          name="artist field"
+                          class="artist-field"
+                          [(ngModel)]="searchInputDirector"
+                          (ngModelChange)="searchDirector()"
+                        />
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <div
+                class="search-artist-dropdown-content"
+                *ngIf="searchedDirectors.length > 0"
+              >
+                <div *ngFor="let artist of searchedDirectors">
+                  <a (click)="addDirector(artist)"
+                    >{{ artist.name }} {{ artist.surname }}</a
+                  >
+                </div>
+              </div>
+            </tr>
+            <tr>
+              <td>Screenwritter:</td>
+              <td>
+                <div>
+                  <div class="artist">
+                    <form action="#" method="get" accept-charset="utf-8">
+                      <div class="search-artist-dropdown">
+                        <input
+                          type="text"
+                          name="artist field"
+                          class="artist-field"
+                          [(ngModel)]="searchInputScenarist"
+                          (ngModelChange)="searchScenarist()"
+                        />
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <div
+                class="search-artist-dropdown-content"
+                *ngIf="searchedScenarist.length > 0"
+              >
+                <div *ngFor="let artist of searchedScenarist">
+                  <a (click)="addScenarist(artist)"
+                    >{{ artist.name }} {{ artist.surname }}</a
+                  >
+                </div>
+              </div>
+            </tr>
+            <tr>
+              <td>Poster of Film:</td>
+              <td>
+                <input
+                  type="text"
+                  id="poster"
+                  name="poster"
+                  [(ngModel)]="film.poster"
+                  placeholder="Poster"
+                  required
+                />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <button class="orangeButton" type="input" (click)="getReport()">
+          Show analysis
+        </button>
+      </form>
+    </div>
+    <div class="cl">&nbsp;</div>
+  </div>
+  <div id="footer">
+    <p class="lf">
+      Copyright &copy; 2010 <a href="#">SiteName</a> - All Rights Reserved
+    </p>
+    <p class="rf">
+      Design by <a href="http://chocotemplates.com/">ChocoTemplates.com</a>
+    </p>
+    <div style="clear: both;"></div>
+  </div>
+  <!-- END PAGE SOURCE -->
 </body>
-  

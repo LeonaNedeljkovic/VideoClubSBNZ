@@ -1,16 +1,15 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { AgeTemplateComponent } from './age-template.component';
+import { AgeTemplateComponent } from "./age-template.component";
 
-describe('AgeTemplateComponent', () => {
+describe("AgeTemplateComponent", () => {
   let component: AgeTemplateComponent;
   let fixture: ComponentFixture<AgeTemplateComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AgeTemplateComponent ]
-    })
-    .compileComponents();
+      declarations: [AgeTemplateComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -19,7 +18,7 @@ describe('AgeTemplateComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

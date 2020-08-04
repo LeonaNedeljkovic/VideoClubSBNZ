@@ -1,69 +1,107 @@
 <div class="container">
-    <h2 class="form-signin-heading">Title Settings</h2>
-    <p style="text-align: center;">Define number of minutes that are required to acquire and save each titles, as well as reward minutes of each title:</p>
-    <br/>
-    <table class="invisible-table">
+  <h2 class="form-signin-heading">Title Settings</h2>
+  <p style="text-align: center;">
+    Define number of minutes that are required to acquire and save each titles,
+    as well as reward minutes of each title:
+  </p>
+  <br />
+  <table class="invisible-table">
     <tbody>
-        <tr>
-            <td><div class="gold-text">Gold Title:</div></td>
-            <td></td><td></td>
-        </tr>
-        <tr>
-            <td>Acquire Points:</td>
-            <td><input type="number" [(ngModel)]="goldAcquire"></td>
-            <td><button class="orangeButton" (click)="setGoldAcquire()">Update</button></td>
-        </tr>
-        <tr>
-            <td>Save Points:</td>
-            <td><input type="number" [(ngModel)]="goldSave"></td>
-            <td><button class="orangeButton" (click)="setGoldSave()">Update</button></td>
-        </tr>
-        <tr>
-            <td>Reward Points:</td>
-            <td><input type="number" [(ngModel)]="goldReward"></td>
-            <td><button class="orangeButton" (click)="setGoldReward()">Update</button></td>
-        </tr>
-        <tr>
-            <td><div class="silver-text">Silver Title:</div></td>
-            <td></td><td></td>
-        </tr>
-        <tr>
-            <td>Acquire Points:</td>
-            <td><input type="number" [(ngModel)]="silverAcquire"></td>
-            <td><button class="orangeButton" (click)="setSilverAcquire()">Update</button></td>
-        </tr>
-        <tr>
-            <td>Save Points:</td>
-            <td><input type="number" [(ngModel)]="silverSave"></td>
-            <td><button class="orangeButton" (click)="setSilverSave()">Update</button></td>
-        </tr>
-        <tr>
-            <td>Reward Points:</td>
-            <td><input type="number" [(ngModel)]="silverReward"></td>
-            <td><button class="orangeButton" (click)="setSilverReward()">Update</button></td>
-        </tr>
-        <tr>
-            <td><div class="bronze-text">Bronze Title:</div></td>
-            <td></td><td></td>
-        </tr>
-        <tr>
-            <td>Acquire Points:</td>
-            <td><input type="number" [(ngModel)]="bronzeAcquire"></td>
-            <td><button class="orangeButton" (click)="setBronzeAcquire()">Update</button></td>
-        </tr>
-        <tr>
-            <td>Save Points:</td>
-            <td><input type="number" [(ngModel)]="bronzeSave"></td>
-            <td><button class="orangeButton" (click)="setBronzeSave()">Update</button></td>
-        </tr>
-        <tr>
-            <td>Reward Points:</td>
-            <td><input type="number" [(ngModel)]="bronzeReward"></td>
-            <td><button class="orangeButton" (click)="setBronzeReward()">Update</button></td>
-        </tr>
+      <tr>
+        <td><div class="gold-text">Gold Title:</div></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>Acquire Points:</td>
+        <td><input type="number" [(ngModel)]="goldAcquire" /></td>
+        <td>
+          <button class="orangeButton" (click)="setGoldAcquire()">
+            Update
+          </button>
+        </td>
+      </tr>
+      <tr>
+        <td>Save Points:</td>
+        <td><input type="number" [(ngModel)]="goldSave" /></td>
+        <td>
+          <button class="orangeButton" (click)="setGoldSave()">Update</button>
+        </td>
+      </tr>
+      <tr>
+        <td>Reward Points:</td>
+        <td><input type="number" [(ngModel)]="goldReward" /></td>
+        <td>
+          <button class="orangeButton" (click)="setGoldReward()">Update</button>
+        </td>
+      </tr>
+      <tr>
+        <td><div class="silver-text">Silver Title:</div></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>Acquire Points:</td>
+        <td><input type="number" [(ngModel)]="silverAcquire" /></td>
+        <td>
+          <button class="orangeButton" (click)="setSilverAcquire()">
+            Update
+          </button>
+        </td>
+      </tr>
+      <tr>
+        <td>Save Points:</td>
+        <td><input type="number" [(ngModel)]="silverSave" /></td>
+        <td>
+          <button class="orangeButton" (click)="setSilverSave()">Update</button>
+        </td>
+      </tr>
+      <tr>
+        <td>Reward Points:</td>
+        <td><input type="number" [(ngModel)]="silverReward" /></td>
+        <td>
+          <button class="orangeButton" (click)="setSilverReward()">
+            Update
+          </button>
+        </td>
+      </tr>
+      <tr>
+        <td><div class="bronze-text">Bronze Title:</div></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>Acquire Points:</td>
+        <td><input type="number" [(ngModel)]="bronzeAcquire" /></td>
+        <td>
+          <button class="orangeButton" (click)="setBronzeAcquire()">
+            Update
+          </button>
+        </td>
+      </tr>
+      <tr>
+        <td>Save Points:</td>
+        <td><input type="number" [(ngModel)]="bronzeSave" /></td>
+        <td>
+          <button class="orangeButton" (click)="setBronzeSave()">Update</button>
+        </td>
+      </tr>
+      <tr>
+        <td>Reward Points:</td>
+        <td><input type="number" [(ngModel)]="bronzeReward" /></td>
+        <td>
+          <button class="orangeButton" (click)="setBronzeReward()">
+            Update
+          </button>
+        </td>
+      </tr>
     </tbody>
-    </table>
-    <br/>
-    <p style="color:red; text-align: center;" *ngIf="errorMessage != ''">{{errorMessage}}</p>
-    <p style="color:green; text-align: center;" *ngIf="greenMessage != ''">{{greenMessage}}</p>
-  </div>
+  </table>
+  <br />
+  <p style="color: red; text-align: center;" *ngIf="errorMessage != ''">
+    {{ errorMessage }}
+  </p>
+  <p style="color: green; text-align: center;" *ngIf="greenMessage != ''">
+    {{ greenMessage }}
+  </p>
+</div>
