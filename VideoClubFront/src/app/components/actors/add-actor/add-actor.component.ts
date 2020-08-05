@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Artist } from 'src/app/model/artist.model';
 import { ArtistService } from 'src/app/services/artist.service';
+import { Message } from "src/app/dto/message";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { MessageComponent } from "src/app/pages/message/message.component";
 
 @Component({
   selector: 'app-add-actor',
@@ -18,7 +21,7 @@ export class AddActorComponent implements OnInit {
     directed:[]
   };
 
-  constructor(private artistService: ArtistService) { }
+  constructor(private artistService: ArtistService,private modalService: NgbModal) { }
 
   ngOnInit() {
   }
@@ -28,7 +31,13 @@ export class AddActorComponent implements OnInit {
     if(this.artist.name!="" && this.artist.surname!=""){
       this.artistService.createArtist(this.artist).subscribe(data => {
         if(data.name==this.artist.name){
-          console.log("USPEHHH");
+          var message: Message = {
+            header: "Artist added!",
+            message: "You have added artist successfully!",
+            color: "green",
+          };
+          localStorage.setItem("message", JSON.stringify(message));
+          const modalRef = this.modalService.open(MessageComponent);
         }
     });
     }

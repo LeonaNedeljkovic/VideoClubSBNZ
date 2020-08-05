@@ -27,6 +27,8 @@ import { TitleTemplateComponent } from './components/templates/title-template/ti
 import { AgeTemplateComponent } from './components/templates/age-template/age-template.component';
 import { ImmunityTemplateComponent } from './components/templates/immunity-template/immunity-template.component';
 import { FilmReportComponent } from './components/films/film-report/film-report.component';
+import { AdminAuthGuard } from './admin-auth.guard';
+import { RegisteredUserAuthGuard } from './registered-user-auth.guard';
 
 
 
@@ -54,47 +56,58 @@ const routes: Routes = [
   },
   { 
     path: 'create-offer',
-    component: CreateOfferComponent
+    component: CreateOfferComponent,
+    canActivate:[AdminAuthGuard]
   },
   { 
     path: 'update-offer',
-    component:UpdateOfferComponent
+    component:UpdateOfferComponent,
+    canActivate:[AdminAuthGuard]
   },
   { 
     path: 'add-actor',
-     component: AddActorComponent
+     component: AddActorComponent,
+     canActivate:[AdminAuthGuard]
   },
   { 
     path: 'update-artist',
-    component: UpdateArtistComponent
+    component: UpdateArtistComponent,
+    canActivate:[AdminAuthGuard]
   },
   { 
     path: 'age-template',
-    component: AgeTemplateComponent
+    component: AgeTemplateComponent,
+    canActivate:[AdminAuthGuard]
   },
   { 
     path: 'age-free-minutes-template',
-    component: AgeFreeMinutesTemplateComponent
+    component: AgeFreeMinutesTemplateComponent,
+    canActivate:[AdminAuthGuard]
   },
   { 
     path: 'age-title-free-minutes-template',
-    component: AgeTitleFreeMinutesTemplateComponent
+    component: AgeTitleFreeMinutesTemplateComponent,
+    canActivate:[AdminAuthGuard]
   },
   { 
     path: 'title-free-minutes-template',
-    component: TitleFreeMinutesTemplateComponent
+    component: TitleFreeMinutesTemplateComponent,
+    canActivate:[AdminAuthGuard]
   },
   { 
     path: 'title-template',
-    component: TitleTemplateComponent
+    component: TitleTemplateComponent,
+    canActivate:[AdminAuthGuard]
   },
   { 
     path: 'immunity-template',
-    component: ImmunityTemplateComponent
+    component: ImmunityTemplateComponent,
+    canActivate:[AdminAuthGuard]
   },
   { 
     path: 'film-report',
-    component: FilmReportComponent
+    component: FilmReportComponent,
+    canActivate:[AdminAuthGuard]
   },
   {
     path: 'dashboard',
@@ -102,13 +115,13 @@ const routes: Routes = [
     children: [
       { path: 'films-show', component: ShowFilmsComponent },
       { path: 'film-details', component: DetailsFilmComponent },
-      { path: 'reviews', component: MyReviewsComponent },
-      { path: 'offers', component: OffersShowComponent },
-      { path: 'show-all-actors',component:ShowAllActorsComponent},
-      { path: 'create-film', component:CreateFilmComponent},
-      { path: 'show-all-offers', component:ShowOffersAdminComponent},
-      { path: 'reports', component:ShowAllReportsComponent},
-      { path: 'action-create', component: ActionCreateComponent },
+      { path: 'reviews', component: MyReviewsComponent, canActivate:[RegisteredUserAuthGuard] },
+      { path: 'offers', component: OffersShowComponent, canActivate:[RegisteredUserAuthGuard]  },
+      { path: 'show-all-actors',component:ShowAllActorsComponent, canActivate:[AdminAuthGuard]},
+      { path: 'create-film', component:CreateFilmComponent, canActivate:[AdminAuthGuard]},
+      { path: 'show-all-offers', component:ShowOffersAdminComponent, canActivate:[AdminAuthGuard]},
+      { path: 'reports', component:ShowAllReportsComponent, canActivate:[AdminAuthGuard]},
+      { path: 'action-create', component: ActionCreateComponent, canActivate:[AdminAuthGuard] },
       { path: 'action-show', component: ActionShowComponent }
     ] 
   },

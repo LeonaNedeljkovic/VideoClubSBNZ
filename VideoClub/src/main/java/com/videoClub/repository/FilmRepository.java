@@ -22,12 +22,12 @@ public interface FilmRepository extends JpaRepository<Film, Long>{
 		  + 	"OR ?1 IN (SELECT a.id FROM f.actors a))")
 	public List<Film> getFilmsByArtist(Long artistId);
 	
-	@Query("SELECT f FROM Film f " +
-		    "ORDER BY f.rating DESC")
+	@Query("SELECT r.film from Review r WHERE r.watched = 1  AND r.rate > 0 "+
+			"GROUP BY r.film ORDER BY r.film.rating DESC, count(r.film)")
 	public List<Film> getTopRated();
 	
-	@Query("SELECT r.film from Review r WHERE r.watched = 1  AND r.rate > 0 "+
-			"GROUP BY r.film ORDER BY r.film.rating*count(r.film) DESC")
+	@Query("SELECT r.film from Review r WHERE r.watched = 1"+
+			"GROUP BY r.film ORDER BY count(r.film) DESC")
 	public List<Film> getMostPopular();
 	
 	@Query("SELECT f from Film f WHERE f.genre = ?1 "+

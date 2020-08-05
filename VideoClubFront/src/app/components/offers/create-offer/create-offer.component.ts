@@ -39,6 +39,7 @@ export class CreateOfferComponent implements OnInit {
           };
           localStorage.setItem("message", JSON.stringify(message));
           const modalRef = this.modalService.open(MessageComponent);
+          location.reload();
         }
       });
     }

@@ -38,8 +38,9 @@ export class ShowOffersAdminComponent implements OnInit {
       };
       localStorage.setItem("message", JSON.stringify(message));
       const modalRef = this.modelService.open(MessageComponent);
+      location.reload();
     });
-    location.reload;
+    
   }
 
   update(offer) {

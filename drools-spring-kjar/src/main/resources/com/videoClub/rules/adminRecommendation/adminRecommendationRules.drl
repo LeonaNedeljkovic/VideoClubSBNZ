@@ -77,7 +77,7 @@ rule "Insert UserFlag"
 							 new GenreFlag(null,0,0,0,0)));
 end
 
-rule "Collect informations about reviews and favourites of ActorElement for UserFlag"
+rule "Collect information about reviews and favourites of ActorElement for UserFlag"
 	salience 80
 	no-loop
 	when
@@ -109,7 +109,7 @@ rule "Collect informations about reviews and favourites of ActorElement for User
 		update($userFlag);
 end
 
-rule "Collect informations about DirectorElement for UserFlag"
+rule "Collect information about DirectorElement for UserFlag"
 	salience 80
 	no-loop
 	when
@@ -146,7 +146,7 @@ rule "Collect informations about DirectorElement for UserFlag"
 		update($userFlag);
 end
 
-rule "Collect informations about ScenaristElement for UserFlag"
+rule "Collect information about ScenaristElement for UserFlag"
 	salience 80
 	no-loop
 	when
@@ -183,7 +183,7 @@ rule "Collect informations about ScenaristElement for UserFlag"
 		update($userFlag);
 end
 
-rule "Collect informations about GenreElement for UserFlag"
+rule "Collect information about GenreElement for UserFlag"
 	salience 80
 	no-loop
 	when
