@@ -109,8 +109,7 @@ export class HeaderComponent implements OnInit {
 
   logout() {
     this.AuthenticationService.logout();
-    localStorage.removeItem("currentUser");
-    location.reload();
+    location.replace("http://localhost:4200")
   }
 
   profile() {

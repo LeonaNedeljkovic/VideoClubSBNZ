@@ -22,6 +22,8 @@ export class CreateFilmComponent implements OnInit {
   private searchInputScenarist: string = "";
   private searchedDirectors: Artist[] = [];
   private searchedScenarist: Artist[] = [];
+  private loggedIn: boolean;
+  private loggedUser;
   private film: FilmDto = {
     id: "0",
     name: "",
@@ -48,6 +50,10 @@ export class CreateFilmComponent implements OnInit {
       this.artists = data;
       console.log(this.artists.length);
     });
+    this.loggedUser = JSON.parse(localStorage.getItem("currentUser"));
+    if (this.loggedUser != null) {
+      this.loggedIn = true;
+    }
   }
 
   getSelectedActors() {
