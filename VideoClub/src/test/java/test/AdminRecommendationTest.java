@@ -103,11 +103,11 @@ public class AdminRecommendationTest {
 		for(Object o : types){
 			FinalReport report = (FinalReport) o;
 			Collections.sort(report.getAgeCategoryReports(), new AgeCategoryReportComparator());
-			assertEquals(40, report.getPercentage(),0);
-			assertEquals(4, report.getUserRecommendationsNumber());
+			assertEquals(50, report.getPercentage(),0);
+			assertEquals(5, report.getUserRecommendationsNumber());
 			assertEquals(3, report.getAgeCategoryReports().get(0).getUserRecommendationNumber()); //TEEN
 			assertEquals(1, report.getAgeCategoryReports().get(1).getUserRecommendationNumber()); //ADULT
-			assertEquals(0, report.getAgeCategoryReports().get(2).getUserRecommendationNumber()); //CHILD
+			assertEquals(1, report.getAgeCategoryReports().get(2).getUserRecommendationNumber()); //CHILD
 			assertEquals(0, report.getAgeCategoryReports().get(3).getUserRecommendationNumber()); //ELDER
 			assertEquals(0, report.getAgeCategoryReports().get(4).getUserRecommendationNumber()); //YOUNG_ADULT
 		}

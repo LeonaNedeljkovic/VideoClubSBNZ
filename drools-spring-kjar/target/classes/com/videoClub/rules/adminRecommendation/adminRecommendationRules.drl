@@ -344,7 +344,7 @@ rule "Reward average rated director"
 	salience 60
 	no-loop
     when
-        $userFlag : UserFlag( directorsFlag.averageRate < 4 && directorsFlag.averageRate > 3,
+        $userFlag : UserFlag( directorsFlag.averageRate < 4 && directorsFlag.averageRate >= 3,
         	$averageRate : directorsFlag.averageRate, $ratesNum : directorsFlag.ratesNumber );
     then
         insert(new UserFlagPoints($userFlag, $averageRate*$ratesNum));
@@ -356,7 +356,7 @@ rule "Reward average rated actors"
 	salience 60
 	no-loop
     when
-        $userFlag : UserFlag( actorsFlag.averageRate < 4 && actorsFlag.averageRate > 3,
+        $userFlag : UserFlag( actorsFlag.averageRate < 4 && actorsFlag.averageRate >= 3,
         	$averageRate : actorsFlag.averageRate, $ratesNum : actorsFlag.ratesNumber );
     then
         insert(new UserFlagPoints($userFlag, $averageRate*$ratesNum));
@@ -368,7 +368,7 @@ rule "Reward average rated scenarist"
 	salience 60
 	no-loop
     when
-        $userFlag : UserFlag( scenaristsFlag.averageRate < 4 && scenaristsFlag.averageRate > 3,
+        $userFlag : UserFlag( scenaristsFlag.averageRate < 4 && scenaristsFlag.averageRate >= 3,
         	$averageRate : scenaristsFlag.averageRate, $ratesNum : scenaristsFlag.ratesNumber );
     then
         insert(new UserFlagPoints($userFlag, $averageRate*$ratesNum));
@@ -416,7 +416,7 @@ rule "Punish badly rated director"
 	salience 60
 	no-loop
     when
-        $userFlag : UserFlag( directorsFlag.averageRate <= 3 && directorsFlag.averageRate > 0,
+        $userFlag : UserFlag( directorsFlag.averageRate < 3 && directorsFlag.averageRate > 0,
         	$averageRate : directorsFlag.averageRate, $ratesNum : directorsFlag.ratesNumber );
     then
         insert(new UserFlagPoints($userFlag, 0-10*(10-$averageRate)));
@@ -428,7 +428,7 @@ rule "Punish badly rated actors"
 	salience 60
 	no-loop
     when
-        $userFlag : UserFlag( actorsFlag.averageRate <= 3 && actorsFlag.averageRate > 0,
+        $userFlag : UserFlag( actorsFlag.averageRate < 3 && actorsFlag.averageRate > 0,
         	$averageRate : actorsFlag.averageRate, $ratesNum : actorsFlag.ratesNumber );
     then
         insert(new UserFlagPoints($userFlag, 0-10*(10-$averageRate)));
@@ -440,7 +440,7 @@ rule "Punish badly rated scenarist"
 	salience 60
 	no-loop
     when
-        $userFlag : UserFlag( scenaristsFlag.averageRate <= 3 && scenaristsFlag.averageRate > 0,
+        $userFlag : UserFlag( scenaristsFlag.averageRate < 3 && scenaristsFlag.averageRate > 0,
         	$averageRate : scenaristsFlag.averageRate, $ratesNum : scenaristsFlag.ratesNumber );
     then
         insert(new UserFlagPoints($userFlag, 0-5*(10-$averageRate)));
@@ -476,7 +476,7 @@ rule "Reward average rated genre"
 	salience 60
 	no-loop
     when
-    	$userFlag : UserFlag( genreFlag.averageRate < 4 && genreFlag.averageRate > 3,
+    	$userFlag : UserFlag( genreFlag.averageRate < 4 && genreFlag.averageRate >= 3,
         	$rating: genreFlag.ratesNumber*genreFlag.averageRate );
     then
         insert(new UserFlagPoints($userFlag, $rating ));
@@ -501,7 +501,7 @@ rule "Punish badly rated genre"
 	salience 60
 	no-loop
     when
-    	$userFlag : UserFlag( genreFlag.averageRate <= 3 && genreFlag.averageRate > 0,
+    	$userFlag : UserFlag( genreFlag.averageRate < 3 && genreFlag.averageRate > 0,
         	$rating: genreFlag.ratesNumber*genreFlag.averageRate );
     then
     	insert(new UserFlagPoints($userFlag, 0-15*(10-$rating)) );
